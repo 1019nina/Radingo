@@ -37,7 +37,7 @@
     <div class="max-w-md mx-auto flex justify-between items-center">
       <div class="flex items-center space-x-2">
         <span class="text-2xl font-black text-emerald-400">Radingo</span>
-        <span class="bg-emerald-950 text-emerald-400 text-[10px] px-2 py-0.5 rounded-full font-bold border border-emerald-800">4大題型版</span>
+        <span class="bg-emerald-950 text-emerald-400 text-[10px] px-2 py-0.5 rounded-full font-bold border border-emerald-800">題庫管理升級版</span>
       </div>
 
       <div class="flex items-center space-x-3 font-extrabold text-xs">
@@ -177,18 +177,18 @@
     </div>
   </footer>
 
-  <!-- MODAL: EDITOR (4大題型無程式碼題庫管理員) -->
+  <!-- MODAL: EDITOR (支援檢視列表與刪除功能的題庫管理員) -->
   <div id="modal-editor" class="hidden fixed inset-0 bg-black/80 backdrop-blur-sm z-50 flex items-center justify-center p-4">
     <div class="bg-slate-900 border border-slate-800 rounded-2xl w-full max-w-md max-h-[85vh] flex flex-col overflow-hidden">
       <div class="p-4 border-b border-slate-800 flex justify-between items-center bg-slate-800/50">
-        <h3 class="font-black text-sm text-white">🛠️ 4 大題型題庫管理員</h3>
+        <h3 class="font-black text-sm text-white">🛠️ 題庫管理員（含清單管理）</h3>
         <button onclick="closeModal('modal-editor')" class="text-slate-400 hover:text-white"><i class="fa-solid fa-xmark text-lg"></i></button>
       </div>
 
       <div class="p-4 overflow-y-auto space-y-4 text-xs">
         <!-- JSON Backup -->
         <div class="bg-slate-800 p-3 rounded-xl space-y-2 border border-slate-700">
-          <span class="font-bold text-slate-300">📥 題庫 JSON 匯入/匯出</span>
+          <span class="font-bold text-slate-300">📥 題庫 JSON 匯入/匯出 (整包備份)</span>
           <div class="grid grid-cols-2 gap-2">
             <button onclick="exportJSON()" class="py-2 bg-slate-700 hover:bg-slate-600 rounded-lg font-bold">匯出 JSON</button>
             <label class="py-2 bg-sky-600 hover:bg-sky-500 rounded-lg font-bold text-center cursor-pointer">
@@ -197,9 +197,9 @@
           </div>
         </div>
 
-        <!-- Add Form -->
+        <!-- NEW QUESTION FORM -->
         <div class="bg-slate-800/60 p-3.5 rounded-xl border border-slate-700 space-y-3">
-          <span class="font-bold text-emerald-400 text-sm block">➕ 新增題目（支援 4 大題型）</span>
+          <span class="font-bold text-emerald-400 text-sm block">➕ 新增題目</span>
           
           <div>
             <label class="text-slate-400 block mb-1">對應國考科目</label>
@@ -225,7 +225,7 @@
 
           <div>
             <label class="text-slate-400 block mb-1">題目文字敘述</label>
-            <textarea id="ed-text" rows="2" placeholder="輸入題目敘述... (填空題可用 ___ 代表底線)" class="w-full bg-slate-900 border border-slate-700 rounded-lg p-2 text-slate-200"></textarea>
+            <textarea id="ed-text" rows="2" placeholder="輸入題目敘述..." class="w-full bg-slate-900 border border-slate-700 rounded-lg p-2 text-slate-200"></textarea>
           </div>
 
           <div>
@@ -233,8 +233,7 @@
             <input type="url" id="ed-img" placeholder="https://..." class="w-full bg-slate-900 border border-slate-700 rounded-lg p-2 text-slate-200">
           </div>
 
-          <!-- DYNAMIC INPUT FIELDS BASED ON TYPE -->
-          <!-- 1. Choice / Fill options -->
+          <!-- Dynamic fields -->
           <div id="group-options" class="space-y-1.5">
             <label class="text-slate-400 block">選項內容 (填空/選擇)</label>
             <input type="text" id="ed-opt-0" placeholder="選項 A" class="w-full bg-slate-900 border border-slate-700 rounded-lg p-1.5">
@@ -245,7 +244,6 @@
             <input type="number" id="ed-correct-idx" min="0" max="3" value="0" class="w-full bg-slate-900 border border-slate-700 rounded-lg p-1.5">
           </div>
 
-          <!-- 2. Matching pairs -->
           <div id="group-matching" class="hidden space-y-2">
             <label class="text-slate-400 block">配對組合 (左欄 $\leftrightarrow$ 右欄)</label>
             <div class="grid grid-cols-2 gap-2">
@@ -258,7 +256,6 @@
             </div>
           </div>
 
-          <!-- 3. True / False -->
           <div id="group-tf" class="hidden space-y-1.5">
             <label class="text-slate-400 block">正確答案</label>
             <select id="ed-tf-correct" class="w-full bg-slate-900 border border-slate-700 rounded-lg p-2 text-slate-200">
@@ -277,9 +274,17 @@
           </button>
         </div>
 
-        <div class="text-center text-slate-400">
-          目前本地總題數：<span id="ed-total-count" class="text-emerald-400 font-bold">0</span> 題
+        <!-- QUESTION LIST & DELETE MANAGER -->
+        <div class="bg-slate-800 p-3.5 rounded-xl border border-slate-700 space-y-2.5">
+          <div class="flex justify-between items-center">
+            <span class="font-bold text-sky-400 text-sm">📋 已建立的題目清單 (可隨時刪除)</span>
+            <span id="ed-total-count" class="text-emerald-400 font-bold text-xs">0 題</span>
+          </div>
+          <div id="editor-question-list" class="space-y-2 max-h-52 overflow-y-auto pr-1">
+            <!-- Dynamically populated items -->
+          </div>
         </div>
+
       </div>
     </div>
   </div>
@@ -347,26 +352,26 @@
     };
 
     function loadState() {
-      const q = localStorage.getItem('radingo_v3_q');
+      const q = localStorage.getItem('radingo_v4_q');
       state.questions = q ? JSON.parse(q) : [];
 
-      const st = localStorage.getItem('radingo_v3_st');
+      const st = localStorage.getItem('radingo_v4_st');
       if (st) state.userStats = JSON.parse(st);
 
-      const su = localStorage.getItem('radingo_v3_su');
+      const su = localStorage.getItem('radingo_v4_su');
       if (su) state.subjectUnits = JSON.parse(su);
 
-      const uw = localStorage.getItem('radingo_v3_uw');
+      const uw = localStorage.getItem('radingo_v4_uw');
       if (uw) state.unitWorkCounts = JSON.parse(uw);
 
       updateStatsUI();
     }
 
     function saveState() {
-      localStorage.setItem('radingo_v3_q', JSON.stringify(state.questions));
-      localStorage.setItem('radingo_v3_st', JSON.stringify(state.userStats));
-      localStorage.setItem('radingo_v3_su', JSON.stringify(state.subjectUnits));
-      localStorage.setItem('radingo_v3_uw', JSON.stringify(state.unitWorkCounts));
+      localStorage.setItem('radingo_v4_q', JSON.stringify(state.questions));
+      localStorage.setItem('radingo_v4_st', JSON.stringify(state.userStats));
+      localStorage.setItem('radingo_v4_su', JSON.stringify(state.subjectUnits));
+      localStorage.setItem('radingo_v4_uw', JSON.stringify(state.unitWorkCounts));
       updateStatsUI();
     }
 
@@ -449,12 +454,10 @@
       document.getElementById('quiz-progress-bar').style.width = `${(state.activeQuiz.idx / total) * 100}%`;
       document.getElementById('q-text').innerText = q.question;
 
-      // Type Badge
       const typeBadge = document.getElementById('q-type-badge');
       const typeMap = { choice: '選擇題', matching: '觀念配對題', fill: '填空選擇題', tf: '是非題 (True/False)' };
       typeBadge.innerText = typeMap[q.type] || '選擇題';
 
-      // Image
       const imgBox = document.getElementById('q-img-container');
       const imgEl = document.getElementById('q-img');
       if (q.imgUrl) {
@@ -464,7 +467,6 @@
         imgBox.classList.add('hidden');
       }
 
-      // Interactive Zone Engine (Handling 4 Types)
       const zone = document.getElementById('q-interactive-zone');
       zone.innerHTML = '';
       state.activeQuiz.selectedOpt = null;
@@ -536,14 +538,13 @@
       if (state.matchingState.selectedLeft === null) { alert('請先點選左邊的項目！'); return; }
 
       if (state.matchingState.selectedLeft === idx) {
-        // Correct Match
         element.classList.add('matched');
         document.querySelectorAll('.matching-card.selected').forEach(c => c.classList.add('matched'));
         state.matchingState.matchedCount++;
         state.matchingState.selectedLeft = null;
 
         if (state.matchingState.matchedCount === totalPairs) {
-          state.activeQuiz.selectedOpt = 0; // Mark done
+          state.activeQuiz.selectedOpt = 0;
         }
       } else {
         alert('配對不正確喔！再試一次！');
@@ -720,7 +721,7 @@
       }
     }
 
-    /* NO-CODE EDITOR TYPE TOGGLE */
+    /* EDITOR & QUESTION LIST MANAGEMENT */
     function toggleEditorTypeFields() {
       const type = document.getElementById('ed-type').value;
       document.getElementById('group-options').classList.add('hidden');
@@ -730,6 +731,49 @@
       if (type === 'choice' || type === 'fill') document.getElementById('group-options').classList.remove('hidden');
       if (type === 'matching') document.getElementById('group-matching').classList.remove('hidden');
       if (type === 'tf') document.getElementById('group-tf').classList.remove('hidden');
+    }
+
+    function renderEditorQuestionList() {
+      const listContainer = document.getElementById('editor-question-list');
+      document.getElementById('ed-total-count').innerText = `${state.questions.length} 題`;
+      if (!listContainer) return;
+
+      if (state.questions.length === 0) {
+        listContainer.innerHTML = '<p class="text-slate-500 text-center py-3 text-xs">目前還沒有新增任何題目喔！</p>';
+        return;
+      }
+
+      listContainer.innerHTML = '';
+      state.questions.forEach((q) => {
+        const item = document.createElement('div');
+        item.className = "bg-slate-900 border border-slate-800 p-2.5 rounded-lg flex justify-between items-center text-xs";
+        
+        const subName = SUBJECTS[q.subject] ? SUBJECTS[q.subject].name : q.subject;
+        const typeMap = { choice: '選擇題', matching: '配對題', fill: '填空題', tf: '是非題' };
+        
+        item.innerHTML = `
+          <div class="truncate pr-2 space-y-0.5 flex-1">
+            <div class="flex items-center gap-1.5">
+              <span class="bg-slate-800 text-emerald-400 px-1.5 py-0.5 rounded text-[10px] font-bold">${subName}</span>
+              <span class="text-slate-400 text-[10px]">${typeMap[q.type] || q.type}</span>
+            </div>
+            <p class="text-slate-200 font-semibold truncate">${q.question}</p>
+          </div>
+          <button onclick="deleteQuestion('${q.id}')" class="px-2 py-1 bg-rose-950 hover:bg-rose-900 text-rose-400 border border-rose-800 rounded font-bold text-[10px] shrink-0">
+            <i class="fa-solid fa-trash"></i> 刪除
+          </button>
+        `;
+        listContainer.appendChild(item);
+      });
+    }
+
+    function deleteQuestion(id) {
+      if (confirm('確定要刪除這道題目嗎？')) {
+        state.questions = state.questions.filter(q => q.id !== id);
+        saveState();
+        renderEditorQuestionList();
+        renderQuizMap();
+      }
     }
 
     function saveQuestionToDB() {
@@ -772,8 +816,7 @@
 
       alert('✅ 題目成功儲存至本地庫！');
       document.getElementById('ed-text').value = '';
-      document.getElementById('ed-total-count').innerText = state.questions.length;
-      closeModal('modal-editor');
+      renderEditorQuestionList();
       renderQuizMap();
     }
 
@@ -790,15 +833,26 @@
       if (!file) return;
       const r = new FileReader();
       r.onload = function(evt) {
-        state.questions = JSON.parse(evt.target.result);
-        saveState();
-        alert(`🎉 成功匯入 ${state.questions.length} 題題目！`);
-        location.reload();
+        try {
+          state.questions = JSON.parse(evt.target.result);
+          saveState();
+          alert(`🎉 成功匯入 ${state.questions.length} 題題目！`);
+          renderEditorQuestionList();
+          renderQuizMap();
+        } catch (err) {
+          alert('匯入失敗：JSON 格式錯誤！');
+        }
       };
       r.readAsText(file);
     }
 
-    function openModal(id) { document.getElementById(id).classList.remove('hidden'); }
+    function openModal(id) { 
+      document.getElementById(id).classList.remove('hidden'); 
+      if (id === 'modal-editor') {
+        renderEditorQuestionList();
+      }
+    }
+    
     function closeModal(id) { document.getElementById(id).classList.add('hidden'); }
     function shuffle(arr) { return arr.sort(() => Math.random() - 0.5); }
 
