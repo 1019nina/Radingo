@@ -25,7 +25,6 @@
     .matching-card.selected { border-color: #a855f7; background: #3b0764; }
     .matching-card.matched { border-color: #22c55e; background: #064e3b; opacity: 0.5; pointer-events: none; }
 
-    /* VN Dialogue Box Animation */
     @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
     .vn-animate { animation: fadeIn 0.25s ease-out forwards; }
 
@@ -41,7 +40,7 @@
     <div class="max-w-md mx-auto flex justify-between items-center">
       <div class="flex items-center space-x-2">
         <span class="text-2xl font-black text-emerald-400">Radingo</span>
-        <span class="bg-emerald-950 text-emerald-400 text-[10px] px-2 py-0.5 rounded-full font-bold border border-emerald-800">劇情物語版</span>
+        <span class="bg-emerald-950 text-emerald-400 text-[10px] px-2 py-0.5 rounded-full font-bold border border-emerald-800">全天候物語版</span>
       </div>
 
       <div class="flex items-center space-x-3 font-extrabold text-xs">
@@ -84,9 +83,7 @@
         <p class="text-xs text-slate-400 mt-1">獨立刷題區：不觸發劇情，專心累積國考實力與單元進度！</p>
       </div>
 
-      <div id="subject-node-container" class="space-y-4">
-        <!-- Dynamic Subjects Cards -->
-      </div>
+      <div id="subject-node-container" class="space-y-4"></div>
     </div>
 
     <!-- ACTIVE QUIZ OVERLAY -->
@@ -131,13 +128,11 @@
     <div id="view-career" class="hidden space-y-4">
       <div class="bg-slate-900 border border-slate-800 rounded-2xl p-4 text-center space-y-1">
         <span class="text-xs text-emerald-400 font-extrabold bg-emerald-950 px-2.5 py-0.5 rounded-full border border-emerald-800">🏥 醫院職場物語</span>
-        <h2 class="text-base font-black text-white">點擊科別進入「原神風」劇情與國考題庫考驗</h2>
+        <h2 class="text-base font-black text-white">點擊科別展開一整天的「沉浸式上班劇本」</h2>
         <p class="text-xs text-slate-400">職等：見習生 $\rightarrow$ 實習生 $\rightarrow$ PGY $\rightarrow$ 放射師 $\rightarrow$ 資深放射師</p>
       </div>
 
-      <div id="career-units-list" class="space-y-3">
-        <!-- 13 Units Generated Dynamically -->
-      </div>
+      <div id="career-units-list" class="space-y-3"></div>
     </div>
 
     <!-- VIEW 3: SHOP (升級商店) -->
@@ -154,7 +149,7 @@
 
   </main>
 
-  <!-- VN STORY DIALOGUE OVERLAY (原神風劇情與題庫聯動視窗) -->
+  <!-- VN STORY DIALOGUE OVERLAY (全天候沉浸式劇情與題庫聯動視窗) -->
   <div id="vn-modal" class="hidden fixed inset-0 bg-black/90 backdrop-blur-md z-50 flex flex-col justify-end p-4">
     <div class="max-w-md w-full mx-auto space-y-3 vn-animate pb-6">
       
@@ -165,12 +160,12 @@
             <i class="fa-solid fa-user-doctor"></i>
           </div>
           <div>
-            <span id="vn-char-title" class="text-[10px] text-emerald-400 font-extrabold bg-emerald-950 px-2 py-0.5 rounded border border-emerald-800">資深帶教學姐</span>
+            <span id="vn-char-title" class="text-[10px] text-emerald-400 font-extrabold bg-emerald-950 px-2 py-0.5 rounded border border-emerald-800">08:00 早晨打卡</span>
             <h3 id="vn-char-name" class="text-base font-black text-white mt-0.5">王學姐</h3>
           </div>
         </div>
         <button onclick="closeVNStory()" class="text-slate-400 hover:text-white px-2 py-1 text-xs bg-slate-800 rounded-lg border border-slate-700">
-          退出職場
+          強制下班
         </button>
       </div>
 
@@ -182,7 +177,7 @@
 
         <div id="vn-content-area" class="space-y-3 relative z-10">
           <p id="vn-dialogue-text" class="text-sm text-slate-100 font-medium leading-relaxed">
-            「喂！那邊那個實習生，過來幫忙看一下這張影像...」
+            劇情載入中...
           </p>
         </div>
 
@@ -343,7 +338,6 @@
       { id: 'rt', name: 'RT 放射線治療', reqSubject: 'therapy', icon: 'fa-crosshairs' }
     ];
 
-    /* 預設國考題庫（已內建你打好的 10 題診斷學） */
     const INITIAL_PRESET_QUESTIONS = [
       {
         "id": "q_1792747175443",
@@ -476,26 +470,22 @@
     };
 
     function loadState() {
-      const q = localStorage.getItem('radingo_v6_q');
+      const q = localStorage.getItem('radingo_v7_q');
       state.questions = q ? JSON.parse(q) : INITIAL_PRESET_QUESTIONS;
-
-      const st = localStorage.getItem('radingo_v6_st');
+      const st = localStorage.getItem('radingo_v7_st');
       if (st) state.userStats = JSON.parse(st);
-
-      const su = localStorage.getItem('radingo_v6_su');
+      const su = localStorage.getItem('radingo_v7_su');
       if (su) state.subjectUnits = JSON.parse(su);
-
-      const uw = localStorage.getItem('radingo_v6_uw');
+      const uw = localStorage.getItem('radingo_v7_uw');
       if (uw) state.unitWorkCounts = JSON.parse(uw);
-
       updateStatsUI();
     }
 
     function saveState() {
-      localStorage.setItem('radingo_v6_q', JSON.stringify(state.questions));
-      localStorage.setItem('radingo_v6_st', JSON.stringify(state.userStats));
-      localStorage.setItem('radingo_v6_su', JSON.stringify(state.subjectUnits));
-      localStorage.setItem('radingo_v6_uw', JSON.stringify(state.unitWorkCounts));
+      localStorage.setItem('radingo_v7_q', JSON.stringify(state.questions));
+      localStorage.setItem('radingo_v7_st', JSON.stringify(state.userStats));
+      localStorage.setItem('radingo_v7_su', JSON.stringify(state.subjectUnits));
+      localStorage.setItem('radingo_v7_uw', JSON.stringify(state.unitWorkCounts));
       updateStatsUI();
     }
 
@@ -729,7 +719,7 @@
       }, 1800);
     }
 
-    /* 2. CAREER STORY & VN ENGINE */
+    /* 2. CAREER STORY & FULL-DAY VN ENGINE (全天候沈浸式職場物語) */
     function renderCareerUnits() {
       const container = document.getElementById('career-units-list');
       container.innerHTML = '';
@@ -758,15 +748,15 @@
               }
             </div>
           </div>
-          <button onclick="startVNStory('${u.id}')" ${!isUnlocked ? 'disabled' : ''} class="px-3 py-1.5 bg-sky-500 hover:bg-sky-400 text-slate-950 font-black text-xs rounded-xl">
-            上班劇情
+          <button onclick="startFullDayStory('${u.id}')" ${!isUnlocked ? 'disabled' : ''} class="px-3 py-1.5 bg-sky-500 hover:bg-sky-400 text-slate-950 font-black text-xs rounded-xl">
+            開始上班
           </button>
         `;
         container.appendChild(card);
       });
     }
 
-    function startVNStory(unitId) {
+    function startFullDayStory(unitId) {
       const unit = WORK_UNITS.find(u => u.id === unitId);
       const workCount = state.unitWorkCounts[unitId] || 0;
       let rankIdx = Math.min(4, Math.floor(workCount / 3));
@@ -775,67 +765,85 @@
         unitId: unitId,
         unitName: unit.name,
         reqSubject: unit.reqSubject,
-        step: 1
+        step: 1, // 1: 08:00早晨, 2: 10:00病人對話, 3: 11:30學長抽考, 4: 16:30下班結算
+        earnedMoneyToday: 0
       };
 
-      document.getElementById('vn-char-title').innerText = `帶教導師 · ${RANKS[rankIdx]}`;
-      document.getElementById('vn-char-name').innerText = `${unit.name} 主控官`;
-      
+      document.getElementById('vn-char-name').innerText = `${unit.name} 控台`;
       document.getElementById('vn-modal').classList.remove('hidden');
-      loadVNStep();
+      loadFullDayStep();
     }
 
-    function loadVNStep() {
+    function loadFullDayStep() {
       const step = state.vnActive.step;
       const textEl = document.getElementById('vn-dialogue-text');
       const choicesEl = document.getElementById('vn-choices-area');
+      const timeBadge = document.getElementById('vn-char-title');
       choicesEl.innerHTML = '';
 
       if (step === 1) {
-        textEl.innerText = `「喂！今天 ${state.vnActive.unitName} 這裡病人大排長龍，你皮繃緊一點。等等隨時有可能被叫去處理突發狀況！」`;
+        timeBadge.innerText = "08:00 晨間打卡";
+        textEl.innerText = `你手裡拿著一顆茶葉蛋跟紙盒牛奶，踩著疲憊的步伐走進 ${state.vnActive.unitName} 控制室。\n\n學長：「早安啊！今天病人預約又爆滿囉。」\n你：「早啊...好累喔，我感覺我比病人更需要躺在檢查床上。」\n（學長笑了笑，你們準備迎接今天的第一位病人）`;
         
-        const btn1 = document.createElement('button');
-        btn1.className = "w-full p-3 bg-slate-800 hover:bg-slate-700 rounded-xl text-left text-xs text-slate-200 border border-slate-700 font-bold";
-        btn1.innerText = "「學長姐請放心，我隨時準備好接受考驗了！」";
-        btn1.onclick = () => { state.vnActive.step = 2; loadVNStep(); };
-        choicesEl.appendChild(btn1);
-
-        const btn2 = document.createElement('button');
-        btn2.className = "w-full p-3 bg-slate-800 hover:bg-slate-700 rounded-xl text-left text-xs text-amber-300 border border-slate-700 font-bold";
-        btn2.innerText = "【心裡OS】「時薪這麼低還叫我加班……」(花費 $30 抱怨)";
-        btn2.onclick = () => {
-          if (state.userStats.money < 30) { alert('金錢不足！'); return; }
-          state.userStats.money -= 30;
-          saveState();
-          alert('🤫 抒發完心情，獲得精神舒爽，進入考驗！');
-          state.vnActive.step = 2; loadVNStep();
-        };
-        choicesEl.appendChild(btn2);
+        const btn = document.createElement('button');
+        btn.className = "w-full p-3 bg-emerald-600 hover:bg-emerald-500 rounded-xl text-center text-xs text-slate-950 font-black";
+        btn.innerText = "推開控制室大門，叫號第一位病人！";
+        btn.onclick = () => { state.vnActive.step = 2; loadFullDayStep(); };
+        choicesEl.appendChild(btn);
       } 
       else if (step === 2) {
+        timeBadge.innerText = "10:00 臨床病患互動";
+        textEl.innerHTML = `病人一走進來，一臉茫然地看著四周：<br><span class="text-amber-400 font-bold">「啊...我怎麼在這裡？」</span><br>請選擇你的回應方式：`;
+
+        const opts = [
+          { text: "「您好，您出車禍送到急診了啦！」", type: "normal", pay: 0 },
+          { text: "「我怎麼知道？問你自己啊（白眼）」", type: "rude", pay: 50 },
+          { text: "「可能搭高鐵或捷運來的吧，躺好別動。」", type: "funny", pay: 20 }
+        ];
+
+        opts.forEach((opt, idx) => {
+          const btn = document.createElement('button');
+          btn.className = "w-full p-2.5 bg-slate-800 hover:bg-slate-700 rounded-xl text-left text-xs text-slate-200 border border-slate-700 font-semibold";
+          btn.innerText = opt.text;
+          btn.onclick = () => {
+            if (idx === 1 && Math.random() > 0.6) {
+              alert('⚠️ 態度太差被病人客訴！扣除精神補貼 $30！');
+              state.vnActive.earnedMoneyToday -= 30;
+            } else {
+              alert('✨ 病人順利配合躺上檢查床！');
+              state.vnActive.earnedMoneyToday += opt.pay;
+            }
+            state.vnActive.step = 3;
+            loadFullDayStep();
+          };
+          choicesEl.appendChild(btn);
+        });
+      }
+      else if (step === 3) {
+        timeBadge.innerText = "11:30 主控台學長抽考";
         const subjectQuestions = state.questions.filter(q => q.subject === state.vnActive.reqSubject);
-        
+
         if (subjectQuestions.length === 0) {
-          textEl.innerText = `「（尷尬）等一下，『${SUBJECTS[state.vnActive.reqSubject].name}』科目裡竟然半題都沒有！學長姐只好放水讓你下班了。」`;
-          const finishBtn = document.createElement('button');
-          finishBtn.className = "w-full p-3 bg-emerald-600 hover:bg-emerald-500 rounded-xl text-center text-xs text-slate-950 font-black";
-          finishBtn.innerText = "順利下班 (領取基礎薪資 $50)";
-          finishBtn.onclick = () => completeVNShift(true);
-          choicesEl.appendChild(finishBtn);
+          textEl.innerText = `學長：「我看你挺忙的，剛好『${SUBJECTS[state.vnActive.reqSubject].name}』題庫半題都沒有，這次先放過你！」`;
+          const btn = document.createElement('button');
+          btn.className = "w-full p-3 bg-emerald-600 text-slate-950 font-black rounded-xl text-xs";
+          btn.innerText = "前往下午班";
+          btn.onclick = () => { state.vnActive.step = 4; loadFullDayStep(); };
+          choicesEl.appendChild(btn);
           return;
         }
 
         const q = subjectQuestions[Math.floor(Math.random() * subjectQuestions.length)];
         state.vnActive.currentQuestion = q;
 
-        textEl.innerHTML = `<span class="text-amber-400 font-bold">⚡【職場突發考題】</span> 學長姐突然轉頭考你：<br><b>${q.question}</b>`;
+        textEl.innerHTML = `在你準備好病人回到控制室時，學長突然轉頭抽考你一題國考題：<br><span class="text-amber-400 font-bold">⚡ ${q.question}</span>`;
 
         if (q.type === 'choice' || q.type === 'fill') {
           q.options.forEach((opt, i) => {
             const btn = document.createElement('button');
             btn.className = "w-full p-2.5 bg-slate-800 hover:bg-slate-700 rounded-xl text-left text-xs text-slate-200 border border-slate-700 font-semibold";
             btn.innerText = opt;
-            btn.onclick = () => evaluateVNQuizAnswer(i === q.correct);
+            btn.onclick = () => evaluateFullDayAnswer(i === q.correct);
             choicesEl.appendChild(btn);
           });
         } else if (q.type === 'tf') {
@@ -843,42 +851,54 @@
             const btn = document.createElement('button');
             btn.className = "w-full p-2.5 bg-slate-800 hover:bg-slate-700 rounded-xl text-center text-xs text-slate-200 border border-slate-700 font-semibold";
             btn.innerText = (val === 'true') ? '⭕ 正確 (True)' : '❌ 錯誤 (False)';
-            btn.onclick = () => evaluateVNQuizAnswer((val === 'true') === q.tfCorrect);
+            btn.onclick = () => evaluateFullDayAnswer((val === 'true') === q.tfCorrect);
             choicesEl.appendChild(btn);
           });
         } else {
-          textEl.innerText = `「（看你認真對位）好啦，今天表現不錯，直接通關！」`;
-          const okBtn = document.createElement('button');
-          okBtn.className = "w-full p-3 bg-emerald-600 text-slate-950 font-black rounded-xl text-xs";
-          okBtn.innerText = "完成交班下班";
-          okBtn.onclick = () => completeVNShift(true);
-          choicesEl.appendChild(okBtn);
+          textEl.innerText = `學長：「好啦，看你操作有模有樣的，這題算你過關！」`;
+          const btn = document.createElement('button');
+          btn.className = "w-full p-3 bg-emerald-600 text-slate-950 font-black rounded-xl text-xs";
+          btn.innerText = "進入下午班";
+          btn.onclick = () => { state.vnActive.step = 4; loadFullDayStep(); };
+          choicesEl.appendChild(btn);
         }
       }
-    }
+      else if (step === 4) {
+        timeBadge.innerText = "17:00 下班結算";
+        const totalEarn = 100 + state.vnActive.earnedMoneyToday;
+        textEl.innerHTML = `夕陽西下，終於到了下班時間！\n\n今日總結：\n- 順利消化所有檢查與突發狀況\n- 獲得今日辛苦工作津貼：<b class="text-emerald-400">\$${totalEarn}</b>\n- 經驗值 +25 XP`;
 
-    function evaluateVNQuizAnswer(isCorrect) {
-      if (isCorrect) {
-        alert('✅ 答對了！學長姐對你刮目相看，順利完成臨床交班！');
-        completeVNShift(true);
-      } else {
-        alert('❌ 答錯了！被學長姐唸了一頓，記點並扣除部分津貼！');
-        completeVNShift(false);
+        const btn = document.createElement('button');
+        btn.className = "w-full p-3 bg-emerald-500 hover:bg-emerald-400 text-slate-950 font-black rounded-xl text-xs btn-duo";
+        btn.innerText = "打卡下班，領錢走人！";
+        btn.onclick = () => finishFullDayShift(totalEarn);
+        choicesEl.appendChild(btn);
       }
     }
 
-    function completeVNShift(isSuccess) {
+    function evaluateFullDayAnswer(isCorrect) {
+      if (isCorrect) {
+        alert('✅ 答對了！學長點頭稱讚：「底子不錯嘛，下班請你喝飲料！」（獎金 +$100）');
+        state.vnActive.earnedMoneyToday += 100;
+      } else {
+        alert('❌ 答錯了！學長搖搖頭：「回去把課本翻開重新念！」（扣除績效獎金 $40）');
+        state.vnActive.earnedMoneyToday -= 40;
+      }
+      state.vnActive.step = 4;
+      loadFullDayStep();
+    }
+
+    function finishFullDayShift(totalPay) {
       const unitId = state.vnActive.unitId;
       state.unitWorkCounts[unitId] = (state.unitWorkCounts[unitId] || 0) + 1;
 
-      let pay = isSuccess ? 120 : 30;
-      state.userStats.money += pay;
-      state.userStats.xp += 20;
+      state.userStats.money += Math.max(20, totalPay);
+      state.userStats.xp += 25;
       saveState();
 
       closeVNStory();
       renderCareerUnits();
-      alert(`🎉 班別結束！獲得職場津貼 $${pay} 與 20 XP！`);
+      alert(`🎉 恭喜完成一整天的職場物語！薪水已入帳！`);
     }
 
     function closeVNStory() {
