@@ -40,7 +40,7 @@
     <div class="max-w-md mx-auto flex justify-between items-center">
       <div class="flex items-center space-x-2">
         <span class="text-2xl font-black text-emerald-400">Radingo</span>
-        <span class="bg-emerald-950 text-emerald-400 text-[10px] px-2 py-0.5 rounded-full font-bold border border-emerald-800">無限劇本宇宙版</span>
+        <span class="bg-emerald-950 text-emerald-400 text-[10px] px-2 py-0.5 rounded-full font-bold border border-emerald-800">30天長劇本宇宙版</span>
       </div>
 
       <div class="flex items-center space-x-3 font-extrabold text-xs">
@@ -63,7 +63,7 @@
         🎯 國考闖關刷題
       </button>
       <button id="tab-career" onclick="switchTab('career')" class="flex-1 py-2 rounded-lg font-black text-xs text-center text-slate-400 hover:text-slate-200">
-        🏥 職場物語
+        🏥 職場物語 (30天物語)
       </button>
       <button id="tab-shop" onclick="switchTab('shop')" class="flex-1 py-2 rounded-lg font-black text-xs text-center text-slate-400 hover:text-slate-200">
         🛍️ 升級商店
@@ -127,8 +127,8 @@
     <!-- VIEW 2: CAREER STORY MAP -->
     <div id="view-career" class="hidden space-y-4">
       <div class="bg-slate-900 border border-slate-800 rounded-2xl p-4 text-center space-y-1">
-        <span class="text-xs text-emerald-400 font-extrabold bg-emerald-950 px-2.5 py-0.5 rounded-full border border-emerald-800">🏥 醫院極致血淚日常</span>
-        <h2 class="text-base font-black text-white">點擊科別解鎖不重複的多樣化故事與升級路線</h2>
+        <span class="text-xs text-emerald-400 font-extrabold bg-emerald-950 px-2.5 py-0.5 rounded-full border border-emerald-800">🏥 醫院極致血淚日常 (30天多樣劇本)</span>
+        <h2 class="text-base font-black text-white">點擊科別體驗不重複的血淚故事與晉升路線</h2>
         <p class="text-xs text-slate-400">晉升：見習 (0) $\rightarrow$ 實習 (20) $\rightarrow$ PGY (50) $\rightarrow$ 放射師 (100) $\rightarrow$ 資深帶教 (200)</p>
       </div>
 
@@ -366,121 +366,165 @@
       }
     ];
 
-    /* 各科別專屬多元故事庫 (支持極高不重複率與動態對話反應) */
-    const STORY_POOLS = {
-      xray: [
-        {
-          id: 'xr_boba_baby',
-          nodes: {
-            n1: {
-              title: "08:00 八卦晨報",
-              text: "早上拿著茶葉蛋進控制室，學長姊正拿著菜單爭論生小孩。\n張學姐：「千萬別生！養小孩超貴，連劇都沒時間追！」\n李學長：「胡說！看著小孩長大超有成就感好嗎！」\n學長看到妳：「喂！今天家屬請喝珍奶，我有買一杯半糖去冰，妳要喝嗎？」",
-              choices: [
-                { txt: "「學長太讚了吧！留給我，我等等喝！」", nextNode: "n1_boba_yes", pay: 20 },
-                { txt: "「生小孩？我連自己都養不活了生什麼生（嘆氣）」", nextNode: "n1_baby_no", pay: 10 }
-              ]
-            },
-            n1_boba_yes: {
-              title: "08:15 控制室回應",
-              text: "李學長笑著說：「算妳有良心！飲料冰在第二層，今天加油啦！」",
-              choices: [{ txt: "「好耶！叫第一位病人！」", nextNode: "n2" }]
-            },
-            n1_baby_no: {
-              title: "08:15 控制室回應",
-              text: "張學姐大喊：「看吧！連新人都懂！養自己才是王道！」（李學長在一旁翻白眼）",
-              choices: [{ txt: "「好啦，開始準備今天第一位病人吧！」", nextNode: "n2" }]
-            },
-            n2: {
-              title: "10:00 臨床奇葩阿公",
-              text: "一位失憶阿公走進來，凝視妳三秒：\n阿公：「阿妹仔...妳是我孫女小婷嗎？妳長大啦？」",
-              choices: [
-                { txt: "「阿公我不是小婷啦！我是放射師，來幫你做檢查的！」", nextNode: "n3_quiz", pay: 20 },
-                { txt: "「對啦阿公！小婷來看你了！那你乖乖躺好別動喔！」", nextNode: "n3_quiz", pay: 50 },
-                { txt: "「認錯人了啦，回去坐好（翻白眼）」", nextNode: "n3_quiz", pay: 80, risk: 0.5 }
-              ]
-            },
-            n3_quiz: {
-              title: "12:00 學長抽考 / 請飲料",
-              text: "到了中午，學長拿著國考考古題走過來：\n「要接受題目抽考，還是花 $50 請我們喝飲料讓我們閉嘴？」",
-              isQuizNode: true,
-              nextNode: "n4"
-            },
-            n4: {
-              title: "15:00 急診大叫囂",
-              text: "一台急診推床送過來，家屬在門口叫囂太慢！",
-              choices: [
-                { txt: "耐心地向家屬解釋檢查流程與安全防護", nextNode: "n_end", pay: 20 },
-                { txt: "【開嗆】「再叫我就把急診單拉到最後一個！」", nextNode: "n_end", pay: 100, risk: 0.6 }
-              ]
-            }
-          }
-        },
-        {
-          id: 'xr_bicycle_fall',
-          nodes: {
-            n1: {
-              title: "08:00 晨間打卡",
-              text: "學長低頭啃著三明治：「今天天氣好，等一下肯定一堆騎腳踏車摔倒的骨折病人。」",
-              choices: [
-                { txt: "「學長不要立 Flag 啦！」", nextNode: "n2" },
-                { txt: "「沒關係，我今天對位速度極快！」", nextNode: "n2", pay: 20 }
-              ]
-            },
-            n2: {
-              title: "10:30 真的立 Flag 了",
-              text: "果不其然，送來一位騎車摔倒手肘變形的年輕人，同伴在旁邊猛拍照打卡！\n同伴：「放射師！等等拍完可以順便傳給我嗎？我要發限動！」",
-              choices: [
-                { txt: "「不行喔，醫療影像有隱私法規，請遵守規定！」", nextNode: "n3_quiz", pay: 20 },
-                { txt: "「發限動？要不要我幫你開美顏相機拍？」(酸哥酸妹)", nextNode: "n3_quiz", pay: 50 },
-                { txt: "【開罵】「手都斷了還發限動！出去！」", nextNode: "n3_quiz", pay: 90, risk: 0.4 }
-              ]
-            },
-            n3_quiz: {
-              title: "12:00 控台隨堂考",
-              text: "學長轉頭說：「剛剛那個擺位手法不錯，但我還是要抽考妳一題診斷學！」",
-              isQuizNode: true,
-              nextNode: "n_end"
-            }
+    /* 30 天極致多元長劇本庫 (完全對應 08:00 -> 11:00 -> 12:00 -> 15:00 -> 17:00) */
+    const THIRTY_DAY_SCRIPTS = [
+      // Day 1: 珍奶與牛肉麵
+      {
+        id: 'd1_boba_beef',
+        nodes: {
+          n1: {
+            title: "08:00 晨間打卡",
+            text: "早上拿著茶葉蛋走進控制室，第一個病人居然帶了幾杯手搖飲來給大家喝。學長拿了一杯吸了一大口珍奶：「爽啦！今天體力滿分！」",
+            choices: [
+              { txt: "「學長 留一杯給我！！！！」", nextNode: "n1_a", pay: 20 },
+              { txt: "（默默看著想喝但不敢說）", nextNode: "n1_b" }
+            ]
+          },
+          n1_a: {
+            title: "08:05 控制室迴響",
+            text: "學長：「拿去啦！喝了飲料等等要好好做喔，今天預約排超滿的！」妳接過珍奶吸了一大口，頓時覺得今天可以撐過去了！",
+            choices: [{ txt: "「好耶！開始今天第一台檢查！」", nextNode: "n2" }]
+          },
+          n1_b: {
+            title: "08:05 控制室迴響",
+            text: "學長飛快地吸完一杯繼續吸第二杯，妳臉上寫滿了委屈。學長：「妳....沒事吧？？！妳是想喝珍奶嗎？？？」妳點了點頭，眼眶微微泛淚。學長嚇壞了連忙塞了一杯給妳：「下次想喝直接說啊！我又沒那麼小氣！！！」",
+            choices: [{ txt: "「謝謝學長！開始今天第一台檢查！」", nextNode: "n2" }]
+          },
+          n2: {
+            title: "11:00 臨床事件",
+            text: "一位阿嬤做腹部 X 光，進來時突然一拍大腿大喊：「哎呀！我剛剛在外面等太久，吃完一整碗牛肉麵才進來耶！」",
+            choices: [
+              { txt: "「阿嬤！這個檢查要空腹啦！這樣影像會糊掉啦！」", nextNode: "n2_a", pay: 20 },
+              { txt: "【暴怒開罵】「牛肉麵？！阿嬤妳怎麼不順便吃火鍋？！」", nextNode: "n2_b", risk: 0.5 }
+            ]
+          },
+          n2_a: {
+            title: "11:10 阿嬤的回應",
+            text: "阿嬤尷尬地笑了笑：「拍謝啦阿妹仔！我真的太餓了咩～」妳耐心地幫阿嬤重新預約時間並給予衛教指南，阿嬤連聲感謝妳態度好好。",
+            choices: [{ txt: "「沒關係，準備吃午餐！」", nextNode: "n3_quiz" }]
+          },
+          n2_b: {
+            title: "11:10 阿嬤的回應",
+            text: "阿嬤瞪大眼睛：「妳這什麼態度！叫你們主管出來！」阿嬤氣沖沖地跑去投訴，學長在旁邊拍拍妳的肩膀：「完了，妳今天的績效獎金要飛了...」",
+            choices: [{ txt: "（心痛）「準備吃午餐...」", nextNode: "n3_quiz" }]
+          },
+          n3_quiz: {
+            title: "12:00~13:00 午休抽考",
+            text: "便當才剛打開，學長拿著國考題庫走過來：「午餐吃得挺香的嘛！接受一題國考題抽考，還是花 $50 請我們喝飲料讓我們閉嘴？」",
+            isQuizNode: true, nextNode: "n4"
+          },
+          n4: {
+            title: "15:00 下午突發狀況",
+            text: "下午老舊機器突然跳出錯誤代碼卡住，學長拍打主控台大喊：「老機器就是脾氣差！」妳冷靜地重啟控制台系統，成功修復機器，順利消化完所有急診件！",
+            choices: [{ txt: "「呼！撐到了打卡時間！」", nextNode: "n_end" }]
           }
         }
-      ],
-      ct: [
-        {
-          id: 'ct_contrast_scare',
-          nodes: {
-            n1: {
-              title: "08:00 CT 室打卡",
-              text: "走進 CT 控制室，學姐正拿著對比劑檢測表。\n學姐：「今天有 15 台 Contrast 增強掃描，打針一定要看清楚血管喔！」",
-              choices: [
-                { txt: "「沒問題！我今天手感爆棚！」", nextNode: "n2", pay: 20 },
-                { txt: "「血管太細的我可以推給學姐嗎（抖）」", nextNode: "n2" }
-              ]
-            },
-            n2: {
-              title: "11:00 顯影劑熱感驚魂",
-              text: "推進一位照腹部 CT 的大哥，注入對比劑後，大哥突然大喊：\n「哇！放射師！我下面整個熱起來了！我是不是失禁了？！」",
-              choices: [
-                { txt: "「大哥別慌！對比劑本來就會有全身發熱的正常現象啦！」", nextNode: "n3_quiz", pay: 30 },
-                { txt: "「沒事沒事，那只是命運的熱流～」", nextNode: "n3_quiz", pay: 50 },
-                { txt: "「真的失禁了嗎？！那你要自己清喔！」(白眼)", nextNode: "n3_quiz", pay: 80, risk: 0.5 }
-              ]
-            },
-            n3_quiz: {
-              title: "14:00 重建工作站考題",
-              text: "學長在 MPR 工作站前切片：「來，回答這題器材學，答對今天早半小時下班！」",
-              isQuizNode: true,
-              nextNode: "n_end"
-            }
+      },
+      // Day 2: 失憶阿公與認親
+      {
+        id: 'd2_grandpa',
+        nodes: {
+          n1: {
+            title: "08:00 晨間打卡",
+            text: "今天一早，學長一邊啃三明治一邊翻著病歷：「昨天那題半值層妳回去有訂正吧？等等 10 點預約的病人聽說是個老戲精喔，皮繃緊一點。」",
+            choices: [
+              { txt: "「學長放心，我昨天讀到半夜！」", nextNode: "n1_a", pay: 20 },
+              { txt: "（眼神死）「學長，可以不要一早就聊國考嗎...」", nextNode: "n1_b" }
+            ]
+          },
+          n1_a: {
+            title: "08:05 學長的回應",
+            text: "學長讚許地點頭：「很好，這才是要考國考的態度！等等表現好請妳喝咖啡！」",
+            choices: [{ txt: "「準備迎接 11 點病人！」", nextNode: "n2" }]
+          },
+          n1_b: {
+            title: "08:05 學長的回應",
+            text: "學長嘿嘿一笑：「不聊國考？那聊妳今天能不能準時下班好了～」",
+            choices: [{ txt: "「準備迎接 11 點病人！」", nextNode: "n2" }]
+          },
+          n2: {
+            title: "11:00 臨床事件",
+            text: "推進一位失憶阿公，阿公一看到妳，眼神立刻亮起來抓住妳的手：「哎呀！小婷啊！妳是我孫女小婷吧？妳長這麼高啦？來看阿公喔？」",
+            choices: [
+              { txt: "「阿公我不是小婷啦，我是放射師，來幫你照Ｘ光的～」", nextNode: "n2_a", pay: 20 },
+              { txt: "「對啦阿公！小婷來看你了！那你可以乖乖躺好別動嗎？」", nextNode: "n2_b", pay: 50 }
+            ]
+          },
+          n2_a: {
+            title: "11:10 阿公的回應",
+            text: "阿公露出了迷惘的表情，開始四處張望找孫女。妳溫柔地牽著阿公的手引導他躺上檢查床，順利完成拍攝。",
+            choices: [{ txt: "「阿公辛苦囉！準備午休！」", nextNode: "n3_quiz" }]
+          },
+          n2_b: {
+            title: "11:10 阿公的回應",
+            text: "阿公超級高興，非常配合地躺好完全不敢動：「小婷妳看，阿公很棒對不對！」連學長都在主控室偷伸出大拇指佩服妳的應變能力！",
+            choices: [{ txt: "「阿公棒棒！準備午休！」", nextNode: "n3_quiz" }]
+          },
+          n3_quiz: {
+            title: "12:00~13:00 午休抽考",
+            text: "阿公離開前塞給妳一顆橘子。學長剝著橘子：「小婷啊，來，抽考一題國考題，答對橘子歸妳，答錯要請飲料喔！」",
+            isQuizNode: true, nextNode: "n4"
+          },
+          n4: {
+            title: "15:00 下午突發狀況",
+            text: "下午推來一台急診床，病人痛得嗷嗷叫無法配合對位。妳耐心拿著沙包與定位塊幫忙固定，成功拍出超清晰的骨折影像！",
+            choices: [{ txt: "「收工打卡！」", nextNode: "n_end" }]
           }
         }
-      ]
-    };
-
-    /* 取得適合該科別的劇本 (若沒有專屬則使用 generic) */
-    function getDepartmentScript(unitId) {
-      const pool = STORY_POOLS[unitId] || STORY_POOLS['xray'];
-      return pool[Math.floor(Math.random() * pool.length)];
-    }
+      },
+      // Day 3: 滑板少年發限動
+      {
+        id: 'd3_skateboard',
+        nodes: {
+          n1: {
+            title: "08:00 晨間打卡",
+            text: "早上走進控制室，張學姐正看著新聞抱怨：「現在的小年輕騎腳踏車摔斷手，送到醫院第一件事不是哭，是叫同伴拿手機拍照打卡發限動，真搞不懂在想什麼！」",
+            choices: [
+              { txt: "「真的假的太誇張了吧！」", nextNode: "n1_a" },
+              { txt: "「可能...這就是年輕人的儀式感？」", nextNode: "n1_b" }
+            ]
+          },
+          n1_a: {
+            title: "08:05 學姐的回應",
+            text: "張學姐掏心掏肺：「對吧！等妳遇到妳就知道有多傻眼了！」",
+            choices: [{ txt: "「希望今天順利！」", nextNode: "n2" }]
+          },
+          n1_b: {
+            title: "08:05 學姐的回應",
+            text: "張學姐斜眼看妳：「妳該不會自己也這樣幹過吧？！」",
+            choices: [{ txt: "「冤枉啊學姐！準備做檢查！」", nextNode: "n2" }]
+          },
+          n2: {
+            title: "11:00 臨床事件",
+            text: "果不其然！送來一位滑板摔倒手肘骨折變形的少年，旁邊的朋友立刻舉起手機狂拍：「放射師！等等拍完 X 光可以順便傳給我嗎？我要發限動標記醫院！」",
+            choices: [
+              { txt: "「不行喔，醫療影像有資安與隱私法規，請遵守規定！」", nextNode: "n2_a", pay: 20 },
+              { txt: "「發限動可以，要不要順便幫你開美顏濾鏡？」（酸哥酸妹）", nextNode: "n2_b", pay: 50 }
+            ]
+          },
+          n2_a: {
+            title: "11:10 少年的回應",
+            text: "少年失望地收起手機：「好啦...那妳拍輕一點喔。」妳專業迅速地拍完影像，完美落幕。",
+            choices: [{ txt: "「完成！去吃便當！」", nextNode: "n3_quiz" }]
+          },
+          n2_b: {
+            title: "11:10 少年的回應",
+            text: "少年愣了一下，隨後大笑：「放射師妳很幽默耶！」同伴也跟著笑起來，氣氛頓時變得超輕鬆。",
+            choices: [{ txt: "「氣氛超好！去吃便當！」", nextNode: "n3_quiz" }]
+          },
+          n3_quiz: {
+            title: "12:00~13:00 午休抽考",
+            text: "便當時間，張學姐端著咖啡走過來：「剛剛應對得蠻不錯的嘛！來，抽考一題診斷學，答對今天免做環境清潔！」",
+            isQuizNode: true, nextNode: "n4"
+          },
+          n4: {
+            title: "15:00 下午突發狀況",
+            text: "下午門診爆滿，妳發揮極致擺位手速，一小時消化了 15 台 Chest PA，連主管經過都忍不住點頭稱讚！",
+            choices: [{ txt: "「手速封神！打卡下班！」", nextNode: "n_end" }]
+          }
+        }
+      }
+    ];
 
     const RANKS = [
       { min: 0, title: '見習生' },
@@ -509,18 +553,18 @@
     };
 
     function loadState() {
-      const q = localStorage.getItem('radingo_v9_q'); state.questions = q ? JSON.parse(q) : INITIAL_PRESET_QUESTIONS;
-      const st = localStorage.getItem('radingo_v9_st'); if (st) state.userStats = JSON.parse(st);
-      const su = localStorage.getItem('radingo_v9_su'); if (su) state.subjectUnits = JSON.parse(su);
-      const uw = localStorage.getItem('radingo_v9_uw'); if (uw) state.unitWorkCounts = JSON.parse(uw);
+      const q = localStorage.getItem('radingo_v10_q'); state.questions = q ? JSON.parse(q) : INITIAL_PRESET_QUESTIONS;
+      const st = localStorage.getItem('radingo_v10_st'); if (st) state.userStats = JSON.parse(st);
+      const su = localStorage.getItem('radingo_v10_su'); if (su) state.subjectUnits = JSON.parse(su);
+      const uw = localStorage.getItem('radingo_v10_uw'); if (uw) state.unitWorkCounts = JSON.parse(uw);
       updateStatsUI();
     }
 
     function saveState() {
-      localStorage.setItem('radingo_v9_q', JSON.stringify(state.questions));
-      localStorage.setItem('radingo_v9_st', JSON.stringify(state.userStats));
-      localStorage.setItem('radingo_v9_su', JSON.stringify(state.subjectUnits));
-      localStorage.setItem('radingo_v9_uw', JSON.stringify(state.unitWorkCounts));
+      localStorage.setItem('radingo_v10_q', JSON.stringify(state.questions));
+      localStorage.setItem('radingo_v10_st', JSON.stringify(state.userStats));
+      localStorage.setItem('radingo_v10_su', JSON.stringify(state.subjectUnits));
+      localStorage.setItem('radingo_v10_uw', JSON.stringify(state.unitWorkCounts));
       updateStatsUI();
     }
 
@@ -750,13 +794,13 @@
 
     function startDepartmentStory(unitId) {
       const unit = WORK_UNITS.find(u => u.id === unitId);
-      const script = getDepartmentScript(unitId);
+      const randomScript = THIRTY_DAY_SCRIPTS[Math.floor(Math.random() * THIRTY_DAY_SCRIPTS.length)];
 
       state.vnActive = {
         unitId: unitId,
         unitName: unit.name,
         reqSubject: unit.reqSubject,
-        script: script,
+        script: randomScript,
         currentNodeId: 'n1',
         earnedPay: 0,
         complaintRisk: 0
