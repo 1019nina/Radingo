@@ -1,949 +1,987 @@
 <!DOCTYPE html>
 <html lang="zh-TW">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Radingo 放射師life</title>
-    <!-- Tailwind CSS CDN -->
-    <script src="https://cdn.tailwindcss.com"></script>
-    <!-- FontAwesome Icons -->
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <!-- Canvas Confetti -->
-    <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
-    <!-- Google Fonts -->
-    <link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@400;600;700&family=Noto+Sans+TC:wght@400;500;700;900&display=swap" rel="stylesheet">
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Radingo 放射師life</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;600;700;800&family=Noto+Sans+TC:wght@400;500;700;900&display=swap');
+    
+    body {
+      font-family: 'Plus Jakarta Sans', 'Noto Sans TC', sans-serif;
+      background-color: #0f172a;
+      color: #f8fafc;
+      user-select: none;
+      -webkit-user-select: none;
+    }
 
-    <script>
-        tailwind.config = {
-            theme: {
-                extend: {
-                    colors: {
-                        brand: {
-                            green: '#58cc02',
-                            greenDark: '#46a302',
-                            blue: '#1cb0f6',
-                            blueDark: '#1899d6',
-                            yellow: '#ffc800',
-                            yellowDark: '#e5b200',
-                            orange: '#ff9600',
-                            orangeDark: '#e58700',
-                            red: '#ff4b4b',
-                            redDark: '#ea2b2b',
-                            purple: '#ce82ff',
-                            purpleDark: '#af62e0',
-                            gray: '#e5e5e5',
-                            darkText: '#4b4b4b'
-                        }
-                    },
-                    fontFamily: {
-                        sans: ['"Noto Sans TC"', 'Fredoka', 'sans-serif']
-                    }
-                }
-            }
-        }
-    </script>
-    <style>
-        body {
-            font-family: 'Noto Sans TC', 'Fredoka', sans-serif;
-            user-select: none;
-            -webkit-tap-highlight-color: transparent;
-            background-color: #f7f9fa;
-        }
-        .duo-btn {
-            transition: all 0.1s ease;
-            box-shadow: 0 4px 0 var(--tw-shadow-color);
-        }
-        .duo-btn:active:not(:disabled) {
-            transform: translateY(4px);
-            box-shadow: 0 0 0 var(--tw-shadow-color);
-        }
-        .duo-card {
-            box-shadow: 0 4px 0 #e5e5e5;
-        }
-        .animate-bounce-short {
-            animation: bounceShort 0.5s ease infinite alternate;
-        }
-        @keyframes bounceShort {
-            0% { transform: translateY(0); }
-            100% { transform: translateY(-8px); }
-        }
-        /* Custom scrollbars */
-        ::-webkit-scrollbar {
-            width: 8px;
-            height: 8px;
-        }
-        ::-webkit-scrollbar-track {
-            background: #f1f1f1;
-            border-radius: 10px;
-        }
-        ::-webkit-scrollbar-thumb {
-            background: #ccc;
-            border-radius: 10px;
-        }
-        ::-webkit-scrollbar-thumb:hover {
-            background: #999;
-        }
-    </style>
+    .btn-duo {
+      transition: all 0.1s ease;
+      box-shadow: 0 4px 0 rgba(0,0,0,0.2);
+    }
+    .btn-duo:active {
+      transform: translateY(4px);
+      box-shadow: 0 0 0 rgba(0,0,0,0.2);
+    }
+
+    .btn-green { background-color: #22c55e; box-shadow: 0 4px 0 #15803d; border-color: #166534; }
+    .btn-green:active { box-shadow: 0 0 0 #15803d; }
+
+    .btn-blue { background-color: #3b82f6; box-shadow: 0 4px 0 #1d4ed8; }
+    .btn-blue:active { box-shadow: 0 0 0 #1d4ed8; }
+
+    .btn-purple { background-color: #a855f7; box-shadow: 0 4px 0 #7e22ce; }
+    .btn-purple:active { box-shadow: 0 0 0 #7e22ce; }
+
+    .btn-gray { background-color: #334155; box-shadow: 0 4px 0 #1e293b; color: #94a3b8; }
+
+    .option-card {
+      border: 2px solid #334155;
+      background-color: #1e293b;
+      box-shadow: 0 4px 0 #0f172a;
+      transition: all 0.15s ease;
+    }
+    .option-card:hover:not(.disabled) {
+      border-color: #3b82f6;
+      background-color: #1e293b;
+      transform: translateY(-2px);
+    }
+    .option-card.selected {
+      border-color: #3b82f6;
+      background-color: #1e3a8a;
+      box-shadow: 0 4px 0 #1d4ed8;
+    }
+    .option-card.correct {
+      border-color: #22c55e;
+      background-color: #14532d;
+      box-shadow: 0 4px 0 #15803d;
+      color: #4ade80;
+    }
+    .option-card.wrong {
+      border-color: #ef4444;
+      background-color: #7f1d1d;
+      box-shadow: 0 4px 0 #b91c1c;
+      color: #fca5a5;
+    }
+
+    .matching-card {
+      border: 2px solid #334155;
+      background: #1e293b;
+      transition: all 0.2s;
+    }
+    .matching-card.selected {
+      border-color: #a855f7;
+      background: #3b0764;
+    }
+    .matching-card.matched {
+      border-color: #22c55e;
+      background: #064e3b;
+      opacity: 0.5;
+      pointer-events: none;
+    }
+
+    /* Custom Scrollbar */
+    ::-webkit-scrollbar { width: 8px; }
+    ::-webkit-scrollbar-track { background: #0f172a; }
+    ::-webkit-scrollbar-thumb { background: #334155; border-radius: 4px; }
+    ::-webkit-scrollbar-thumb:hover { background: #475569; }
+  </style>
 </head>
-<body class="text-gray-800 antialiased min-h-screen flex flex-col justify-between">
+<body class="min-h-screen flex flex-col justify-between">
 
-    <!-- Top Navigation Header -->
-    <header class="sticky top-0 z-30 bg-white border-b-2 border-gray-200 px-4 py-3 shadow-sm">
-        <div class="max-w-4xl mx-auto flex justify-between items-center">
-            <!-- App Logo -->
-            <div class="flex items-center space-x-2 cursor-pointer" onclick="showScreen('home')">
-                <div class="w-10 h-10 bg-brand-green rounded-2xl flex items-center justify-center text-white text-xl font-bold shadow-md">
-                    <i class="fa-solid fa-radiation"></i>
-                </div>
-                <div>
-                    <h1 class="text-xl font-extrabold text-brand-green tracking-wide leading-none">Radingo</h1>
-                    <span class="text-xs text-gray-400 font-semibold">放射師國考無痛大作戰</span>
-                </div>
-            </div>
+  <!-- Top Navigation Header -->
+  <header class="sticky top-0 z-40 bg-slate-900/90 backdrop-blur border-b border-slate-800 px-4 py-3">
+    <div class="max-w-md mx-auto flex justify-between items-center">
+      <div class="flex items-center space-x-2">
+        <span class="text-2xl font-black text-emerald-400 tracking-wider">Radingo</span>
+        <span class="bg-emerald-950 text-emerald-400 text-xs px-2 py-0.5 rounded-full font-bold border border-emerald-800">無痛國考</span>
+      </div>
 
-            <!-- Stats Bar -->
-            <div class="flex items-center space-x-4 font-bold text-sm sm:text-base">
-                <!-- Streak Counter -->
-                <div class="flex items-center space-x-1.5 text-brand-orange bg-orange-50 px-3 py-1.5 rounded-xl border border-orange-200">
-                    <i class="fa-solid fa-fire text-lg animate-pulse"></i>
-                    <span id="stat-streak">0</span>
-                    <span class="text-xs font-normal hidden sm:inline">天連勝</span>
-                </div>
-
-                <!-- XP Counter -->
-                <div class="flex items-center space-x-1.5 text-brand-yellowDark bg-yellow-50 px-3 py-1.5 rounded-xl border border-yellow-200">
-                    <i class="fa-solid fa-bolt text-lg text-brand-yellow"></i>
-                    <span id="stat-xp">0</span>
-                    <span class="text-xs font-normal hidden sm:inline">XP</span>
-                </div>
-
-                <!-- Manager Modal Button -->
-                <button onclick="openQuestionManager()" class="flex items-center space-x-1 bg-gray-100 hover:bg-gray-200 text-gray-700 px-3 py-1.5 rounded-xl text-xs sm:text-sm font-bold border-b-2 border-gray-300 transition">
-                    <i class="fa-solid fa-folder-plus text-brand-blue"></i>
-                    <span class="hidden sm:inline">題庫管理</span>
-                </button>
-            </div>
+      <!-- Stats Counters -->
+      <div class="flex items-center space-x-4 font-extrabold text-sm">
+        <div class="flex items-center text-amber-400" title="連續刷題天數">
+          <i class="fa-solid fa-fire text-lg mr-1 animate-bounce"></i>
+          <span id="stat-streak">0</span>
         </div>
-    </header>
+        <div class="flex items-center text-sky-400" title="累積經驗值">
+          <i class="fa-solid fa-bolt text-lg mr-1"></i>
+          <span id="stat-xp">0</span>
+        </div>
+        <div class="flex items-center text-emerald-400" title="國考津貼/薪水">
+          <i class="fa-solid fa-coins text-lg mr-1"></i>
+          $<span id="stat-money">0</span>
+        </div>
+      </div>
+    </div>
+  </header>
 
-    <!-- Main Content Container -->
-    <main class="max-w-4xl w-full mx-auto p-4 flex-grow">
+  <!-- Navigation Tabs ( Mode Selector ) -->
+  <div class="bg-slate-900 border-b border-slate-800 px-4 py-2 sticky top-[57px] z-30">
+    <div class="max-w-md mx-auto flex rounded-xl bg-slate-800 p-1">
+      <button id="tab-quiz" onclick="switchMainTab('quiz')" class="flex-1 py-2 rounded-lg font-extrabold text-xs text-center transition flex justify-center items-center gap-1.5 bg-emerald-500 text-slate-950 shadow">
+        <i class="fa-solid fa-graduation-cap text-sm"></i>
+        🎯 國考刷題
+      </button>
+      <button id="tab-career" onclick="switchMainTab('career')" class="flex-1 py-2 rounded-lg font-extrabold text-xs text-center transition flex justify-center items-center gap-1.5 text-slate-400 hover:text-slate-200">
+        <i class="fa-solid fa-hospital text-sm"></i>
+        🏥 放射師的一天
+      </button>
+    </div>
+  </div>
 
-        <!-- SCREEN 1: Home Subject Selection (Skill Tree) -->
-        <section id="screen-home" class="space-y-6">
-            <!-- Banner / Hero -->
-            <div class="bg-gradient-to-r from-emerald-500 to-teal-600 rounded-3xl p-6 text-white shadow-lg relative overflow-hidden">
-                <div class="relative z-10 max-w-lg">
-                    <span class="bg-white/20 backdrop-blur-md px-3 py-1 rounded-full text-xs font-bold uppercase tracking-wider">無限練習模式 (免扣血)</span>
-                    <h2 class="text-2xl sm:text-3xl font-black mt-2">隨時隨地，輕鬆刷題！</h2>
-                    <p class="text-emerald-100 text-sm mt-1">選取下方六大科目開始挑戰，答錯不扣血，無限次重複複習到會為止！</p>
-                </div>
-                <i class="fa-solid fa-user-md absolute -right-4 -bottom-6 text-9xl opacity-20 transform -rotate-12"></i>
+  <!-- MAIN CONTENT CONTAINER -->
+  <main class="flex-1 max-w-md w-full mx-auto p-4 relative pb-28">
+
+    <!-- TAB 1: QUIZ MODE (刷題模式) -->
+    <div id="view-quiz" class="space-y-6">
+      
+      <!-- Skill Path / Subject Selector -->
+      <div id="subject-select-screen" class="space-y-4">
+        <div class="bg-gradient-to-r from-emerald-900/40 to-slate-900 border border-emerald-800/50 rounded-2xl p-4">
+          <h2 class="text-lg font-black text-white flex items-center gap-2">
+            <i class="fa-solid fa-map-location-dot text-emerald-400"></i> 六大國考解鎖地圖
+          </h2>
+          <p class="text-xs text-slate-400 mt-1">選一個科目開始無痛刷題，累積進度解鎖放射師職場！</p>
+        </div>
+
+        <!-- Subject List -->
+        <div class="grid grid-cols-1 gap-3" id="subject-cards-container">
+          <!-- Dynamically populated -->
+        </div>
+      </div>
+
+      <!-- Active Quiz Interface -->
+      <div id="quiz-screen" class="hidden space-y-4">
+        
+        <!-- Progress Bar & Top Row -->
+        <div class="flex items-center justify-between gap-3">
+          <button onclick="exitQuiz()" class="text-slate-400 hover:text-white p-2 text-xl">
+            <i class="fa-solid fa-xmark"></i>
+          </button>
+          <div class="flex-1 bg-slate-800 h-3.5 rounded-full overflow-hidden border border-slate-700">
+            <div id="quiz-progress-bar" class="bg-emerald-500 h-full w-0 transition-all duration-300"></div>
+          </div>
+          <span id="quiz-counter" class="text-xs font-black text-slate-400">1/5</span>
+        </div>
+
+        <!-- Question Box -->
+        <div class="bg-slate-800 border-2 border-slate-700 rounded-2xl p-5 shadow-lg">
+          <div class="flex justify-between items-center mb-2">
+            <span id="question-type-badge" class="bg-blue-900/60 text-blue-300 text-[10px] font-bold px-2.5 py-0.5 rounded-md border border-blue-700">單選題</span>
+            <span id="question-subject-tag" class="text-slate-400 text-xs font-semibold">基礎醫學</span>
+          </div>
+          <h3 id="question-text" class="text-base font-bold text-slate-100 leading-relaxed">
+            載入題目中...
+          </h3>
+        </div>
+
+        <!-- Answer Interactive Zone -->
+        <div id="answer-zone" class="space-y-3">
+          <!-- Dynamic Answer Inputs (Options / Fill Blanks / Matching) -->
+        </div>
+
+        <!-- Bottom Feedback Panel (修復版：平時隱藏) -->
+        <div id="feedback-panel" class="hidden fixed bottom-0 left-0 right-0 p-4 border-t z-50 transition-transform duration-200">
+          <div class="max-w-md mx-auto space-y-3">
+            <div class="flex items-center space-x-3">
+              <div id="feedback-icon" class="text-2xl"></div>
+              <div>
+                <div id="feedback-title" class="font-extrabold text-base"></div>
+                <p id="feedback-explanation" class="text-xs mt-0.5 leading-normal opacity-90"></p>
+              </div>
             </div>
+            <button id="feedback-btn" onclick="handleFeedbackAction()" class="w-full py-3 rounded-xl font-extrabold text-sm btn-duo text-white">
+              下一題
+            </button>
+          </div>
+        </div>
 
-            <!-- Subject Grid -->
+        <!-- Submit Button for Matching/Fill -->
+        <button id="submit-answer-btn" onclick="checkAnswer()" class="w-full py-3.5 rounded-xl font-black text-base btn-duo btn-green text-slate-950 mt-4 shadow-lg">
+          檢查答案
+        </button>
+
+      </div>
+
+    </div>
+
+
+    <!-- TAB 2: CAREER SIMULATOR (放射師的一天) -->
+    <div id="view-career" class="hidden space-y-6">
+      
+      <!-- Level & Title Header -->
+      <div class="bg-gradient-to-br from-slate-800 to-slate-900 border-2 border-slate-700 rounded-2xl p-5 text-center relative overflow-hidden">
+        <div class="absolute -right-4 -bottom-4 opacity-10 text-9xl text-emerald-400">
+          <i class="fa-solid fa-hospital-user"></i>
+        </div>
+        <div class="relative z-10 space-y-2">
+          <span id="career-title-badge" class="bg-emerald-950 text-emerald-400 border border-emerald-800 text-xs font-black px-3 py-1 rounded-full inline-block">
+            🌱 菜鳥實習生
+          </span>
+          <h2 id="career-rank-name" class="text-xl font-black text-white">解鎖對位工具人，啟動全院工作區！</h2>
+          
+          <!-- Career Unlock Progress -->
+          <div class="space-y-1 pt-2">
+            <div class="flex justify-between text-xs font-extrabold">
+              <span class="text-slate-400">國考題目累積解鎖率</span>
+              <span id="career-unlock-pct" class="text-emerald-400">0%</span>
+            </div>
+            <div class="w-full bg-slate-950 h-3 rounded-full overflow-hidden border border-slate-800">
+              <div id="career-progress-fill" class="bg-emerald-500 h-full w-0 transition-all duration-500"></div>
+            </div>
+            <p id="career-unlock-hint" class="text-[11px] text-amber-400 font-medium pt-1">
+              ⚠️ 刷題總進度達 10% 即可解鎖【全院 13 大工作區域】！
+            </p>
+          </div>
+        </div>
+      </div>
+
+      <!-- 13 Work Units Section -->
+      <div class="space-y-3">
+        <div class="flex justify-between items-center">
+          <h3 class="font-black text-base text-white flex items-center gap-2">
+            <i class="fa-solid fa-hospital-bay text-sky-400"></i> 13 大醫院放射工作區域
+          </h3>
+          <span class="text-[11px] text-slate-400">按上班次數獨立升級</span>
+        </div>
+
+        <div id="work-units-list" class="grid grid-cols-1 gap-3">
+          <!-- Dynamically Generated 13 Units -->
+        </div>
+      </div>
+
+      <!-- Vent / Meme Shop (舒壓商城) -->
+      <div class="bg-slate-800/80 border border-slate-700 rounded-2xl p-4 space-y-3">
+        <h3 class="font-black text-sm text-amber-400 flex items-center gap-2">
+          <i class="fa-solid fa-face-laugh-squint"></i> 放射師舒壓黑色幽默解鎖區
+        </h3>
+        <p class="text-xs text-slate-400">用上班領到的薪水，購買各種職場內心 OS 吐槽對話卡！</p>
+        
+        <div id="meme-shop-items" class="space-y-2 pt-1">
+          <!-- Dynamically Generated Shop Items -->
+        </div>
+      </div>
+
+    </div>
+
+  </main>
+
+  <!-- Bottom Fixed Navigation (Manage & About) -->
+  <footer class="fixed bottom-0 left-0 right-0 bg-slate-900 border-t border-slate-800 py-2.5 px-4 z-40">
+    <div class="max-w-md mx-auto flex justify-around text-center">
+      <button onclick="switchMainTab('quiz')" class="flex flex-col items-center text-slate-400 hover:text-emerald-400">
+        <i class="fa-solid fa-gamepad text-lg"></i>
+        <span class="text-[10px] font-bold mt-1">刷題</span>
+      </button>
+      <button onclick="switchMainTab('career')" class="flex flex-col items-center text-slate-400 hover:text-emerald-400">
+        <i class="fa-solid fa-briefcase text-lg"></i>
+        <span class="text-[10px] font-bold mt-1">職場模擬</span>
+      </button>
+      <button onclick="openModal('editor-modal')" class="flex flex-col items-center text-slate-400 hover:text-sky-400">
+        <i class="fa-solid fa-pen-to-square text-lg"></i>
+        <span class="text-[10px] font-bold mt-1">題庫管理</span>
+      </button>
+      <button onclick="openModal('about-modal')" class="flex flex-col items-center text-slate-400 hover:text-purple-400">
+        <i class="fa-solid fa-circle-info text-lg"></i>
+        <span class="text-[10px] font-bold mt-1">關於作者</span>
+      </button>
+    </div>
+  </footer>
+
+
+  <!-- MODAL: Question Editor (題庫管理) -->
+  <div id="editor-modal" class="hidden fixed inset-0 bg-black/80 backdrop-blur-sm z-50 flex items-center justify-center p-4">
+    <div class="bg-slate-900 border border-slate-800 rounded-2xl w-full max-w-md max-h-[85vh] flex flex-col shadow-2xl overflow-hidden">
+      <div class="p-4 border-b border-slate-800 flex justify-between items-center bg-slate-800/50">
+        <h3 class="font-black text-base text-white flex items-center gap-2">
+          <i class="fa-solid fa-sliders text-sky-400"></i> 免程式題庫管理員
+        </h3>
+        <button onclick="closeModal('editor-modal')" class="text-slate-400 hover:text-white p-1">
+          <i class="fa-solid fa-xmark text-lg"></i>
+        </button>
+      </div>
+
+      <div class="p-4 overflow-y-auto space-y-4 flex-1 text-xs">
+        
+        <!-- Import/Export Tools -->
+        <div class="bg-slate-800 p-3 rounded-xl space-y-2 border border-slate-700">
+          <span class="font-bold text-slate-300 block">📥 題庫備份與分享</span>
+          <div class="grid grid-cols-2 gap-2">
+            <button onclick="exportQuestionsJSON()" class="py-2 bg-slate-700 hover:bg-slate-600 rounded-lg font-bold text-slate-200">
+              <i class="fa-solid fa-download mr-1"></i> 匯出 JSON
+            </button>
+            <label class="py-2 bg-sky-600 hover:bg-sky-500 rounded-lg font-bold text-white text-center cursor-pointer block">
+              <i class="fa-solid fa-upload mr-1"></i> 匯入 JSON
+              <input type="file" id="import-json-input" onchange="importQuestionsJSON(event)" class="hidden" accept=".json">
+            </label>
+          </div>
+        </div>
+
+        <!-- Add Question Form -->
+        <div class="bg-slate-800/60 p-3.5 rounded-xl border border-slate-700/80 space-y-3">
+          <span class="font-bold text-emerald-400 block text-sm">➕ 新增自訂題目</span>
+          
+          <div>
+            <label class="text-slate-400 block mb-1">科目歸類</label>
+            <select id="edit-subject" class="w-full bg-slate-900 border border-slate-700 rounded-lg p-2 text-slate-200">
+              <option value="basic">1. 基礎醫學</option>
+              <option value="physics">2. 醫學物理與輻射安全</option>
+              <option value="equip">3. 放射線器材學</option>
+              <option value="diag">4. 放射線診斷原理與技術學</option>
+              <option value="therapy">5. 放射線治療原理與技術學</option>
+              <option value="nuc">6. 核子醫學診療原理與技術學</option>
+            </select>
+          </div>
+
+          <div>
+            <label class="text-slate-400 block mb-1">題目題型</label>
+            <select id="edit-type" onchange="toggleEditorFields()" class="w-full bg-slate-900 border border-slate-700 rounded-lg p-2 text-slate-200">
+              <option value="choice">一般單選題</option>
+              <option value="truefalse">1秒快問快答 (True/False)</option>
+            </select>
+          </div>
+
+          <div>
+            <label class="text-slate-400 block mb-1">題目敘述</label>
+            <textarea id="edit-question" rows="2" placeholder="例：AAPM TG-51 主要用於哪種校正？" class="w-full bg-slate-900 border border-slate-700 rounded-lg p-2 text-slate-200"></textarea>
+          </div>
+
+          <!-- Choice Fields -->
+          <div id="field-choice-options" class="space-y-2">
+            <label class="text-slate-400 block">選項 (4選1)</label>
+            <input type="text" id="opt-0" placeholder="選項 A" class="w-full bg-slate-900 border border-slate-700 rounded-lg p-1.5 text-slate-200">
+            <input type="text" id="opt-1" placeholder="選項 B" class="w-full bg-slate-900 border border-slate-700 rounded-lg p-1.5 text-slate-200">
+            <input type="text" id="opt-2" placeholder="選項 C" class="w-full bg-slate-900 border border-slate-700 rounded-lg p-1.5 text-slate-200">
+            <input type="text" id="opt-3" placeholder="選項 D" class="w-full bg-slate-900 border border-slate-700 rounded-lg p-1.5 text-slate-200">
+            <label class="text-slate-400 block pt-1">正確答案 (0=A, 1=B, 2=C, 3=D)</label>
+            <input type="number" id="correct-opt-idx" min="0" max="3" value="0" class="w-full bg-slate-900 border border-slate-700 rounded-lg p-1.5 text-slate-200">
+          </div>
+
+          <div>
+            <label class="text-slate-400 block mb-1">答案解析/口訣記憶</label>
+            <input type="text" id="edit-explanation" placeholder="例：TG-51 為高能量光子與電子束吸收劑量校正 Protocol" class="w-full bg-slate-900 border border-slate-700 rounded-lg p-2 text-slate-200">
+          </div>
+
+          <button onclick="addNewQuestionFromEditor()" class="w-full py-2.5 bg-emerald-600 hover:bg-emerald-500 rounded-xl font-bold text-slate-950">
+            儲存並加到本地題庫
+          </button>
+        </div>
+
+        <!-- Question List Counter -->
+        <div class="text-slate-400 text-center text-[11px]">
+          目前本地總題數：<span id="editor-total-count" class="text-emerald-400 font-bold">0</span> 題
+        </div>
+
+      </div>
+    </div>
+  </div>
+
+
+  <!-- MODAL: About & Show off -->
+  <div id="about-modal" class="hidden fixed inset-0 bg-black/80 backdrop-blur-sm z-50 flex items-center justify-center p-4">
+    <div class="bg-slate-900 border border-slate-800 rounded-2xl w-full max-w-md p-5 space-y-4 text-center">
+      <div class="w-16 h-16 bg-gradient-to-tr from-emerald-400 to-sky-400 rounded-2xl mx-auto flex items-center justify-center text-3xl text-slate-950 font-black shadow-lg">
+        R
+      </div>
+      <div>
+        <h3 class="text-lg font-black text-white">Radingo 放射師國考無痛大作戰</h3>
+        <p class="text-xs text-emerald-400 font-extrabold mt-0.5">專為醫事放射師設計的遊戲化刷題 App</p>
+      </div>
+
+      <p class="text-xs text-slate-300 leading-relaxed text-left bg-slate-800/80 p-3 rounded-xl border border-slate-700">
+        💡 <b>開發初衷：</b> 誰說國考複習只能看無聊的阿摩或紙本刷題？透過多鄰國式的連勝機制與放射師 13 大職場模擬，讓你在實習空檔也能無痛內化國考重點！不用寫程式就能架設屬於自己的國考小遊戲！
+      </p>
+
+      <button onclick="closeModal('about-modal')" class="w-full py-2.5 bg-slate-800 hover:bg-slate-700 rounded-xl font-bold text-slate-200 text-xs">
+        關閉視窗
+      </button>
+    </div>
+  </div>
+
+
+  <!-- JAVASCRIPT LOGIC -->
+  <script>
+    /* ===================================================
+       1. INITIAL DATA & DEFAULT QUESTION BANK (6 Subjects)
+       =================================================== */
+    
+    const SUBJECTS = {
+      basic: { id: 'basic', name: '基礎醫學', icon: 'fa-brain', color: 'from-pink-600 to-rose-700' },
+      physics: { id: 'physics', name: '醫學物理與輻射安全', icon: 'fa-atom', color: 'from-blue-600 to-indigo-700' },
+      equip: { id: 'equip', name: '放射線器材學', icon: 'fa-microchip', color: 'from-amber-600 to-orange-700' },
+      diag: { id: 'diag', name: '放射線診斷原理與技術學', icon: 'fa-x-ray', color: 'from-emerald-600 to-teal-700' },
+      therapy: { id: 'therapy', name: '放射線治療原理與技術學', icon: 'fa-crosshairs', color: 'from-purple-600 to-violet-700' },
+      nuc: { id: 'nuc', name: '核子醫學診療原理與技術學', icon: 'fa-radiation', color: 'from-cyan-600 to-sky-700' }
+    };
+
+    const DEFAULT_QUESTIONS = [
+      // 1. 基礎醫學
+      {
+        id: 'b1', subject: 'basic', type: 'choice',
+        question: '人體中對輻射敏感度最高的細胞特徵為？',
+        options: ['高分化、低分裂能力', '低分化、高分裂能力', '高分化、高分裂能力', '低分化、低分裂能力'],
+        correct: 1, explanation: '根據 Bergonié-Tribondeau 法則，細胞越低分化、有越高的有絲分裂能力，對輻射敏感度越高。'
+      },
+      // 2. 醫學物理
+      {
+        id: 'p1', subject: 'physics', type: 'choice',
+        question: '當 X 射線能量增加時，主要發生的物質互動效應會如何變化？',
+        options: ['光電效應比例大幅上升', '康普頓效應比例相對增加', '成對產生必定發生', '不相干散亂完全消失'],
+        correct: 1, explanation: '光电效应与能量的三次方成反比(1/E^3)，因此能量提高时，康普顿散射的比例相对增加。'
+      },
+      // 3. 器材學
+      {
+        id: 'e1', subject: 'equip', type: 'choice',
+        question: 'X 光管中，陽極靶面採用鎢 (Tungsten) 的主要原因不包括以下何者？',
+        options: ['高原子序 (Z=74)', '高熔點 (3410°C)', '良好導熱性', '低密度易於旋轉'],
+        correct: 3, explanation: '鎢具有高原子序、高熔點與良好散熱性，密度相當高，而非低密度。'
+      },
+      // 4. 診斷技術
+      {
+        id: 'd1', subject: 'diag', type: 'choice',
+        question: '在 CT 影像中，空氣的 Hounsfield Unit (HU) 值設定為多少？',
+        options: ['-1000 HU', '0 HU', '+1000 HU', '-50 HU'],
+        correct: 0, explanation: '水的 HU 值定義為 0，空氣為 -1000 HU，緻密骨質約為 +1000 HU。'
+      },
+      // 5. 治療技術
+      {
+        id: 't1', subject: 'therapy', type: 'choice',
+        question: '根據 AAPM TG-51 指引，高能量光子束之水假體吸收劑量校正參考深度為多少？',
+        options: ['1.5 cm', '5 cm', '10 cm', 'dmax 深度'],
+        correct: 2, explanation: 'TG-51 規定高能量光子束在水假體中的參考校正深度為 10 cm。'
+      },
+      // 6. 核子醫學
+      {
+        id: 'n1', subject: 'nuc', type: 'choice',
+        question: ' Tc-99m 半衰期約為 6 小時，其發射的主要 Gamma 射線能量為多少 keV？',
+        options: ['511 keV', '140 keV', '364 keV', '80 keV'],
+        correct: 1, explanation: 'Tc-99m 是核醫最常用同位素，主要發射 140 keV 的伽瑪射線，非常適合 Gamma Camera 偵測。'
+      }
+    ];
+
+    /* 13 WORK UNITS DATA (按上班次數獨立升級) */
+    const WORK_UNITS = [
+      { id: 'xray', name: '一般 X 光室', icon: 'fa-x-ray', desc: '胸腔肺部、骨折照相，每天面對無數站立照的阿公阿嬤。' },
+      { id: 'er', name: '急診 (CT / X-ray)', icon: 'fa-truck-medical', desc: '節奏極快！創傷 Trauma 照相、頭部 CT，考驗心臟與反應速度。' },
+      { id: 'ct', name: '電腦斷層 (CT)', icon: 'fa-circle-notch', desc: '對位、打造影劑、MPR 重組 3D 影像，門診大排長龍的核心戰區。' },
+      { id: 'mri', name: '磁振造影 (MRI)', icon: 'fa-magnet', desc: '噪音大、時間長，檢查前必須嚴格確認金屬與心律調節器！' },
+      { id: 'mammo', name: '乳房攝影 (Mammo)', icon: 'fa-female', desc: '壓迫力道與角度的完美掌控，需要極度的耐心與溫柔提示。' },
+      { id: 'sono', name: '醫用超音波 (Sono)', icon: 'fa-wave-square', desc: '探頭手法與膠塗抹的藝術，腹部與甲狀腺掃描利器。' },
+      { id: 'cath', name: '心導管室 (Cath Lab)', icon: 'fa-heart-pulse', desc: '穿重鉛衣跟診，隨時準備緊急心絞痛與血管支架放置。' },
+      { id: 'dental', name: '牙科全景/Cone-Beam', icon: 'fa-tooth', desc: 'Panoramic 全景牙片與 CBCT，齒顎矯正與植牙評估必備。' },
+      { id: 'angio', name: '血管攝影 (Angio)', icon: 'fa-disease', desc: '腦血管、肝臟 EMB 塞栓術，高階干預性放射學核心。' },
+      { id: 'special', name: '特殊攝影 (Special)', icon: 'fa-flask-vial', desc: 'IVU、Barium swallow 鋇劑攝影，隨時注意病人吐鋇劑。' },
+      { id: 'dexa', name: '骨質密度 (DEXA)', icon: 'fa-bone', desc: 'L-spine 與 Hip 骨密測量，放射科相對平靜優雅的避風港。' },
+      { id: 'nuc', name: '核子醫學 (Nuclear)', icon: 'fa-atom', desc: 'Tc-99m 標誌、Bone scan、PET-CT 癌症追蹤與鉛屏屏蔽。' },
+      { id: 'rt', name: '放射線治療 (RT)', icon: 'fa-crosshairs', desc: '直線加速器、模具製作、DIBH、每天精準對位照光抗癌。' }
+    ];
+
+    /* MEME SHOP ITEMS */
+    const SHOP_ITEMS = [
+      { id: 's1', title: '【心裡話卡】「這輻射會讓我變蜘蛛人嗎？」', cost: 300, os: '「會，你回家記得找面牆爬爬看。」（微笑呈遞報告）' },
+      { id: 's2', title: '【心裡話卡】「門診家屬在門口敲門三連擊」', cost: 600, os: '「再敲門我就把影像放大到 500% 慢慢看給你看！」' },
+      { id: 's3', title: '【神器】大杯冰美式 (XP雙倍卡)', cost: 1000, os: '喝下一口美式，感覺靈魂重回身體，當天刷題經驗值 x2！' }
+    ];
+
+
+    /* ===================================================
+       2. STATE MANAGEMENT & LOCAL STORAGE
+       =================================================== */
+    
+    let state = {
+      questions: [],
+      userStats: { streak: 1, xp: 50, money: 1200 },
+      careerUnitLevels: {}, // { xray: 5, ct: 12 ... } (上班次數)
+      unlockedMemes: [],
+      activeQuiz: null
+    };
+
+    function loadState() {
+      const savedQ = localStorage.getItem('radingo_questions');
+      state.questions = savedQ ? JSON.parse(savedQ) : DEFAULT_QUESTIONS;
+
+      const savedStats = localStorage.getItem('radingo_stats');
+      if (savedStats) state.userStats = JSON.parse(savedStats);
+
+      const savedCareer = localStorage.getItem('radingo_career_units');
+      state.careerUnitLevels = savedCareer ? JSON.parse(savedCareer) : {};
+
+      const savedMemes = localStorage.getItem('radingo_memes');
+      state.unlockedMemes = savedMemes ? JSON.parse(savedMemes) : [];
+
+      updateStatsUI();
+    }
+
+    function saveState() {
+      localStorage.setItem('radingo_questions', JSON.stringify(state.questions));
+      localStorage.setItem('radingo_stats', JSON.stringify(state.userStats));
+      localStorage.setItem('radingo_career_units', JSON.stringify(state.careerUnitLevels));
+      localStorage.setItem('radingo_memes', JSON.stringify(state.unlockedMemes));
+      updateStatsUI();
+    }
+
+    function updateStatsUI() {
+      document.getElementById('stat-streak').innerText = state.userStats.streak;
+      document.getElementById('stat-xp').innerText = state.userStats.xp;
+      document.getElementById('stat-money').innerText = state.userStats.money;
+    }
+
+
+    /* ===================================================
+       3. NAVIGATION & TAB SWITCHING
+       =================================================== */
+    
+    function switchMainTab(tab) {
+      document.getElementById('view-quiz').classList.add('hidden');
+      document.getElementById('view-career').classList.add('hidden');
+
+      document.getElementById('tab-quiz').className = "flex-1 py-2 rounded-lg font-extrabold text-xs text-center transition flex justify-center items-center gap-1.5 text-slate-400 hover:text-slate-200";
+      document.getElementById('tab-career').className = "flex-1 py-2 rounded-lg font-extrabold text-xs text-center transition flex justify-center items-center gap-1.5 text-slate-400 hover:text-slate-200";
+
+      if (tab === 'quiz') {
+        document.getElementById('view-quiz').classList.remove('hidden');
+        document.getElementById('tab-quiz').className = "flex-1 py-2 rounded-lg font-extrabold text-xs text-center transition flex justify-center items-center gap-1.5 bg-emerald-500 text-slate-950 shadow";
+        renderSubjectCards();
+      } else if (tab === 'career') {
+        document.getElementById('view-career').classList.remove('hidden');
+        document.getElementById('tab-career').className = "flex-1 py-2 rounded-lg font-extrabold text-xs text-center transition flex justify-center items-center gap-1.5 bg-emerald-500 text-slate-950 shadow";
+        renderCareerTab();
+      }
+    }
+
+
+    /* ===================================================
+       4. QUIZ ENGINE (刷題與答題邏輯 - Bug 修復版)
+       =================================================== */
+    
+    function renderSubjectCards() {
+      const container = document.getElementById('subject-cards-container');
+      container.innerHTML = '';
+
+      Object.keys(SUBJECTS).forEach(key => {
+        const sub = SUBJECTS[key];
+        const count = state.questions.filter(q => q.subject === key).length;
+
+        const card = document.createElement('div');
+        card.className = "bg-slate-800 border-2 border-slate-700 hover:border-emerald-500 rounded-2xl p-4 transition cursor-pointer flex items-center justify-between group";
+        card.onclick = () => startQuizSession(key);
+
+        card.innerHTML = `
+          <div class="flex items-center space-x-3.5">
+            <div class="w-12 h-12 rounded-xl bg-gradient-to-tr ${sub.color} flex items-center justify-center text-white text-xl shadow-md group-hover:scale-105 transition">
+              <i class="fa-solid ${sub.icon}"></i>
+            </div>
             <div>
-                <h3 class="text-lg font-bold text-gray-700 mb-4 flex items-center gap-2">
-                    <i class="fa-solid fa-graduation-cap text-brand-green"></i> 國家考試六大核心科目
-                </h3>
-                <div id="subject-list" class="grid grid-cols-1 md:grid-cols-2 gap-4">
-                    <!-- Dynamic rendering via JS -->
-                </div>
+              <h3 class="font-extrabold text-sm text-slate-100 group-hover:text-emerald-400 transition">${sub.name}</h3>
+              <p class="text-xs text-slate-400 mt-0.5">收錄題數：<span class="text-emerald-400 font-bold">${count}</span> 題</p>
             </div>
-        </section>
+          </div>
+          <i class="fa-solid fa-chevron-right text-slate-500 group-hover:text-emerald-400 transition"></i>
+        `;
+        container.appendChild(card);
+      });
+    }
 
-        <!-- SCREEN 2: Practice / Quiz Screen -->
-        <section id="screen-quiz" class="hidden flex flex-col justify-between min-h-[75vh] max-w-2xl mx-auto">
-            <!-- Quiz Progress Bar Header -->
-            <div class="flex items-center gap-4 py-2">
-                <button onclick="confirmExitQuiz()" class="text-gray-400 hover:text-gray-600 text-xl font-bold p-1">
-                    <i class="fa-solid fa-xmark"></i>
-                </button>
-                <div class="flex-grow bg-gray-200 h-4 rounded-full overflow-hidden">
-                    <div id="quiz-progress-bar" class="bg-brand-green h-full w-0 transition-all duration-300 rounded-full"></div>
-                </div>
-                <span id="quiz-progress-text" class="text-xs font-bold text-gray-500">0/0</span>
-            </div>
+    function startQuizSession(subjectKey) {
+      const filtered = state.questions.filter(q => q.subject === subjectKey);
+      if (filtered.length === 0) {
+        alert('這個科目目前還沒有題目喔！快去「題庫管理」新增幾題吧！');
+        return;
+      }
 
-            <!-- Question Card Box -->
-            <div id="quiz-card-container" class="my-auto py-6 space-y-6">
-                <!-- Dynamic Question Content Inject Here -->
-            </div>
+      state.activeQuiz = {
+        subject: subjectKey,
+        questions: shuffleArray([...filtered]),
+        currentIndex: 0,
+        selectedOption: null
+      };
 
-            <!-- Footer Action Bar -->
-            <div id="quiz-footer" class="border-t-2 border-gray-100 pt-4 mt-auto">
-                <button id="btn-submit-answer" onclick="checkAnswer()" class="w-full py-4 rounded-2xl bg-brand-green text-white font-extrabold text-lg duo-btn shadow-brand-greenDark border-b-4 border-brand-greenDark hover:bg-opacity-95">
-                    檢查答案
-                </button>
-            </div>
-        </section>
+      document.getElementById('subject-select-screen').classList.add('hidden');
+      document.getElementById('quiz-screen').classList.remove('hidden');
 
-        <!-- SCREEN 3: Unit Completed Celebration -->
-        <section id="screen-result" class="hidden text-center my-auto py-12 space-y-6 max-w-md mx-auto">
-            <div class="relative inline-block">
-                <div class="w-32 h-32 bg-yellow-100 rounded-full flex items-center justify-center mx-auto text-brand-yellow text-6xl animate-bounce-short shadow-inner">
-                    <i class="fa-solid fa-trophy"></i>
-                </div>
-                <span class="absolute -top-2 -right-2 bg-brand-red text-white text-xs font-bold px-2.5 py-1 rounded-full border-2 border-white">UNIT CLEAR</span>
-            </div>
+      loadCurrentQuestion();
+    }
 
-            <div class="space-y-2">
-                <h2 class="text-3xl font-black text-gray-800">單元完成！太棒了！</h2>
-                <p class="text-gray-500 font-medium">每天堅持練習，放射師執照就在不遠處！</p>
-            </div>
+    function exitQuiz() {
+      hideFeedbackPanel(); // 離開時隱藏回饋框
+      document.getElementById('quiz-screen').classList.add('hidden');
+      document.getElementById('subject-select-screen').classList.remove('hidden');
+      renderSubjectCards();
+    }
 
-            <div class="grid grid-cols-2 gap-4 my-6">
-                <div class="bg-yellow-50 border-2 border-yellow-200 rounded-2xl p-4 text-center">
-                    <span class="text-xs font-bold text-yellow-600 block uppercase">獲得經驗值</span>
-                    <span class="text-2xl font-black text-brand-yellowDark flex items-center justify-center gap-1">
-                        <i class="fa-solid fa-bolt"></i> +<span id="earned-xp">50</span> XP
-                    </span>
-                </div>
-                <div class="bg-emerald-50 border-2 border-emerald-200 rounded-2xl p-4 text-center">
-                    <span class="text-xs font-bold text-emerald-600 block uppercase">答對率</span>
-                    <span id="quiz-accuracy" class="text-2xl font-black text-brand-green">100%</span>
-                </div>
-            </div>
+    /* 隱藏底部答案回饋區塊 (徹底修復殘留 Bug) */
+    function hideFeedbackPanel() {
+      const panel = document.getElementById('feedback-panel');
+      panel.classList.add('hidden');
+      panel.className = "hidden fixed bottom-0 left-0 right-0 p-4 border-t z-50 transition-transform duration-200";
+    }
 
-            <button onclick="showScreen('home')" class="w-full py-4 rounded-2xl bg-brand-green text-white font-extrabold text-lg duo-btn border-b-4 border-brand-greenDark">
-                繼續努力
-            </button>
-        </section>
+    function loadCurrentQuestion() {
+      hideFeedbackPanel(); // 每次載入新題目時，強制清空並隱藏回饋區
 
-    </main>
+      const qData = state.activeQuiz.questions[state.activeQuiz.currentIndex];
+      const total = state.activeQuiz.questions.length;
 
-    <!-- Bottom Navigation Bar (Mobile Friendly) -->
-    <nav class="bg-white border-t-2 border-gray-200 py-2 px-6 sticky bottom-0 z-20">
-        <div class="max-w-md mx-auto flex justify-around items-center">
-            <button onclick="showScreen('home')" class="flex flex-col items-center text-brand-green font-bold">
-                <i class="fa-solid fa-book-open text-xl"></i>
-                <span class="text-xs mt-1">學習主頁</span>
-            </button>
-            <button onclick="openQuestionManager()" class="flex flex-col items-center text-gray-400 hover:text-brand-blue font-bold transition">
-                <i class="fa-solid fa-sliders text-xl"></i>
-                <span class="text-xs mt-1">題庫管理</span>
-            </button>
-            <button onclick="resetAppProgress()" class="flex flex-col items-center text-gray-400 hover:text-brand-red font-bold transition">
-                <i class="fa-solid fa-rotate-right text-xl"></i>
-                <span class="text-xs mt-1">重設進度</span>
-            </button>
-        </div>
-    </nav>
+      document.getElementById('quiz-counter').innerText = `${state.activeQuiz.currentIndex + 1}/${total}`;
+      document.getElementById('quiz-progress-bar').style.width = `${((state.activeQuiz.currentIndex) / total) * 100}%`;
+      document.getElementById('question-subject-tag').innerText = SUBJECTS[qData.subject].name;
+      document.getElementById('question-text').innerText = qData.question;
 
-    <!-- MODAL: No-Code Question Management System -->
-    <div id="modal-manager" class="fixed inset-0 bg-black/50 z-50 flex items-center justify-center p-4 hidden backdrop-blur-sm">
-        <div class="bg-white w-full max-w-3xl rounded-3xl shadow-2xl flex flex-col max-h-[90vh] overflow-hidden">
-            <!-- Modal Header -->
-            <div class="p-5 border-b border-gray-200 flex justify-between items-center bg-gray-50">
-                <div class="flex items-center space-x-2">
-                    <i class="fa-solid fa-folder-plus text-brand-blue text-2xl"></i>
-                    <div>
-                        <h3 class="font-extrabold text-lg text-gray-800">無程式碼題庫管理員</h3>
-                        <p class="text-xs text-gray-500">自由新增、編輯題庫或匯入/匯出 JSON 檔</p>
-                    </div>
-                </div>
-                <button onclick="closeQuestionManager()" class="text-gray-400 hover:text-gray-600 text-2xl font-bold">
-                    <i class="fa-solid fa-xmark"></i>
-                </button>
-            </div>
+      const answerZone = document.getElementById('answer-zone');
+      answerZone.innerHTML = '';
+      state.activeQuiz.selectedOption = null;
 
-            <!-- Modal Body (Tabs + Content) -->
-            <div class="p-6 overflow-y-auto space-y-6 flex-grow">
+      // Render Multiple Choice Options
+      qData.options.forEach((optText, idx) => {
+        const btn = document.createElement('button');
+        btn.className = "option-card w-full p-4 rounded-xl text-left font-extrabold text-sm text-slate-200 flex items-center justify-between";
+        btn.onclick = () => selectOption(idx, btn);
+        btn.innerHTML = `
+          <span>${optText}</span>
+          <div class="w-5 h-5 rounded-full border-2 border-slate-600 flex items-center justify-center text-xs check-indicator"></div>
+        `;
+        answerZone.appendChild(btn);
+      });
 
-                <!-- Tools & Actions Bar -->
-                <div class="flex flex-wrap gap-2 justify-between items-center bg-blue-50 p-4 rounded-2xl border border-blue-100">
-                    <div class="flex gap-2">
-                        <button onclick="exportQuestionsJSON()" class="bg-brand-blue text-white px-3 py-2 rounded-xl text-xs font-bold flex items-center gap-1.5 border-b-2 border-brand-blueDark">
-                            <i class="fa-solid fa-download"></i> 匯出題庫 (JSON)
-                        </button>
-                        <label class="bg-emerald-600 hover:bg-emerald-700 text-white px-3 py-2 rounded-xl text-xs font-bold flex items-center gap-1.5 cursor-pointer border-b-2 border-emerald-800">
-                            <i class="fa-solid fa-upload"></i> 匯入題庫 (JSON)
-                            <input type="file" id="import-file-input" accept=".json" class="hidden" onchange="importQuestionsJSON(event)">
-                        </label>
-                    </div>
-                    <button onclick="restoreDefaultQuestions()" class="text-xs text-red-600 hover:underline font-bold">
-                        <i class="fa-solid fa-trash-arrow-up"></i> 恢復預設題庫
-                    </button>
-                </div>
+      document.getElementById('submit-answer-btn').classList.remove('hidden');
+    }
 
-                <!-- Add New Question Form -->
-                <div class="bg-gray-50 p-5 rounded-2xl border-2 border-gray-200 space-y-4">
-                    <h4 class="font-bold text-gray-700 flex items-center gap-2">
-                        <i class="fa-solid fa-plus-circle text-brand-green"></i> 新增題目
-                    </h4>
+    function selectOption(idx, element) {
+      const allCards = document.querySelectorAll('.option-card');
+      allCards.forEach(c => c.classList.remove('selected'));
 
-                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                        <div>
-                            <label class="block text-xs font-bold text-gray-600 mb-1">對應科目</label>
-                            <select id="form-subject" class="w-full p-2.5 rounded-xl border-2 border-gray-300 focus:border-brand-green outline-none text-sm font-medium">
-                                <option value="basic_med">基礎醫學</option>
-                                <option value="med_physics">醫學物理學與輻射安全</option>
-                                <option value="equipment">放射線器材學</option>
-                                <option value="diagnosis">放射線診斷原理與技術學</option>
-                                <option value="therapy">放射線治療原理與技術學</option>
-                                <option value="nuc_med">核子醫學診療原理與技術學</option>
-                            </select>
-                        </div>
-                        <div>
-                            <label class="block text-xs font-bold text-gray-600 mb-1">題型類別</label>
-                            <select id="form-type" onchange="toggleFormFields()" class="w-full p-2.5 rounded-xl border-2 border-gray-300 focus:border-brand-green outline-none text-sm font-medium">
-                                <option value="mc">多選一單選題 (Multiple Choice)</option>
-                                <option value="tf">1秒快問快答 (True/False)</option>
-                                <option value="fill">卡片填空題 (Fill in the Blank)</option>
-                            </select>
-                        </div>
-                    </div>
+      element.classList.add('selected');
+      state.activeQuiz.selectedOption = idx;
+    }
 
-                    <div>
-                        <label class="block text-xs font-bold text-gray-600 mb-1">題目敘述 / 提問</label>
-                        <input id="form-question" type="text" placeholder="例：下列何者為 CT 數值中，水的 Hounsfield Unit (HU)？" class="w-full p-2.5 rounded-xl border-2 border-gray-300 focus:border-brand-green outline-none text-sm">
-                    </div>
+    function checkAnswer() {
+      if (state.activeQuiz.selectedOption === null) {
+        alert('請先選擇一個答案喔！');
+        return;
+      }
 
-                    <!-- Dynamic Options Input according to type -->
-                    <div id="form-options-area" class="space-y-2">
-                        <label class="block text-xs font-bold text-gray-600">選項列表 (請填寫選項並選擇正確答案)</label>
-                        <div class="grid grid-cols-1 sm:grid-cols-2 gap-2">
-                            <div class="flex items-center gap-2">
-                                <input type="radio" name="correct-opt" value="0" checked>
-                                <input type="text" id="opt-0" placeholder="選項 1" class="w-full p-2 rounded-lg border text-xs">
-                            </div>
-                            <div class="flex items-center gap-2">
-                                <input type="radio" name="correct-opt" value="1">
-                                <input type="text" id="opt-1" placeholder="選項 2" class="w-full p-2 rounded-lg border text-xs">
-                            </div>
-                            <div class="flex items-center gap-2">
-                                <input type="radio" name="correct-opt" value="2">
-                                <input type="text" id="opt-2" placeholder="選項 3" class="w-full p-2 rounded-lg border text-xs">
-                            </div>
-                            <div class="flex items-center gap-2">
-                                <input type="radio" name="correct-opt" value="3">
-                                <input type="text" id="opt-3" placeholder="選項 4" class="w-full p-2 rounded-lg border text-xs">
-                            </div>
-                        </div>
-                    </div>
+      const qData = state.activeQuiz.questions[state.activeQuiz.currentIndex];
+      const isCorrect = state.activeQuiz.selectedOption === qData.correct;
 
-                    <div>
-                        <label class="block text-xs font-bold text-gray-600 mb-1">解析與補充 (答錯時顯示)</label>
-                        <textarea id="form-explanation" rows="2" placeholder="說明答案原因，幫助國考記憶..." class="w-full p-2.5 rounded-xl border-2 border-gray-300 focus:border-brand-green outline-none text-sm"></textarea>
-                    </div>
-
-                    <button onclick="saveNewQuestion()" class="w-full py-3 bg-brand-green text-white font-bold rounded-xl duo-btn border-b-4 border-brand-greenDark">
-                        儲存新增題目
-                    </button>
-                </div>
-
-                <!-- Existing Questions List preview -->
-                <div>
-                    <h4 class="font-bold text-gray-700 mb-3 flex items-center justify-between">
-                        <span><i class="fa-solid fa-list text-brand-blue"></i> 目前自訂與現有題庫列表</span>
-                        <span id="total-q-count" class="text-xs bg-gray-200 text-gray-700 px-2 py-0.5 rounded-full">0 題</span>
-                    </h4>
-                    <div id="manager-question-list" class="space-y-2 max-h-60 overflow-y-auto p-1">
-                        <!-- Questions item list render -->
-                    </div>
-                </div>
-
-            </div>
-        </div>
-    </div>
-
-    <!-- Feedback Banner Component for Answers -->
-    <div id="feedback-banner" class="fixed bottom-0 left-0 right-0 z-40 p-5 transform translate-y-full transition-transform duration-300 shadow-2xl border-t-4">
-        <div class="max-w-2xl mx-auto flex items-center justify-between">
-            <div class="flex items-start space-x-3">
-                <div id="feedback-icon" class="text-3xl"></div>
-                <div>
-                    <h4 id="feedback-title" class="font-black text-lg"></h4>
-                    <p id="feedback-detail" class="text-sm mt-0.5 font-medium"></p>
-                </div>
-            </div>
-            <button id="feedback-btn" onclick="nextQuestion()" class="px-6 py-3 rounded-2xl text-white font-black text-sm duo-btn min-w-[120px]">
-                繼續
-            </button>
-        </div>
-    </div>
-
-    <!-- JavaScript Application Logic -->
-    <script>
-        // --- DEFAULT QUESTIONS DATABASE (Six Official Radiographer Exam Subjects) ---
-        const DEFAULT_SUBJECTS = [
-            { id: 'basic_med', name: '基礎醫學', icon: 'fa-microscope', color: 'bg-emerald-500' },
-            { id: 'med_physics', name: '醫學物理學與輻射安全', icon: 'fa-atom', color: 'bg-blue-500' },
-            { id: 'equipment', name: '放射線器材學', icon: 'fa-laptop-medical', color: 'bg-purple-500' },
-            { id: 'diagnosis', name: '放射線診斷原理與技術學', icon: 'fa-x-ray', color: 'bg-orange-500' },
-            { id: 'therapy', name: '放射線治療原理與技術學', icon: 'fa-bullseye', color: 'bg-red-500' },
-            { id: 'nuc_med', name: '核子醫學診療原理與技術學', icon: 'fa-biohazard', color: 'bg-teal-500' }
-        ];
-
-        const DEFAULT_QUESTIONS = [
-            // 基礎醫學 (Basic Medical Sciences)
-            {
-                id: 'q_bm_1',
-                subjectId: 'basic_med',
-                type: 'mc',
-                question: '人體骨頭中，下列何者屬於扁平骨 (Flat Bone)？',
-                options: ['股骨 (Femur)', '頂骨 (Parietal Bone)', '腕骨 (Carpal Bone)', '椎骨 (Vertebra)'],
-                correctIndex: 1,
-                explanation: '顱頂骨（如頂骨）、肋骨與胸骨皆屬於扁平骨，主要具保護作用。'
-            },
-            {
-                id: 'q_bm_2',
-                subjectId: 'basic_med',
-                type: 'tf',
-                question: '心臟的左心室壁厚度通常比右心室壁更厚。',
-                options: ['O 正確', 'X 錯誤'],
-                correctIndex: 0,
-                explanation: '左心室需承受將血液泵送至全身體循環的高壓，因此心肌壁顯著較厚。'
-            },
-
-            // 醫學物理學與輻射安全 (Medical Physics & Radiation Safety)
-            {
-                id: 'q_mp_1',
-                subjectId: 'med_physics',
-                type: 'mc',
-                question: '在輻射防護中，等效劑量 (Equivalent Dose) 的國際單位 (SI) 為何？',
-                options: ['西弗 (Sv)', '葛雷 (Gy)', '貝克 (Bq)', '倫琴 (R)'],
-                correctIndex: 0,
-                explanation: '等效劑量與有效劑量的單位為西弗 (Sv)；吸收劑量為葛雷 (Gy)；活度為貝克 (Bq)。'
-            },
-            {
-                id: 'q_mp_2',
-                subjectId: 'med_physics',
-                type: 'fill',
-                question: '當與點輻射源的距離增加為原來的 2 倍時，其輻射劑量率會減少為原來的【 】分之 1。',
-                options: ['2', '4', '8', '16'],
-                correctIndex: 1,
-                explanation: '根據距離平方反比定律 (Inverse-Square Law)，距離加倍則強度變為 1/4 (2²)。'
-            },
-
-            // 放射線器材學 (Radiographic Equipment & Instrumentation)
-            {
-                id: 'q_eq_1',
-                subjectId: 'equipment',
-                type: 'mc',
-                question: 'X 光管中，陽極靶面 (Anode Target) 最常用的金屬材料為何？',
-                options: ['銅 (Cu)', '鎢 (W)', '鉛 (Pb)', '鋁 (Al)'],
-                correctIndex: 1,
-                explanation: '鎢具有高原子序 (Z=74)、高熔點 (約3422°C) 及良好的散熱能力，適合做陽極靶面。'
-            },
-
-            // 放射線診斷原理與技術學 (Radiographic Diagnosis Principles & Techniques)
-            {
-                id: 'q_diag_1',
-                subjectId: 'diagnosis',
-                type: 'mc',
-                question: '拍攝標準胸部前後向 (PA View) X 光攝影時，最佳的射源至底片距離 (SID) 通常建議為多少？',
-                options: ['100 cm', '120 cm', '180 cm', '250 cm'],
-                correctIndex: 2,
-                explanation: '胸部 PA 常採用 180 cm (72 inches) SID，以減少心臟影像放大的失真。'
-            },
-
-            // 放射線治療原理與技術學 (Radiation Therapy Principles & Techniques)
-            {
-                id: 'q_rt_1',
-                subjectId: 'therapy',
-                type: 'mc',
-                question: '醫用直線加速器 (Linear Accelerator, LINAC) 中，主要用來產生高頻微波以加速電子之元件為何？',
-                options: ['速調管 (Klystron) / 磁控管 (Magnetron)', '網極 (Grid)', '偏轉磁鐵 (Bending Magnet)', '多葉準直儀 (MLC)'],
-                correctIndex: 0,
-                explanation: 'Klystron 或 Magnetron 是直線加速器中的高頻微波功率源。'
-            },
-
-            // 核子醫學診療原理與技術學 (Nuclear Medicine Principles & Techniques)
-            {
-                id: 'q_nm_1',
-                subjectId: 'nuc_med',
-                type: 'mc',
-                question: '臨床核子醫學單光子造影中最常用的放射性同位素 Technetium-99m (Tc-99m) 的半衰期約為多久？',
-                options: ['6 分鐘', '6 小時', '6 天', '60 天'],
-                correctIndex: 1,
-                explanation: 'Tc-99m 半衰期約為 6.02 小時，發射 140 keV 光子，非常適合伽瑪攝影機造影。'
-            }
-        ];
-
-        // --- APP STATE MANAGEMENT ---
-        let appState = {
-            questions: [],
-            subjects: DEFAULT_SUBJECTS,
-            streak: 0,
-            xp: 0,
-            currentSubject: null,
-            currentQuizQuestions: [],
-            currentQuestionIndex: 0,
-            selectedOptionIndex: null,
-            correctCount: 0
-        };
-
-        // Web Audio Synth for Gamified Sound Effects
-        const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
-        function playSound(type) {
-            try {
-                if (audioCtx.state === 'suspended') {
-                    audioCtx.resume();
-                }
-                const osc = audioCtx.createOscillator();
-                const gain = audioCtx.createGain();
-                osc.connect(gain);
-                gain.connect(audioCtx.destination);
-
-                if (type === 'correct') {
-                    osc.type = 'sine';
-                    osc.frequency.setValueAtTime(523.25, audioCtx.currentTime); // C5
-                    osc.frequency.setValueAtTime(659.25, audioCtx.currentTime + 0.1); // E5
-                    gain.gain.setValueAtTime(0.3, audioCtx.currentTime);
-                    gain.gain.exponentialRampToValueAtTime(0.01, audioCtx.currentTime + 0.3);
-                    osc.start();
-                    osc.stop(audioCtx.currentTime + 0.3);
-                } else if (type === 'wrong') {
-                    osc.type = 'triangle';
-                    osc.frequency.setValueAtTime(220, audioCtx.currentTime); // A3
-                    osc.frequency.setValueAtTime(180, audioCtx.currentTime + 0.15);
-                    gain.gain.setValueAtTime(0.3, audioCtx.currentTime);
-                    gain.gain.exponentialRampToValueAtTime(0.01, audioCtx.currentTime + 0.35);
-                    osc.start();
-                    osc.stop(audioCtx.currentTime + 0.35);
-                } else if (type === 'complete') {
-                    osc.type = 'sine';
-                    osc.frequency.setValueAtTime(523.25, audioCtx.currentTime);
-                    osc.frequency.setValueAtTime(659.25, audioCtx.currentTime + 0.1);
-                    osc.frequency.setValueAtTime(783.99, audioCtx.currentTime + 0.2);
-                    osc.frequency.setValueAtTime(1046.50, audioCtx.currentTime + 0.3);
-                    gain.gain.setValueAtTime(0.4, audioCtx.currentTime);
-                    gain.gain.exponentialRampToValueAtTime(0.01, audioCtx.currentTime + 0.6);
-                    osc.start();
-                    osc.stop(audioCtx.currentTime + 0.6);
-                }
-            } catch (e) { console.log('Audio playback prevented'); }
+      const allCards = document.querySelectorAll('.option-card');
+      allCards.forEach((card, idx) => {
+        card.classList.add('disabled');
+        if (idx === qData.correct) {
+          card.classList.add('correct');
+        } else if (idx === state.activeQuiz.selectedOption && !isCorrect) {
+          card.classList.add('wrong');
         }
+      });
 
-        // --- INITIALIZATION ---
-        window.onload = function() {
-            loadLocalStorageData();
-            renderSubjectList();
-            updateHeaderStats();
-        };
+      // Show Feedback Panel
+      const panel = document.getElementById('feedback-panel');
+      const icon = document.getElementById('feedback-icon');
+      const title = document.getElementById('feedback-title');
+      const exp = document.getElementById('feedback-explanation');
+      const btn = document.getElementById('feedback-btn');
 
-        function loadLocalStorageData() {
-            const savedXP = localStorage.getItem('radingo_xp');
-            const savedStreak = localStorage.getItem('radingo_streak');
-            const savedQuestions = localStorage.getItem('radingo_questions');
+      panel.classList.remove('hidden');
 
-            if (savedXP) appState.xp = parseInt(savedXP, 10);
-            if (savedStreak) appState.streak = parseInt(savedStreak, 10);
+      if (isCorrect) {
+        playSynthSound('correct');
+        panel.className = "fixed bottom-0 left-0 right-0 p-4 border-t border-emerald-700 bg-slate-900/95 text-emerald-400 z-50";
+        icon.innerHTML = '<i class="fa-solid fa-circle-check text-emerald-400"></i>';
+        title.innerText = '答對了！太神啦！ (+20 XP, +$50 薪水)';
+        btn.className = "w-full py-3 rounded-xl font-extrabold text-sm btn-duo btn-green text-slate-950";
+        btn.innerText = "下一題";
 
-            if (savedQuestions) {
-                try {
-                    appState.questions = JSON.parse(savedQuestions);
-                } catch (e) {
-                    appState.questions = [...DEFAULT_QUESTIONS];
-                }
-            } else {
-                appState.questions = [...DEFAULT_QUESTIONS];
-                saveQuestionsToStorage();
-            }
+        // Reward User
+        state.userStats.xp += 20;
+        state.userStats.money += 50;
+        saveState();
+
+      } else {
+        playSynthSound('wrong');
+        panel.className = "fixed bottom-0 left-0 right-0 p-4 border-t border-rose-700 bg-slate-900/95 text-rose-400 z-50";
+        icon.innerHTML = '<i class="fa-solid fa-circle-xmark text-rose-400"></i>';
+        title.innerText = '差一點點！再接再厲！';
+        btn.className = "w-full py-3 rounded-xl font-extrabold text-sm btn-duo bg-rose-600 hover:bg-rose-500 text-white";
+        btn.innerText = "再試一次";
+      }
+
+      exp.innerText = qData.explanation || '繼續保持，多看幾次就默默記住了！';
+      document.getElementById('submit-answer-btn').classList.add('hidden');
+    }
+
+    function handleFeedbackAction() {
+      const qData = state.activeQuiz.questions[state.activeQuiz.currentIndex];
+      const isCorrect = state.activeQuiz.selectedOption === qData.correct;
+
+      hideFeedbackPanel(); // 點擊按鈕後立刻隱藏面板
+
+      if (isCorrect) {
+        // Move to Next Question
+        state.activeQuiz.currentIndex++;
+        if (state.activeQuiz.currentIndex < state.activeQuiz.questions.length) {
+          loadCurrentQuestion();
+        } else {
+          // Session Completed
+          confetti({ particleCount: 100, spread: 70, origin: { y: 0.6 } });
+          alert('🎉 恭喜完成該科目本輪練習！XP 與津貼已存入帳戶！');
+          exitQuiz();
         }
+      } else {
+        // Retry Question
+        loadCurrentQuestion();
+      }
+    }
 
-        function saveQuestionsToStorage() {
-            localStorage.setItem('radingo_questions', JSON.stringify(appState.questions));
-        }
 
-        function updateHeaderStats() {
-            document.getElementById('stat-xp').innerText = appState.xp;
-            document.getElementById('stat-streak').innerText = appState.streak;
-            localStorage.setItem('radingo_xp', appState.xp);
-            localStorage.setItem('radingo_streak', appState.streak);
-        }
+    /* ===================================================
+       5. CAREER SIMULATOR (放射師的一天 - 13大工作區獨立升級)
+       =================================================== */
+    
+    function renderCareerTab() {
+      // 1. Calculate Question Unlock Percentage
+      const totalQ = state.questions.length;
+      const unlockPct = Math.min(100, Math.round((totalQ / 20) * 100)); // 20 題以上即算大滿貫
 
-        // --- SCREEN ROUTING ---
-        function showScreen(screenName) {
-            document.getElementById('screen-home').classList.add('hidden');
-            document.getElementById('screen-quiz').classList.add('hidden');
-            document.getElementById('screen-result').classList.add('hidden');
+      document.getElementById('career-unlock-pct').innerText = `${unlockPct}%`;
+      document.getElementById('career-progress-fill').style.width = `${unlockPct}%`;
 
-            document.getElementById(`screen-${screenName}`).classList.remove('hidden');
-            hideFeedbackBanner();
-        }
+      const isUnlockedAll = unlockPct >= 10; // 達到 10% 即全解鎖
 
-        // --- SUBJECT LIST RENDER ---
-        function renderSubjectList() {
-            const subjectContainer = document.getElementById('subject-list');
-            subjectContainer.innerHTML = '';
+      if (isUnlockedAll) {
+        document.getElementById('career-title-badge').innerText = "🎯 對位工具人 (已全解鎖)";
+        document.getElementById('career-rank-name').innerText = "13 大醫院放射工作區全開！";
+        document.getElementById('career-unlock-hint').innerHTML = '<span class="text-emerald-400 font-bold">✨ 成功解鎖全院工作區！按上班次數獨立修練升級！</span>';
+      }
 
-            appState.subjects.forEach(sub => {
-                const subQuestions = appState.questions.filter(q => q.subjectId === sub.id);
-                
-                const card = document.createElement('div');
-                card.className = 'bg-white rounded-2xl p-5 duo-card border-2 border-gray-200 flex items-center justify-between hover:border-brand-green transition cursor-pointer';
-                card.onclick = () => startQuiz(sub.id);
+      // 2. Render 13 Work Units
+      const container = document.getElementById('work-units-list');
+      container.innerHTML = '';
 
-                card.innerHTML = `
-                    <div class="flex items-center space-x-4">
-                        <div class="w-14 h-14 ${sub.color} text-white rounded-2xl flex items-center justify-center text-2xl shadow-md">
-                            <i class="fa-solid ${sub.icon}"></i>
-                        </div>
-                        <div>
-                            <h4 class="font-extrabold text-base text-gray-800">${sub.name}</h4>
-                            <p class="text-xs font-medium text-gray-400 mt-0.5">收錄題數：<span class="text-brand-green font-bold">${subQuestions.length} 題</span></p>
-                        </div>
-                    </div>
-                    <button class="bg-gray-100 hover:bg-brand-green hover:text-white text-gray-600 w-10 h-10 rounded-xl flex items-center justify-center transition font-bold">
-                        <i class="fa-solid fa-play"></i>
-                    </button>
-                `;
-                subjectContainer.appendChild(card);
-            });
-        }
+      WORK_UNITS.forEach(unit => {
+        const workCount = state.careerUnitLevels[unit.id] || 0;
+        
+        // Calculate Level based on work counts
+        let levelTitle = "🌱 菜鳥";
+        let levelColor = "text-slate-400 border-slate-700 bg-slate-900";
+        if (workCount >= 10) { levelTitle = "🔥 該區大師"; levelColor = "text-amber-400 border-amber-800 bg-amber-950/60"; }
+        else if (workCount >= 3) { levelTitle = "⚡ 熟手"; levelColor = "text-sky-400 border-sky-800 bg-sky-950/60"; }
 
-        // --- QUIZ ENGINE ---
-        function startQuiz(subjectId) {
-            const filtered = appState.questions.filter(q => q.subjectId === subjectId);
-            if (filtered.length === 0) {
-                alert('該科目目前尚無題目，請點擊上方「題庫管理」新增題目！');
-                return;
-            }
-
-            appState.currentSubject = subjectId;
-            appState.currentQuizQuestions = [...filtered].sort(() => Math.random() - 0.5); // Shuffle
-            appState.currentQuestionIndex = 0;
-            appState.selectedOptionIndex = null;
-            appState.correctCount = 0;
-
-            showScreen('quiz');
-            renderCurrentQuestion();
-        }
-
-        function renderCurrentQuestion() {
-            hideFeedbackBanner();
-            appState.selectedOptionIndex = null;
-
-            const total = appState.currentQuizQuestions.length;
-            const currentIdx = appState.currentQuestionIndex;
-            const q = appState.currentQuizQuestions[currentIdx];
-
-            // Progress bar update
-            const progressPct = ((currentIdx) / total) * 100;
-            document.getElementById('quiz-progress-bar').style.width = `${progressPct}%`;
-            document.getElementById('quiz-progress-text').innerText = `${currentIdx + 1}/${total}`;
-
-            const container = document.getElementById('quiz-card-container');
-            container.innerHTML = '';
-
-            const wrapper = document.createElement('div');
-            wrapper.className = 'space-y-6';
-
-            // Question Header
-            let badgeText = '觀念選擇題';
-            if (q.type === 'tf') badgeText = '1秒快問快答';
-            if (q.type === 'fill') badgeText = '卡片填空題';
-
-            wrapper.innerHTML = `
-                <div class="inline-block bg-emerald-100 text-brand-greenDark font-bold text-xs px-3 py-1 rounded-full uppercase">
-                    ${badgeText}
-                </div>
-                <h3 class="text-xl sm:text-2xl font-black text-gray-800 leading-snug">${q.question}</h3>
-                <div id="options-container" class="grid grid-cols-1 gap-3 pt-2"></div>
-            `;
-
-            container.appendChild(wrapper);
-
-            // Render Options
-            const optContainer = document.getElementById('options-container');
-            q.options.forEach((optText, idx) => {
-                const optBtn = document.createElement('button');
-                optBtn.className = 'w-full p-4 rounded-2xl border-2 border-gray-200 text-left font-bold text-gray-700 duo-card hover:bg-gray-50 flex items-center justify-between transition';
-                optBtn.onclick = () => selectOption(idx, optBtn);
-                optBtn.innerHTML = `
-                    <span>${optText}</span>
-                    <div class="w-6 h-6 rounded-full border-2 border-gray-300 flex items-center justify-center text-xs text-transparent option-indicator">
-                        <i class="fa-solid fa-check"></i>
-                    </div>
-                `;
-                optContainer.appendChild(optBtn);
-            });
-
-            // Reset submit button state
-            const submitBtn = document.getElementById('btn-submit-answer');
-            submitBtn.disabled = true;
-            submitBtn.className = 'w-full py-4 rounded-2xl bg-gray-300 text-gray-500 font-extrabold text-lg cursor-not-allowed';
-        }
-
-        function selectOption(index, btnElement) {
-            appState.selectedOptionIndex = index;
-
-            const allBtns = document.querySelectorAll('#options-container button');
-            allBtns.forEach((btn, idx) => {
-                btn.classList.remove('border-brand-green', 'bg-emerald-50', 'text-brand-green');
-                btn.classList.add('border-gray-200');
-                const indicator = btn.querySelector('.option-indicator');
-                indicator.classList.remove('bg-brand-green', 'border-brand-green', 'text-white');
-                indicator.classList.add('border-gray-300', 'text-transparent');
-            });
-
-            btnElement.classList.remove('border-gray-200');
-            btnElement.classList.add('border-brand-green', 'bg-emerald-50', 'text-brand-green');
+        const card = document.createElement('div');
+        card.className = `bg-slate-800/90 border border-slate-700 rounded-2xl p-4 space-y-3 transition ${!isUnlockedAll ? 'opacity-60 grayscale' : ''}`;
+        
+        card.innerHTML = `
+          <div class="flex items-start justify-between">
+            <div class="flex items-center space-x-3">
+              <div class="w-10 h-10 rounded-xl bg-slate-700 flex items-center justify-center text-sky-400 text-lg">
+                <i class="fa-solid ${unit.icon}"></i>
+              </div>
+              <div>
+                <h4 class="font-extrabold text-sm text-slate-100">${unit.name}</h4>
+                <span class="text-[10px] px-2 py-0.5 rounded-full border font-bold ${levelColor}">${levelTitle} (累計上班 ${workCount} 次)</span>
+              </div>
+            </div>
             
-            const activeIndicator = btnElement.querySelector('.option-indicator');
-            activeIndicator.classList.remove('border-gray-300', 'text-transparent');
-            activeIndicator.classList.add('bg-brand-green', 'border-brand-green', 'text-white');
+            <button onclick="workAtUnit('${unit.id}')" ${!isUnlockedAll ? 'disabled' : ''} class="px-3.5 py-1.5 rounded-xl font-bold text-xs btn-duo btn-emerald bg-emerald-500 text-slate-950">
+              <i class="fa-solid fa-briefcase mr-1"></i> 上班 (+薪水)
+            </button>
+          </div>
+          <p class="text-xs text-slate-400 leading-normal">${unit.desc}</p>
+        `;
 
-            // Enable submit button
-            const submitBtn = document.getElementById('btn-submit-answer');
-            submitBtn.disabled = false;
-            submitBtn.className = 'w-full py-4 rounded-2xl bg-brand-green text-white font-extrabold text-lg duo-btn border-b-4 border-brand-greenDark hover:bg-opacity-95';
-        }
+        container.appendChild(card);
+      });
 
-        function checkAnswer() {
-            if (appState.selectedOptionIndex === null) return;
+      // 3. Render Vent Shop
+      renderShopItems();
+    }
 
-            const q = appState.currentQuizQuestions[appState.currentQuestionIndex];
-            const isCorrect = (appState.selectedOptionIndex === q.correctIndex);
+    function workAtUnit(unitId) {
+      state.careerUnitLevels[unitId] = (state.careerUnitLevels[unitId] || 0) + 1;
+      state.userStats.money += 150; // 上班賺加給薪水
+      saveState();
 
-            if (isCorrect) {
-                appState.correctCount++;
-                playSound('correct');
-                showFeedbackBanner(true, '答對了！非常優秀！', q.explanation || '繼續保持，觀念非常清晰！');
-            } else {
-                playSound('wrong');
-                const correctText = q.options[q.correctIndex];
-                showFeedbackBanner(false, '差一點點！正確答案是：', `${correctText}\n解析：${q.explanation || '熟能生巧，多複習幾次就記住了！'}`);
+      playSynthSound('correct');
+      renderCareerTab();
+    }
+
+    function renderShopItems() {
+      const container = document.getElementById('meme-shop-items');
+      container.innerHTML = '';
+
+      SHOP_ITEMS.forEach(item => {
+        const isBought = state.unlockedMemes.includes(item.id);
+
+        const div = document.createElement('div');
+        div.className = "bg-slate-900 border border-slate-700/80 rounded-xl p-3 space-y-2";
+        
+        div.innerHTML = `
+          <div class="flex justify-between items-center">
+            <span class="font-extrabold text-xs text-slate-200">${item.title}</span>
+            ${isBought ? 
+              '<span class="text-[10px] text-emerald-400 font-bold bg-emerald-950 px-2 py-0.5 rounded-full border border-emerald-800">已持有</span>' :
+              `<button onclick="buyShopItem('${item.id}', ${item.cost})" class="px-3 py-1 bg-amber-500 hover:bg-amber-400 text-slate-950 font-black text-xs rounded-lg shadow">
+                 $${item.cost} 解鎖
+               </button>`
             }
+          </div>
+          ${isBought ? `<p class="text-xs text-amber-300 italic bg-slate-950 p-2 rounded-lg border border-slate-800">💭 心裡OS：${item.os}</p>` : ''}
+        `;
+
+        container.appendChild(div);
+      });
+    }
+
+    function buyShopItem(itemId, cost) {
+      if (state.userStats.money < cost) {
+        alert('國考津貼/薪水不夠喔！多去「國考刷題」或是「工作區上班」賺錢吧！');
+        return;
+      }
+
+      state.userStats.money -= cost;
+      state.unlockedMemes.push(itemId);
+      saveState();
+
+      alert('🎉 成功解鎖黑色幽默卡片！');
+      renderCareerTab();
+    }
+
+
+    /* ===================================================
+       6. NO-CODE QUESTION EDITOR & JSON IMPORT/EXPORT
+       =================================================== */
+    
+    function toggleEditorFields() {
+      // Expandable for True/False in future
+    }
+
+    function addNewQuestionFromEditor() {
+      const sub = document.getElementById('edit-subject').value;
+      const qText = document.getElementById('edit-question').value.trim();
+      const exp = document.getElementById('edit-explanation').value.trim();
+
+      const opt0 = document.getElementById('opt-0').value.trim();
+      const opt1 = document.getElementById('opt-1').value.trim();
+      const opt2 = document.getElementById('opt-2').value.trim();
+      const opt3 = document.getElementById('opt-3').value.trim();
+      const correctIdx = parseInt(document.getElementById('correct-opt-idx').value) || 0;
+
+      if (!qText || !opt0 || !opt1) {
+        alert('請至少填寫題目敘述與選項 A、B 喔！');
+        return;
+      }
+
+      const newQ = {
+        id: 'user_' + Date.now(),
+        subject: sub,
+        type: 'choice',
+        question: qText,
+        options: [opt0, opt1, opt2, opt3].filter(o => o !== ''),
+        correct: correctIdx,
+        explanation: exp || '自訂題目練習'
+      };
+
+      state.questions.unshift(newQ);
+      saveState();
+
+      alert('✅ 題目已成功新增至你的本地國考題庫！');
+      document.getElementById('edit-question').value = '';
+      document.getElementById('editor-total-count').innerText = state.questions.length;
+      closeModal('editor-modal');
+    }
+
+    function exportQuestionsJSON() {
+      const dataStr = "data:text/json;charset=utf-8," + encodeURIComponent(JSON.stringify(state.questions, null, 2));
+      const downloadAnchor = document.createElement('a');
+      downloadAnchor.setAttribute("href", dataStr);
+      downloadAnchor.setAttribute("download", "radingo_questions_backup.json");
+      document.body.appendChild(downloadAnchor);
+      downloadAnchor.click();
+      downloadAnchor.remove();
+    }
+
+    function importQuestionsJSON(event) {
+      const file = event.target.files[0];
+      if (!file) return;
+
+      const reader = new FileReader();
+      reader.onload = function(e) {
+        try {
+          const imported = JSON.parse(e.target.result);
+          if (Array.isArray(imported)) {
+            state.questions = imported;
+            saveState();
+            alert(`🎉 成功匯入 ${imported.length} 題最新國考題庫！`);
+            location.reload();
+          }
+        } catch (err) {
+          alert('匯入失敗：JSON 格式不正確！');
         }
+      };
+      reader.readAsText(file);
+    }
 
-        function showFeedbackBanner(isCorrect, title, detail) {
-            const banner = document.getElementById('feedback-banner');
-            const iconDiv = document.getElementById('feedback-icon');
-            const titleEl = document.getElementById('feedback-title');
-            const detailEl = document.getElementById('feedback-detail');
-            const btn = document.getElementById('feedback-btn');
 
-            if (isCorrect) {
-                banner.className = 'fixed bottom-0 left-0 right-0 z-40 p-5 shadow-2xl border-t-4 bg-emerald-100 border-brand-green text-emerald-900 transform translate-y-0 transition-transform duration-300';
-                iconDiv.innerHTML = '<i class="fa-solid fa-circle-check text-brand-green"></i>';
-                btn.className = 'px-6 py-3 rounded-2xl bg-brand-green text-white font-black text-sm duo-btn border-b-4 border-brand-greenDark';
-            } else {
-                banner.className = 'fixed bottom-0 left-0 right-0 z-40 p-5 shadow-2xl border-t-4 bg-red-100 border-brand-red text-red-900 transform translate-y-0 transition-transform duration-300';
-                iconDiv.innerHTML = '<i class="fa-solid fa-circle-xmark text-brand-red"></i>';
-                btn.className = 'px-6 py-3 rounded-2xl bg-brand-red text-white font-black text-sm duo-btn border-b-4 border-brand-redDark';
-            }
+    /* ===================================================
+       7. HELPER UTILITIES & SYNTH AUDIO
+       =================================================== */
+    
+    function openModal(id) {
+      document.getElementById(id).classList.remove('hidden');
+      if (id === 'editor-modal') {
+        document.getElementById('editor-total-count').innerText = state.questions.length;
+      }
+    }
 
-            titleEl.innerText = title;
-            detailEl.innerText = detail;
+    function closeModal(id) {
+      document.getElementById(id).classList.add('hidden');
+    }
+
+    function shuffleArray(array) {
+      for (let i = array.length - 1; i > 0; i--) {
+        const j = Math.floor(Math.random() * (i + 1));
+        [array[i], array[j]] = [array[j], array[i]];
+      }
+      return array;
+    }
+
+    /* Web Audio API Sound Generator */
+    function playSynthSound(type) {
+      try {
+        const ctx = new (window.AudioContext || window.webkitAudioContext)();
+        const osc = ctx.createOscillator();
+        const gain = ctx.createGain();
+        osc.connect(gain);
+        gain.connect(ctx.destination);
+
+        if (type === 'correct') {
+          osc.frequency.setValueAtTime(523.25, ctx.currentTime); // C5
+          osc.frequency.setValueAtTime(659.25, ctx.currentTime + 0.1); // E5
+          gain.gain.setValueAtTime(0.2, ctx.currentTime);
+          gain.gain.exponentialRampToValueAtTime(0.01, ctx.currentTime + 0.3);
+          osc.start();
+          osc.stop(ctx.currentTime + 0.3);
+        } else if (type === 'wrong') {
+          osc.type = 'sawtooth';
+          osc.frequency.setValueAtTime(220, ctx.currentTime); // A3
+          osc.frequency.setValueAtTime(174.61, ctx.currentTime + 0.15); // F3
+          gain.gain.setValueAtTime(0.2, ctx.currentTime);
+          gain.gain.exponentialRampToValueAtTime(0.01, ctx.currentTime + 0.4);
+          osc.start();
+          osc.stop(ctx.currentTime + 0.4);
         }
+      } catch (e) {
+        // Audio fallback
+      }
+    }
 
-        function hideFeedbackBanner() {
-            const banner = document.getElementById('feedback-banner');
-            banner.classList.add('translate-y-full');
-        }
 
-        function nextQuestion() {
-            hideFeedbackBanner();
-            appState.currentQuestionIndex++;
-
-            if (appState.currentQuestionIndex < appState.currentQuizQuestions.length) {
-                renderCurrentQuestion();
-            } else {
-                finishQuiz();
-            }
-        }
-
-        function finishQuiz() {
-            playSound('complete');
-            
-            // Confetti animation celebration
-            try {
-                confetti({
-                    particleCount: 100,
-                    spread: 70,
-                    origin: { y: 0.6 }
-                });
-            } catch(e) {}
-
-            const total = appState.currentQuizQuestions.length;
-            const accuracy = Math.round((appState.correctCount / total) * 100);
-            const earnedXP = appState.correctCount * 10 + 20;
-
-            appState.xp += earnedXP;
-            appState.streak += 1;
-            updateHeaderStats();
-
-            document.getElementById('earned-xp').innerText = earnedXP;
-            document.getElementById('quiz-accuracy').innerText = `${accuracy}%`;
-
-            showScreen('result');
-        }
-
-        function confirmExitQuiz() {
-            if (confirm('確定要離開本次練習嗎？離開發生的進度將不會儲存。')) {
-                showScreen('home');
-            }
-        }
-
-        // --- NO-CODE QUESTION MANAGEMENT MODAL ---
-        function openQuestionManager() {
-            renderManagerQuestionList();
-            document.getElementById('modal-manager').classList.remove('hidden');
-        }
-
-        function closeQuestionManager() {
-            document.getElementById('modal-manager').classList.add('hidden');
-            renderSubjectList(); // Refresh subject cards count
-        }
-
-        function toggleFormFields() {
-            const type = document.getElementById('form-type').value;
-            const area = document.getElementById('form-options-area');
-
-            if (type === 'tf') {
-                area.style.display = 'none';
-            } else {
-                area.style.display = 'block';
-            }
-        }
-
-        function saveNewQuestion() {
-            const subjectId = document.getElementById('form-subject').value;
-            const type = document.getElementById('form-type').value;
-            const question = document.getElementById('form-question').value.trim();
-            const explanation = document.getElementById('form-explanation').value.trim();
-
-            if (!question) {
-                alert('請填寫題目敘述！');
-                return;
-            }
-
-            let options = [];
-            let correctIndex = 0;
-
-            if (type === 'tf') {
-                options = ['O 正確', 'X 錯誤'];
-                correctIndex = 0; // Default O
-            } else {
-                const opt0 = document.getElementById('opt-0').value.trim();
-                const opt1 = document.getElementById('opt-1').value.trim();
-                const opt2 = document.getElementById('opt-2').value.trim();
-                const opt3 = document.getElementById('opt-3').value.trim();
-
-                if (!opt0 || !opt1) {
-                    alert('請至少填寫選項 1 與選項 2！');
-                    return;
-                }
-
-                options = [opt0, opt1, opt2, opt3].filter(o => o.length > 0);
-                
-                const radios = document.getElementsByName('correct-opt');
-                for (let i = 0; i < radios.length; i++) {
-                    if (radios[i].checked) {
-                        correctIndex = i;
-                        break;
-                    }
-                }
-            }
-
-            const newQ = {
-                id: 'custom_' + Date.now(),
-                subjectId,
-                type,
-                question,
-                options,
-                correctIndex,
-                explanation
-            };
-
-            appState.questions.push(newQ);
-            saveQuestionsToStorage();
-            renderManagerQuestionList();
-
-            // Clear inputs
-            document.getElementById('form-question').value = '';
-            document.getElementById('form-explanation').value = '';
-            document.getElementById('opt-0').value = '';
-            document.getElementById('opt-1').value = '';
-            document.getElementById('opt-2').value = '';
-            document.getElementById('opt-3').value = '';
-
-            alert('成功新增題目！已存入 LocalStorage。');
-        }
-
-        function renderManagerQuestionList() {
-            const listDiv = document.getElementById('manager-question-list');
-            listDiv.innerHTML = '';
-
-            document.getElementById('total-q-count').innerText = `${appState.questions.length} 題`;
-
-            appState.questions.forEach((q, idx) => {
-                const subObj = appState.subjects.find(s => s.id === q.subjectId) || { name: '其他' };
-                const item = document.createElement('div');
-                item.className = 'p-3 bg-white border border-gray-200 rounded-xl flex items-center justify-between text-xs hover:border-brand-blue';
-                item.innerHTML = `
-                    <div class="space-y-1 max-w-md">
-                        <div class="flex items-center gap-2">
-                            <span class="bg-blue-100 text-brand-blue font-bold px-2 py-0.5 rounded-md">${subObj.name}</span>
-                            <span class="font-bold text-gray-700 truncate">${q.question}</span>
-                        </div>
-                    </div>
-                    <button onclick="deleteQuestion('${q.id}')" class="text-red-500 hover:text-red-700 p-1 font-bold">
-                        <i class="fa-solid fa-trash"></i>
-                    </button>
-                `;
-                listDiv.appendChild(item);
-            });
-        }
-
-        function deleteQuestion(id) {
-            if (confirm('確定要刪除這道題目嗎？')) {
-                appState.questions = appState.questions.filter(q => q.id !== id);
-                saveQuestionsToStorage();
-                renderManagerQuestionList();
-            }
-        }
-
-        function exportQuestionsJSON() {
-            const dataStr = "data:text/json;charset=utf-8," + encodeURIComponent(JSON.stringify(appState.questions, null, 2));
-            const downloadAnchor = document.createElement('a');
-            downloadAnchor.setAttribute("href", dataStr);
-            downloadAnchor.setAttribute("download", `radingo_question_bank_${Date.now()}.json`);
-            document.body.appendChild(downloadAnchor);
-            downloadAnchor.click();
-            downloadAnchor.remove();
-        }
-
-        function importQuestionsJSON(event) {
-            const fileReader = new FileReader();
-            fileReader.onload = function (e) {
-                try {
-                    const imported = JSON.parse(e.target.result);
-                    if (Array.isArray(imported)) {
-                        appState.questions = imported;
-                        saveQuestionsToStorage();
-                        renderManagerQuestionList();
-                        alert('匯入成功！題庫已更新。');
-                    } else {
-                        alert('格式錯誤：JSON 必須是題目陣列！');
-                    }
-                } catch (err) {
-                    alert('無法解析該 JSON 檔案。');
-                }
-            };
-            fileReader.readAsText(event.target.files[0]);
-        }
-
-        function restoreDefaultQuestions() {
-            if (confirm('確定要恢復為系統預設題庫嗎？所有自訂新增的題目將被覆蓋。')) {
-                appState.questions = [...DEFAULT_QUESTIONS];
-                saveQuestionsToStorage();
-                renderManagerQuestionList();
-                alert('已成功恢復預設題庫！');
-            }
-        }
-
-        function resetAppProgress() {
-            if (confirm('確定要重設經驗值 (XP) 與連勝天數嗎？')) {
-                appState.xp = 0;
-                appState.streak = 0;
-                updateHeaderStats();
-                alert('進度已重設！');
-            }
-        }
-    </script>
+    /* INITIALIZATION ON LOAD */
+    window.onload = function() {
+      loadState();
+      renderSubjectCards();
+    };
+  </script>
 </body>
 </html>
