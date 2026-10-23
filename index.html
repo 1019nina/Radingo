@@ -14,14 +14,16 @@
     .btn-duo:active { transform: translateY(4px); box-shadow: 0 0 0 transparent; }
     .btn-green { background-color: #22c55e; box-shadow: 0 4px 0 #15803d; color: #052e16; }
     .btn-blue { background-color: #3b82f6; box-shadow: 0 4px 0 #1d4ed8; color: #ffffff; }
-    .btn-purple { background-color: #a855f7; box-shadow: 0 4px 0 #7e22ce; color: #ffffff; }
-    .btn-amber { background-color: #f59e0b; box-shadow: 0 4px 0 #b45309; color: #451a03; }
     
     .card-option { border: 2px solid #334155; background: #1e293b; transition: all 0.15s; }
     .card-option:hover:not(.disabled) { border-color: #3b82f6; transform: translateY(-2px); }
     .card-option.selected { border-color: #3b82f6; background: #1e3a8a; }
     .card-option.correct { border-color: #22c55e; background: #14532d; color: #86efac; }
     .card-option.wrong { border-color: #ef4444; background: #7f1d1d; color: #fca5a5; }
+
+    .matching-card { border: 2px solid #334155; background: #1e293b; transition: all 0.15s; cursor: pointer; }
+    .matching-card.selected { border-color: #a855f7; background: #3b0764; }
+    .matching-card.matched { border-color: #22c55e; background: #064e3b; opacity: 0.5; pointer-events: none; }
 
     ::-webkit-scrollbar { width: 6px; }
     ::-webkit-scrollbar-track { background: #0f172a; }
@@ -35,7 +37,7 @@
     <div class="max-w-md mx-auto flex justify-between items-center">
       <div class="flex items-center space-x-2">
         <span class="text-2xl font-black text-emerald-400">Radingo</span>
-        <span class="bg-emerald-950 text-emerald-400 text-[10px] px-2 py-0.5 rounded-full font-bold border border-emerald-800">Duolingo Mode</span>
+        <span class="bg-emerald-950 text-emerald-400 text-[10px] px-2 py-0.5 rounded-full font-bold border border-emerald-800">4大題型版</span>
       </div>
 
       <div class="flex items-center space-x-3 font-extrabold text-xs">
@@ -79,11 +81,11 @@
       </div>
 
       <div id="subject-node-container" class="space-y-4">
-        <!-- Subjects & Unit Progress Cards -->
+        <!-- Dynamic Subjects Cards -->
       </div>
     </div>
 
-    <!-- ACTIVE QUIZ MODAL / OVERLAY -->
+    <!-- ACTIVE QUIZ OVERLAY -->
     <div id="quiz-overlay" class="hidden fixed inset-0 bg-slate-950 z-50 p-4 flex flex-col justify-between overflow-y-auto">
       <div class="max-w-md w-full mx-auto space-y-4 flex-1">
         <!-- Header -->
@@ -99,20 +101,20 @@
 
         <!-- Question Box -->
         <div class="bg-slate-900 border-2 border-slate-800 rounded-2xl p-4 space-y-3 shadow-xl">
-          <span id="q-type-tag" class="bg-blue-900/60 text-blue-300 text-[10px] font-bold px-2 py-0.5 rounded border border-blue-700">選擇題</span>
+          <span id="q-type-badge" class="bg-blue-900/60 text-blue-300 text-[10px] font-bold px-2 py-0.5 rounded border border-blue-700">選擇題</span>
           <h3 id="q-text" class="text-sm font-bold text-slate-100 leading-relaxed">題目敘述...</h3>
           <div id="q-img-container" class="hidden rounded-xl overflow-hidden border border-slate-700 max-h-48">
             <img id="q-img" src="" class="w-full object-cover">
           </div>
         </div>
 
-        <!-- Options Container -->
-        <div id="q-options-container" class="space-y-2.5">
-          <!-- Dynamic Options -->
+        <!-- Options / Matching Container -->
+        <div id="q-interactive-zone" class="space-y-2.5">
+          <!-- Dynamic Question Type Inputs -->
         </div>
       </div>
 
-      <!-- Bottom Panel / Feedback -->
+      <!-- Bottom Feedback Panel -->
       <div class="max-w-md w-full mx-auto pt-3">
         <div id="feedback-panel" class="hidden p-3 rounded-xl border mb-3 space-y-2">
           <div class="flex items-center gap-2">
@@ -141,7 +143,7 @@
       </div>
     </div>
 
-    <!-- VIEW 3: SHOP & UPGRADES (升級商店) -->
+    <!-- VIEW 3: SHOP (升級商店) -->
     <div id="view-shop" class="hidden space-y-4">
       <div class="bg-slate-900 border border-slate-800 rounded-2xl p-4">
         <h2 class="text-base font-black text-amber-400 flex items-center gap-2">
@@ -151,7 +153,7 @@
       </div>
 
       <div id="shop-items-container" class="space-y-3">
-        <!-- Upgrades List -->
+        <!-- Shop List -->
       </div>
     </div>
 
@@ -175,16 +177,16 @@
     </div>
   </footer>
 
-  <!-- MODAL: EDITOR (無程式碼題庫管理員) -->
+  <!-- MODAL: EDITOR (4大題型無程式碼題庫管理員) -->
   <div id="modal-editor" class="hidden fixed inset-0 bg-black/80 backdrop-blur-sm z-50 flex items-center justify-center p-4">
     <div class="bg-slate-900 border border-slate-800 rounded-2xl w-full max-w-md max-h-[85vh] flex flex-col overflow-hidden">
       <div class="p-4 border-b border-slate-800 flex justify-between items-center bg-slate-800/50">
-        <h3 class="font-black text-sm text-white">🛠️ 無程式碼題庫管理員</h3>
+        <h3 class="font-black text-sm text-white">🛠️ 4 大題型題庫管理員</h3>
         <button onclick="closeModal('modal-editor')" class="text-slate-400 hover:text-white"><i class="fa-solid fa-xmark text-lg"></i></button>
       </div>
 
       <div class="p-4 overflow-y-auto space-y-4 text-xs">
-        <!-- Backup -->
+        <!-- JSON Backup -->
         <div class="bg-slate-800 p-3 rounded-xl space-y-2 border border-slate-700">
           <span class="font-bold text-slate-300">📥 題庫 JSON 匯入/匯出</span>
           <div class="grid grid-cols-2 gap-2">
@@ -195,12 +197,12 @@
           </div>
         </div>
 
-        <!-- New Q Form -->
+        <!-- Add Form -->
         <div class="bg-slate-800/60 p-3.5 rounded-xl border border-slate-700 space-y-3">
-          <span class="font-bold text-emerald-400 text-sm block">➕ 新增題目（支援圖片）</span>
+          <span class="font-bold text-emerald-400 text-sm block">➕ 新增題目（支援 4 大題型）</span>
           
           <div>
-            <label class="text-slate-400 block mb-1">對應科目</label>
+            <label class="text-slate-400 block mb-1">對應國考科目</label>
             <select id="ed-subject" class="w-full bg-slate-900 border border-slate-700 rounded-lg p-2 text-slate-200">
               <option value="basic">1. 基礎醫學</option>
               <option value="physics">2. 醫學物理與輻射安全</option>
@@ -212,16 +214,18 @@
           </div>
 
           <div>
-            <label class="text-slate-400 block mb-1">題型選擇</label>
-            <select id="ed-type" class="w-full bg-slate-900 border border-slate-700 rounded-lg p-2 text-slate-200">
-              <option value="choice">標準 4 選 1 選擇題</option>
-              <option value="tf">1秒快問快答 (True/False)</option>
+            <label class="text-slate-400 block mb-1">選擇題型</label>
+            <select id="ed-type" onchange="toggleEditorTypeFields()" class="w-full bg-slate-900 border border-slate-700 rounded-lg p-2 text-slate-200">
+              <option value="choice">1. 標準 4 選 1 選擇題</option>
+              <option value="matching">2. 觀念配對連連看題</option>
+              <option value="fill">3. 文章填空選擇題</option>
+              <option value="tf">4. 是非題 (True/False)</option>
             </select>
           </div>
 
           <div>
             <label class="text-slate-400 block mb-1">題目文字敘述</label>
-            <textarea id="ed-text" rows="2" placeholder="輸入題目..." class="w-full bg-slate-900 border border-slate-700 rounded-lg p-2 text-slate-200"></textarea>
+            <textarea id="ed-text" rows="2" placeholder="輸入題目敘述... (填空題可用 ___ 代表底線)" class="w-full bg-slate-900 border border-slate-700 rounded-lg p-2 text-slate-200"></textarea>
           </div>
 
           <div>
@@ -229,19 +233,43 @@
             <input type="url" id="ed-img" placeholder="https://..." class="w-full bg-slate-900 border border-slate-700 rounded-lg p-2 text-slate-200">
           </div>
 
-          <div id="ed-options-group" class="space-y-1.5">
-            <label class="text-slate-400 block">選項內容</label>
+          <!-- DYNAMIC INPUT FIELDS BASED ON TYPE -->
+          <!-- 1. Choice / Fill options -->
+          <div id="group-options" class="space-y-1.5">
+            <label class="text-slate-400 block">選項內容 (填空/選擇)</label>
             <input type="text" id="ed-opt-0" placeholder="選項 A" class="w-full bg-slate-900 border border-slate-700 rounded-lg p-1.5">
             <input type="text" id="ed-opt-1" placeholder="選項 B" class="w-full bg-slate-900 border border-slate-700 rounded-lg p-1.5">
             <input type="text" id="ed-opt-2" placeholder="選項 C" class="w-full bg-slate-900 border border-slate-700 rounded-lg p-1.5">
             <input type="text" id="ed-opt-3" placeholder="選項 D" class="w-full bg-slate-900 border border-slate-700 rounded-lg p-1.5">
             <label class="text-slate-400 block pt-1">正確答案 (0=A, 1=B, 2=C, 3=D)</label>
-            <input type="number" id="ed-correct" min="0" max="3" value="0" class="w-full bg-slate-900 border border-slate-700 rounded-lg p-1.5">
+            <input type="number" id="ed-correct-idx" min="0" max="3" value="0" class="w-full bg-slate-900 border border-slate-700 rounded-lg p-1.5">
+          </div>
+
+          <!-- 2. Matching pairs -->
+          <div id="group-matching" class="hidden space-y-2">
+            <label class="text-slate-400 block">配對組合 (左欄 $\leftrightarrow$ 右欄)</label>
+            <div class="grid grid-cols-2 gap-2">
+              <input type="text" id="m-left-0" placeholder="左1: CT HU" class="bg-slate-900 border border-slate-700 rounded-lg p-1.5">
+              <input type="text" id="m-right-0" placeholder="右1: 空氣 -1000" class="bg-slate-900 border border-slate-700 rounded-lg p-1.5">
+            </div>
+            <div class="grid grid-cols-2 gap-2">
+              <input type="text" id="m-left-1" placeholder="左2: Tc-99m" class="bg-slate-900 border border-slate-700 rounded-lg p-1.5">
+              <input type="text" id="m-right-1" placeholder="右2: 140 keV" class="bg-slate-900 border border-slate-700 rounded-lg p-1.5">
+            </div>
+          </div>
+
+          <!-- 3. True / False -->
+          <div id="group-tf" class="hidden space-y-1.5">
+            <label class="text-slate-400 block">正確答案</label>
+            <select id="ed-tf-correct" class="w-full bg-slate-900 border border-slate-700 rounded-lg p-2 text-slate-200">
+              <option value="true">正確 (True / O)</option>
+              <option value="false">錯誤 (False / X)</option>
+            </select>
           </div>
 
           <div>
             <label class="text-slate-400 block mb-1">答案解析</label>
-            <input type="text" id="ed-exp" placeholder="答案說明/記憶口訣..." class="w-full bg-slate-900 border border-slate-700 rounded-lg p-2">
+            <input type="text" id="ed-exp" placeholder="答案解析/記憶口訣..." class="w-full bg-slate-900 border border-slate-700 rounded-lg p-2">
           </div>
 
           <button onclick="saveQuestionToDB()" class="w-full py-2.5 bg-emerald-500 hover:bg-emerald-400 text-slate-950 font-black rounded-xl">
@@ -256,7 +284,7 @@
     </div>
   </div>
 
-  <!-- WORK SCENARIO MODAL (上班劇情彈窗) -->
+  <!-- WORK SCENARIO MODAL -->
   <div id="modal-work-scenario" class="hidden fixed inset-0 bg-black/85 backdrop-blur-sm z-50 flex items-center justify-center p-4">
     <div class="bg-slate-900 border border-slate-800 rounded-2xl w-full max-w-md p-5 space-y-4">
       <div class="flex items-center space-x-3">
@@ -269,14 +297,12 @@
         </div>
       </div>
 
-      <!-- Event Narrative -->
       <div id="work-event-box" class="bg-slate-800 p-3.5 rounded-xl border border-slate-700 text-xs text-slate-200 leading-relaxed">
         劇情載入中...
       </div>
 
-      <!-- Dialogue Choices -->
       <div id="work-choices-container" class="space-y-2">
-        <!-- Generated Dynamically -->
+        <!-- Dynamic Choices -->
       </div>
     </div>
   </div>
@@ -284,17 +310,15 @@
 
   <!-- LOGIC SCRIPT -->
   <script>
-    /* SUBJECTS DEFINITION */
     const SUBJECTS = {
       basic: { name: '基礎醫學', icon: 'fa-brain', color: 'from-pink-600 to-rose-700' },
       physics: { name: '醫學物理與輻射安全', icon: 'fa-atom', color: 'from-blue-600 to-indigo-700' },
       equip: { name: '放射線器材學', icon: 'fa-microchip', color: 'from-amber-600 to-orange-700' },
-      diag: { name: '放射线診斷原理與技術學', icon: 'fa-x-ray', color: 'from-emerald-600 to-teal-700' },
+      diag: { name: '放射線診斷原理與技術學', icon: 'fa-x-ray', color: 'from-emerald-600 to-teal-700' },
       therapy: { name: '放射線治療原理與技術學', icon: 'fa-crosshairs', color: 'from-purple-600 to-violet-700' },
       nuc: { name: '核子醫學診療原理與技術學', icon: 'fa-radiation', color: 'from-cyan-600 to-sky-700' }
     };
 
-    /* 13 WORK UNITS & UNLOCK REQUIREMENTS */
     const WORK_UNITS = [
       { id: 'xray', name: '一般 X 光', reqSubject: 'diag', icon: 'fa-x-ray' },
       { id: 'er', name: '急診 (CT/X-ray)', reqSubject: 'diag', icon: 'fa-truck-medical' },
@@ -313,37 +337,36 @@
 
     const RANKS = ['見習生', '實習生', 'PGY', '放射師', '資深放射師'];
 
-    /* STATE */
     let state = {
       questions: [],
-      userStats: { money: 200, xp: 0, bonusMultiplier: 1.0, defenseGear: 0 },
-      subjectUnits: { basic: 0, physics: 0, equip: 0, diag: 0, therapy: 0, nuc: 0 }, // 單元完成數
-      unitWorkCounts: {}, // { xray: 3 ... }
-      unlockedBadges: [],
-      activeQuiz: null
+      userStats: { money: 200, xp: 0, bonusMultiplier: 1.0 },
+      subjectUnits: { basic: 0, physics: 0, equip: 0, diag: 0, therapy: 0, nuc: 0 },
+      unitWorkCounts: {},
+      activeQuiz: null,
+      matchingState: { selectedLeft: null, matchedCount: 0 }
     };
 
     function loadState() {
-      const q = localStorage.getItem('radingo_v2_q');
+      const q = localStorage.getItem('radingo_v3_q');
       state.questions = q ? JSON.parse(q) : [];
 
-      const st = localStorage.getItem('radingo_v2_st');
+      const st = localStorage.getItem('radingo_v3_st');
       if (st) state.userStats = JSON.parse(st);
 
-      const su = localStorage.getItem('radingo_v2_su');
+      const su = localStorage.getItem('radingo_v3_su');
       if (su) state.subjectUnits = JSON.parse(su);
 
-      const uw = localStorage.getItem('radingo_v2_uw');
+      const uw = localStorage.getItem('radingo_v3_uw');
       if (uw) state.unitWorkCounts = JSON.parse(uw);
 
       updateStatsUI();
     }
 
     function saveState() {
-      localStorage.setItem('radingo_v2_q', JSON.stringify(state.questions));
-      localStorage.setItem('radingo_v2_st', JSON.stringify(state.userStats));
-      localStorage.setItem('radingo_v2_su', JSON.stringify(state.subjectUnits));
-      localStorage.setItem('radingo_v2_uw', JSON.stringify(state.unitWorkCounts));
+      localStorage.setItem('radingo_v3_q', JSON.stringify(state.questions));
+      localStorage.setItem('radingo_v3_st', JSON.stringify(state.userStats));
+      localStorage.setItem('radingo_v3_su', JSON.stringify(state.subjectUnits));
+      localStorage.setItem('radingo_v3_uw', JSON.stringify(state.unitWorkCounts));
       updateStatsUI();
     }
 
@@ -352,7 +375,6 @@
       document.getElementById('stat-xp').innerText = state.userStats.xp;
     }
 
-    /* TAB SWITCHING */
     function switchTab(tab) {
       ['quiz', 'career', 'shop'].forEach(t => document.getElementById(`view-${t}`).classList.add('hidden'));
       document.getElementById(`view-${tab}`).classList.remove('hidden');
@@ -362,7 +384,7 @@
       if (tab === 'shop') renderShop();
     }
 
-    /* 1. QUIZ MAP RENDER */
+    /* 1. QUIZ MAP & ENGINE */
     function renderQuizMap() {
       const container = document.getElementById('subject-node-container');
       container.innerHTML = '';
@@ -401,13 +423,13 @@
         return;
       }
 
-      // Random 5 Questions for 1 unit session
       const shuffled = shuffle([...subQuestions]).slice(0, 5);
       state.activeQuiz = {
         subject: subKey,
         questions: shuffled,
         idx: 0,
-        selectedOpt: null
+        selectedOpt: null,
+        userTFAnswer: null
       };
 
       document.getElementById('quiz-overlay').classList.remove('hidden');
@@ -427,7 +449,12 @@
       document.getElementById('quiz-progress-bar').style.width = `${(state.activeQuiz.idx / total) * 100}%`;
       document.getElementById('q-text').innerText = q.question;
 
-      // Image Handling
+      // Type Badge
+      const typeBadge = document.getElementById('q-type-badge');
+      const typeMap = { choice: '選擇題', matching: '觀念配對題', fill: '填空選擇題', tf: '是非題 (True/False)' };
+      typeBadge.innerText = typeMap[q.type] || '選擇題';
+
+      // Image
       const imgBox = document.getElementById('q-img-container');
       const imgEl = document.getElementById('q-img');
       if (q.imgUrl) {
@@ -437,39 +464,110 @@
         imgBox.classList.add('hidden');
       }
 
-      // Options
-      const optContainer = document.getElementById('q-options-container');
-      optContainer.innerHTML = '';
+      // Interactive Zone Engine (Handling 4 Types)
+      const zone = document.getElementById('q-interactive-zone');
+      zone.innerHTML = '';
       state.activeQuiz.selectedOpt = null;
 
-      q.options.forEach((optStr, i) => {
-        const btn = document.createElement('button');
-        btn.className = "card-option w-full p-3.5 rounded-xl text-left font-bold text-xs flex justify-between items-center";
-        btn.onclick = () => {
-          document.querySelectorAll('.card-option').forEach(c => c.classList.remove('selected'));
-          btn.classList.add('selected');
-          state.activeQuiz.selectedOpt = i;
-        };
-        btn.innerHTML = `<span>${optStr}</span>`;
-        optContainer.appendChild(btn);
-      });
+      if (q.type === 'choice' || q.type === 'fill') {
+        q.options.forEach((optStr, i) => {
+          const btn = document.createElement('button');
+          btn.className = "card-option w-full p-3.5 rounded-xl text-left font-bold text-xs flex justify-between items-center";
+          btn.onclick = () => {
+            document.querySelectorAll('.card-option').forEach(c => c.classList.remove('selected'));
+            btn.classList.add('selected');
+            state.activeQuiz.selectedOpt = i;
+          };
+          btn.innerHTML = `<span>${optStr}</span>`;
+          zone.appendChild(btn);
+        });
+      } 
+      else if (q.type === 'tf') {
+        ['true', 'false'].forEach(val => {
+          const btn = document.createElement('button');
+          btn.className = "card-option w-full p-4 rounded-xl text-center font-black text-sm";
+          btn.onclick = () => {
+            document.querySelectorAll('.card-option').forEach(c => c.classList.remove('selected'));
+            btn.classList.add('selected');
+            state.activeQuiz.userTFAnswer = (val === 'true');
+          };
+          btn.innerText = val === 'true' ? '⭕ 正確 (True)' : '❌ 錯誤 (False)';
+          zone.appendChild(btn);
+        });
+      }
+      else if (q.type === 'matching') {
+        state.matchingState = { selectedLeft: null, matchedCount: 0 };
+        const grid = document.createElement('div');
+        grid.className = "grid grid-cols-2 gap-2";
+
+        const leftCol = document.createElement('div'); leftCol.className = "space-y-2";
+        const rightCol = document.createElement('div'); rightCol.className = "space-y-2";
+
+        q.pairs.forEach((p, idx) => {
+          const lBtn = document.createElement('div');
+          lBtn.className = "matching-card p-3 rounded-xl text-xs font-bold text-center";
+          lBtn.innerText = p.left;
+          lBtn.onclick = () => selectMatchingLeft(idx, lBtn);
+          leftCol.appendChild(lBtn);
+
+          const rBtn = document.createElement('div');
+          rBtn.className = "matching-card p-3 rounded-xl text-xs font-bold text-center";
+          rBtn.innerText = p.right;
+          rBtn.onclick = () => selectMatchingRight(idx, rBtn, q.pairs.length);
+          rightCol.appendChild(rBtn);
+        });
+
+        grid.appendChild(leftCol);
+        grid.appendChild(rightCol);
+        zone.appendChild(grid);
+      }
 
       document.getElementById('feedback-panel').classList.add('hidden');
       document.getElementById('btn-submit-answer').classList.remove('hidden');
     }
 
+    function selectMatchingLeft(idx, element) {
+      document.querySelectorAll('.matching-card').forEach(c => c.classList.remove('selected'));
+      element.classList.add('selected');
+      state.matchingState.selectedLeft = idx;
+    }
+
+    function selectMatchingRight(idx, element, totalPairs) {
+      if (state.matchingState.selectedLeft === null) { alert('請先點選左邊的項目！'); return; }
+
+      if (state.matchingState.selectedLeft === idx) {
+        // Correct Match
+        element.classList.add('matched');
+        document.querySelectorAll('.matching-card.selected').forEach(c => c.classList.add('matched'));
+        state.matchingState.matchedCount++;
+        state.matchingState.selectedLeft = null;
+
+        if (state.matchingState.matchedCount === totalPairs) {
+          state.activeQuiz.selectedOpt = 0; // Mark done
+        }
+      } else {
+        alert('配對不正確喔！再試一次！');
+        document.querySelectorAll('.matching-card').forEach(c => c.classList.remove('selected'));
+        state.matchingState.selectedLeft = null;
+      }
+    }
+
     function submitCurrentAnswer() {
-      if (state.activeQuiz.selectedOpt === null) { alert('請選擇一個答案！'); return; }
-
       const q = state.activeQuiz.questions[state.activeQuiz.idx];
-      const isCorrect = state.activeQuiz.selectedOpt === q.correct;
+      let isCorrect = false;
 
-      const opts = document.querySelectorAll('.card-option');
-      opts.forEach((card, i) => {
-        card.classList.add('disabled');
-        if (i === q.correct) card.classList.add('correct');
-        else if (i === state.activeQuiz.selectedOpt && !isCorrect) card.classList.add('wrong');
-      });
+      if (q.type === 'choice' || q.type === 'fill') {
+        if (state.activeQuiz.selectedOpt === null) { alert('請選擇一個答案！'); return; }
+        isCorrect = state.activeQuiz.selectedOpt === q.correct;
+      } 
+      else if (q.type === 'tf') {
+        if (state.activeQuiz.userTFAnswer === null) { alert('請選擇 O 或 X！'); return; }
+        isCorrect = state.activeQuiz.userTFAnswer === q.tfCorrect;
+      }
+      else if (q.type === 'matching') {
+        if (state.matchingState.matchedCount < q.pairs.length) { alert('請完成所有項目配對！'); return; }
+        isCorrect = true;
+      }
 
       const panel = document.getElementById('feedback-panel');
       panel.classList.remove('hidden');
@@ -497,7 +595,6 @@
         if (state.activeQuiz.idx < state.activeQuiz.questions.length) {
           loadQuizQuestion();
         } else {
-          // Finish Unit Session
           state.subjectUnits[state.activeQuiz.subject] = (state.subjectUnits[state.activeQuiz.subject] || 0) + 1;
           saveState();
           confetti({ particleCount: 80, spread: 60 });
@@ -507,7 +604,7 @@
       }, 1800);
     }
 
-    /* 2. CAREER UNITS RENDER */
+    /* 2. CAREER UNITS */
     function renderCareerUnits() {
       const container = document.getElementById('career-units-list');
       container.innerHTML = '';
@@ -517,7 +614,6 @@
         const isUnlocked = reqUnitsDone >= 10;
         const workCount = state.unitWorkCounts[u.id] || 0;
 
-        // Rank Calculation
         let rankIdx = Math.min(4, Math.floor(workCount / 3));
         let rankTitle = RANKS[rankIdx];
 
@@ -553,7 +649,6 @@
       document.getElementById('work-modal-title').innerText = `${unit.name} 上班中...`;
       document.getElementById('work-modal-rank').innerText = RANKS[rankIdx];
 
-      // Random Events
       const events = [
         { desc: '急診急件送到！病人因為害怕發抖不配合對位。', c1: '溫柔安撫病人情緒', c2: '冷酷快速拍完', c3: '【心裡OS】「再動我就要把你綁起來了喔！」(花 $50 解鎖)' },
         { desc: '門診大排長龍，今天不小心遲到了 5 分鐘！', c1: '向學長姐道歉並立刻上工', c2: '默默走進主控室裝沒事', c3: '【心裡OS】「時薪這麼低還催催催！」(花 $100 解鎖)' }
@@ -577,10 +672,9 @@
 
     function finishWorkScenario(unitId, choiceIdx) {
       state.unitWorkCounts[unitId] = (state.unitWorkCounts[unitId] || 0) + 1;
-      
-      let basePay = 50; // 上班獲取的固定 20% 少量收益
+      let basePay = 50;
+
       if (choiceIdx === 2) {
-        // High Risk Risk choice
         if (Math.random() > 0.5) {
           alert('🤫 病人居然沒聽到！順利吐露心聲，獲得額外舒壓打賞 $100！');
           basePay += 100;
@@ -599,7 +693,7 @@
       renderCareerUnits();
     }
 
-    /* 3. SHOP RENDER */
+    /* 3. SHOP */
     function renderShop() {
       const container = document.getElementById('shop-items-container');
       container.innerHTML = `
@@ -626,33 +720,56 @@
       }
     }
 
-    /* NO-CODE EDITOR FUNCTIONS */
+    /* NO-CODE EDITOR TYPE TOGGLE */
+    function toggleEditorTypeFields() {
+      const type = document.getElementById('ed-type').value;
+      document.getElementById('group-options').classList.add('hidden');
+      document.getElementById('group-matching').classList.add('hidden');
+      document.getElementById('group-tf').classList.add('hidden');
+
+      if (type === 'choice' || type === 'fill') document.getElementById('group-options').classList.remove('hidden');
+      if (type === 'matching') document.getElementById('group-matching').classList.remove('hidden');
+      if (type === 'tf') document.getElementById('group-tf').classList.remove('hidden');
+    }
+
     function saveQuestionToDB() {
       const sub = document.getElementById('ed-subject').value;
+      const type = document.getElementById('ed-type').value;
       const qText = document.getElementById('ed-text').value.trim();
       const imgUrl = document.getElementById('ed-img').value.trim();
       const exp = document.getElementById('ed-exp').value.trim();
 
-      const o0 = document.getElementById('ed-opt-0').value.trim();
-      const o1 = document.getElementById('ed-opt-1').value.trim();
-      const o2 = document.getElementById('ed-opt-2').value.trim();
-      const o3 = document.getElementById('ed-opt-3').value.trim();
-      const correct = parseInt(document.getElementById('ed-correct').value) || 0;
+      if (!qText) { alert('請填寫題目敘述！'); return; }
 
-      if (!qText || !o0 || !o1) { alert('請填寫題目與至少前兩個選項！'); return; }
-
-      state.questions.unshift({
+      let qObj = {
         id: 'q_' + Date.now(),
         subject: sub,
-        type: 'choice',
+        type: type,
         question: qText,
         imgUrl: imgUrl,
-        options: [o0, o1, o2, o3].filter(o => o !== ''),
-        correct: correct,
         explanation: exp
-      });
+      };
 
+      if (type === 'choice' || type === 'fill') {
+        const o0 = document.getElementById('ed-opt-0').value.trim();
+        const o1 = document.getElementById('ed-opt-1').value.trim();
+        const o2 = document.getElementById('ed-opt-2').value.trim();
+        const o3 = document.getElementById('ed-opt-3').value.trim();
+        qObj.options = [o0, o1, o2, o3].filter(o => o !== '');
+        qObj.correct = parseInt(document.getElementById('ed-correct-idx').value) || 0;
+      } else if (type === 'tf') {
+        qObj.tfCorrect = document.getElementById('ed-tf-correct').value === 'true';
+      } else if (type === 'matching') {
+        const l0 = document.getElementById('m-left-0').value.trim();
+        const r0 = document.getElementById('m-right-0').value.trim();
+        const l1 = document.getElementById('m-left-1').value.trim();
+        const r1 = document.getElementById('m-right-1').value.trim();
+        qObj.pairs = [{ left: l0, right: r0 }, { left: l1, right: r1 }].filter(p => p.left && p.right);
+      }
+
+      state.questions.unshift(qObj);
       saveState();
+
       alert('✅ 題目成功儲存至本地庫！');
       document.getElementById('ed-text').value = '';
       document.getElementById('ed-total-count').innerText = state.questions.length;
@@ -681,7 +798,6 @@
       r.readAsText(file);
     }
 
-    /* UTILS */
     function openModal(id) { document.getElementById(id).classList.remove('hidden'); }
     function closeModal(id) { document.getElementById(id).classList.add('hidden'); }
     function shuffle(arr) { return arr.sort(() => Math.random() - 0.5); }
