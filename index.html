@@ -3,330 +3,205 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Radingo 放射師life</title>
+  <title>Radingo - 放射師國考無痛大作戰</title>
   <script src="https://cdn.tailwindcss.com"></script>
   <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
   <style>
     @import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;600;700;800&family=Noto+Sans+TC:wght@400;500;700;900&display=swap');
+    body { font-family: 'Plus Jakarta Sans', 'Noto Sans TC', sans-serif; background-color: #0f172a; color: #f8fafc; user-select: none; }
+    .btn-duo { transition: all 0.1s ease; box-shadow: 0 4px 0 rgba(0,0,0,0.3); }
+    .btn-duo:active { transform: translateY(4px); box-shadow: 0 0 0 transparent; }
+    .btn-green { background-color: #22c55e; box-shadow: 0 4px 0 #15803d; color: #052e16; }
+    .btn-blue { background-color: #3b82f6; box-shadow: 0 4px 0 #1d4ed8; color: #ffffff; }
+    .btn-purple { background-color: #a855f7; box-shadow: 0 4px 0 #7e22ce; color: #ffffff; }
+    .btn-amber { background-color: #f59e0b; box-shadow: 0 4px 0 #b45309; color: #451a03; }
     
-    body {
-      font-family: 'Plus Jakarta Sans', 'Noto Sans TC', sans-serif;
-      background-color: #0f172a;
-      color: #f8fafc;
-      user-select: none;
-      -webkit-user-select: none;
-    }
+    .card-option { border: 2px solid #334155; background: #1e293b; transition: all 0.15s; }
+    .card-option:hover:not(.disabled) { border-color: #3b82f6; transform: translateY(-2px); }
+    .card-option.selected { border-color: #3b82f6; background: #1e3a8a; }
+    .card-option.correct { border-color: #22c55e; background: #14532d; color: #86efac; }
+    .card-option.wrong { border-color: #ef4444; background: #7f1d1d; color: #fca5a5; }
 
-    .btn-duo {
-      transition: all 0.1s ease;
-      box-shadow: 0 4px 0 rgba(0,0,0,0.2);
-    }
-    .btn-duo:active {
-      transform: translateY(4px);
-      box-shadow: 0 0 0 rgba(0,0,0,0.2);
-    }
-
-    .btn-green { background-color: #22c55e; box-shadow: 0 4px 0 #15803d; border-color: #166534; }
-    .btn-green:active { box-shadow: 0 0 0 #15803d; }
-
-    .btn-blue { background-color: #3b82f6; box-shadow: 0 4px 0 #1d4ed8; }
-    .btn-blue:active { box-shadow: 0 0 0 #1d4ed8; }
-
-    .btn-purple { background-color: #a855f7; box-shadow: 0 4px 0 #7e22ce; }
-    .btn-purple:active { box-shadow: 0 0 0 #7e22ce; }
-
-    .btn-gray { background-color: #334155; box-shadow: 0 4px 0 #1e293b; color: #94a3b8; }
-
-    .option-card {
-      border: 2px solid #334155;
-      background-color: #1e293b;
-      box-shadow: 0 4px 0 #0f172a;
-      transition: all 0.15s ease;
-    }
-    .option-card:hover:not(.disabled) {
-      border-color: #3b82f6;
-      background-color: #1e293b;
-      transform: translateY(-2px);
-    }
-    .option-card.selected {
-      border-color: #3b82f6;
-      background-color: #1e3a8a;
-      box-shadow: 0 4px 0 #1d4ed8;
-    }
-    .option-card.correct {
-      border-color: #22c55e;
-      background-color: #14532d;
-      box-shadow: 0 4px 0 #15803d;
-      color: #4ade80;
-    }
-    .option-card.wrong {
-      border-color: #ef4444;
-      background-color: #7f1d1d;
-      box-shadow: 0 4px 0 #b91c1c;
-      color: #fca5a5;
-    }
-
-    .matching-card {
-      border: 2px solid #334155;
-      background: #1e293b;
-      transition: all 0.2s;
-    }
-    .matching-card.selected {
-      border-color: #a855f7;
-      background: #3b0764;
-    }
-    .matching-card.matched {
-      border-color: #22c55e;
-      background: #064e3b;
-      opacity: 0.5;
-      pointer-events: none;
-    }
-
-    /* Custom Scrollbar */
-    ::-webkit-scrollbar { width: 8px; }
+    ::-webkit-scrollbar { width: 6px; }
     ::-webkit-scrollbar-track { background: #0f172a; }
-    ::-webkit-scrollbar-thumb { background: #334155; border-radius: 4px; }
-    ::-webkit-scrollbar-thumb:hover { background: #475569; }
+    ::-webkit-scrollbar-thumb { background: #334155; border-radius: 3px; }
   </style>
 </head>
 <body class="min-h-screen flex flex-col justify-between">
 
-  <!-- Top Navigation Header -->
+  <!-- TOP HEADER -->
   <header class="sticky top-0 z-40 bg-slate-900/90 backdrop-blur border-b border-slate-800 px-4 py-3">
     <div class="max-w-md mx-auto flex justify-between items-center">
       <div class="flex items-center space-x-2">
-        <span class="text-2xl font-black text-emerald-400 tracking-wider">Radingo</span>
-        <span class="bg-emerald-950 text-emerald-400 text-xs px-2 py-0.5 rounded-full font-bold border border-emerald-800">無痛國考</span>
+        <span class="text-2xl font-black text-emerald-400">Radingo</span>
+        <span class="bg-emerald-950 text-emerald-400 text-[10px] px-2 py-0.5 rounded-full font-bold border border-emerald-800">Duolingo Mode</span>
       </div>
 
-      <!-- Stats Counters -->
-      <div class="flex items-center space-x-4 font-extrabold text-sm">
-        <div class="flex items-center text-amber-400" title="連續刷題天數">
-          <i class="fa-solid fa-fire text-lg mr-1 animate-bounce"></i>
-          <span id="stat-streak">0</span>
-        </div>
-        <div class="flex items-center text-sky-400" title="累積經驗值">
-          <i class="fa-solid fa-bolt text-lg mr-1"></i>
-          <span id="stat-xp">0</span>
-        </div>
-        <div class="flex items-center text-emerald-400" title="國考津貼/薪水">
-          <i class="fa-solid fa-coins text-lg mr-1"></i>
+      <div class="flex items-center space-x-3 font-extrabold text-xs">
+        <div class="flex items-center text-amber-400" title="累積金錢">
+          <i class="fa-solid fa-coins mr-1"></i>
           $<span id="stat-money">0</span>
+        </div>
+        <div class="flex items-center text-sky-400" title="經驗值">
+          <i class="fa-solid fa-bolt mr-1"></i>
+          <span id="stat-xp">0</span>
         </div>
       </div>
     </div>
   </header>
 
-  <!-- Navigation Tabs ( Mode Selector ) -->
+  <!-- NAVIGATION TABS -->
   <div class="bg-slate-900 border-b border-slate-800 px-4 py-2 sticky top-[57px] z-30">
     <div class="max-w-md mx-auto flex rounded-xl bg-slate-800 p-1">
-      <button id="tab-quiz" onclick="switchMainTab('quiz')" class="flex-1 py-2 rounded-lg font-extrabold text-xs text-center transition flex justify-center items-center gap-1.5 bg-emerald-500 text-slate-950 shadow">
-        <i class="fa-solid fa-graduation-cap text-sm"></i>
-        🎯 國考刷題
+      <button id="tab-quiz" onclick="switchTab('quiz')" class="flex-1 py-2 rounded-lg font-black text-xs text-center bg-emerald-500 text-slate-950 shadow">
+        🎯 國考闖關刷題
       </button>
-      <button id="tab-career" onclick="switchMainTab('career')" class="flex-1 py-2 rounded-lg font-extrabold text-xs text-center transition flex justify-center items-center gap-1.5 text-slate-400 hover:text-slate-200">
-        <i class="fa-solid fa-hospital text-sm"></i>
+      <button id="tab-career" onclick="switchTab('career')" class="flex-1 py-2 rounded-lg font-black text-xs text-center text-slate-400 hover:text-slate-200">
         🏥 放射師的一天
+      </button>
+      <button id="tab-shop" onclick="switchTab('shop')" class="flex-1 py-2 rounded-lg font-black text-xs text-center text-slate-400 hover:text-slate-200">
+        🛍️ 升級商店
       </button>
     </div>
   </div>
 
-  <!-- MAIN CONTENT CONTAINER -->
-  <main class="flex-1 max-w-md w-full mx-auto p-4 relative pb-28">
+  <!-- MAIN CONTAINER -->
+  <main class="flex-1 max-w-md w-full mx-auto p-4 relative pb-24">
 
-    <!-- TAB 1: QUIZ MODE (刷題模式) -->
-    <div id="view-quiz" class="space-y-6">
-      
-      <!-- Skill Path / Subject Selector -->
-      <div id="subject-select-screen" class="space-y-4">
-        <div class="bg-gradient-to-r from-emerald-900/40 to-slate-900 border border-emerald-800/50 rounded-2xl p-4">
-          <h2 class="text-lg font-black text-white flex items-center gap-2">
-            <i class="fa-solid fa-map-location-dot text-emerald-400"></i> 六大國考解鎖地圖
-          </h2>
-          <p class="text-xs text-slate-400 mt-1">選一個科目開始無痛刷題，累積進度解鎖放射師職場！</p>
-        </div>
-
-        <!-- Subject List -->
-        <div class="grid grid-cols-1 gap-3" id="subject-cards-container">
-          <!-- Dynamically populated -->
-        </div>
+    <!-- VIEW 1: QUIZ MAP (闖關刷題) -->
+    <div id="view-quiz" class="space-y-4">
+      <div class="bg-gradient-to-r from-emerald-950 to-slate-900 border border-emerald-800/60 rounded-2xl p-4">
+        <h2 class="text-base font-black text-white flex items-center gap-2">
+          <i class="fa-solid fa-route text-emerald-400"></i> 單元地圖（5分鐘一單元）
+        </h2>
+        <p class="text-xs text-slate-400 mt-1">完成 10 個單元即可解鎖相對應的放射師工作區！</p>
       </div>
 
-      <!-- Active Quiz Interface -->
-      <div id="quiz-screen" class="hidden space-y-4">
-        
-        <!-- Progress Bar & Top Row -->
-        <div class="flex items-center justify-between gap-3">
-          <button onclick="exitQuiz()" class="text-slate-400 hover:text-white p-2 text-xl">
+      <div id="subject-node-container" class="space-y-4">
+        <!-- Subjects & Unit Progress Cards -->
+      </div>
+    </div>
+
+    <!-- ACTIVE QUIZ MODAL / OVERLAY -->
+    <div id="quiz-overlay" class="hidden fixed inset-0 bg-slate-950 z-50 p-4 flex flex-col justify-between overflow-y-auto">
+      <div class="max-w-md w-full mx-auto space-y-4 flex-1">
+        <!-- Header -->
+        <div class="flex items-center justify-between gap-3 pt-2">
+          <button onclick="exitQuizSession()" class="text-slate-400 hover:text-white text-xl p-1">
             <i class="fa-solid fa-xmark"></i>
           </button>
-          <div class="flex-1 bg-slate-800 h-3.5 rounded-full overflow-hidden border border-slate-700">
+          <div class="flex-1 bg-slate-800 h-3 rounded-full overflow-hidden border border-slate-700">
             <div id="quiz-progress-bar" class="bg-emerald-500 h-full w-0 transition-all duration-300"></div>
           </div>
-          <span id="quiz-counter" class="text-xs font-black text-slate-400">1/5</span>
+          <span id="quiz-step-counter" class="text-xs font-black text-slate-400">1/5</span>
         </div>
 
         <!-- Question Box -->
-        <div class="bg-slate-800 border-2 border-slate-700 rounded-2xl p-5 shadow-lg">
-          <div class="flex justify-between items-center mb-2">
-            <span id="question-type-badge" class="bg-blue-900/60 text-blue-300 text-[10px] font-bold px-2.5 py-0.5 rounded-md border border-blue-700">單選題</span>
-            <span id="question-subject-tag" class="text-slate-400 text-xs font-semibold">基礎醫學</span>
-          </div>
-          <h3 id="question-text" class="text-base font-bold text-slate-100 leading-relaxed">
-            載入題目中...
-          </h3>
-        </div>
-
-        <!-- Answer Interactive Zone -->
-        <div id="answer-zone" class="space-y-3">
-          <!-- Dynamic Answer Inputs (Options / Fill Blanks / Matching) -->
-        </div>
-
-        <!-- Bottom Feedback Panel (修復版：平時隱藏) -->
-        <div id="feedback-panel" class="hidden fixed bottom-0 left-0 right-0 p-4 border-t z-50 transition-transform duration-200">
-          <div class="max-w-md mx-auto space-y-3">
-            <div class="flex items-center space-x-3">
-              <div id="feedback-icon" class="text-2xl"></div>
-              <div>
-                <div id="feedback-title" class="font-extrabold text-base"></div>
-                <p id="feedback-explanation" class="text-xs mt-0.5 leading-normal opacity-90"></p>
-              </div>
-            </div>
-            <button id="feedback-btn" onclick="handleFeedbackAction()" class="w-full py-3 rounded-xl font-extrabold text-sm btn-duo text-white">
-              下一題
-            </button>
+        <div class="bg-slate-900 border-2 border-slate-800 rounded-2xl p-4 space-y-3 shadow-xl">
+          <span id="q-type-tag" class="bg-blue-900/60 text-blue-300 text-[10px] font-bold px-2 py-0.5 rounded border border-blue-700">選擇題</span>
+          <h3 id="q-text" class="text-sm font-bold text-slate-100 leading-relaxed">題目敘述...</h3>
+          <div id="q-img-container" class="hidden rounded-xl overflow-hidden border border-slate-700 max-h-48">
+            <img id="q-img" src="" class="w-full object-cover">
           </div>
         </div>
 
-        <!-- Submit Button for Matching/Fill -->
-        <button id="submit-answer-btn" onclick="checkAnswer()" class="w-full py-3.5 rounded-xl font-black text-base btn-duo btn-green text-slate-950 mt-4 shadow-lg">
+        <!-- Options Container -->
+        <div id="q-options-container" class="space-y-2.5">
+          <!-- Dynamic Options -->
+        </div>
+      </div>
+
+      <!-- Bottom Panel / Feedback -->
+      <div class="max-w-md w-full mx-auto pt-3">
+        <div id="feedback-panel" class="hidden p-3 rounded-xl border mb-3 space-y-2">
+          <div class="flex items-center gap-2">
+            <span id="feedback-icon" class="text-xl"></span>
+            <span id="feedback-title" class="font-extrabold text-sm"></span>
+          </div>
+          <p id="feedback-exp" class="text-xs opacity-90 leading-snug"></p>
+        </div>
+
+        <button id="btn-submit-answer" onclick="submitCurrentAnswer()" class="w-full py-3.5 rounded-xl font-black text-sm btn-duo btn-green">
           檢查答案
         </button>
-
       </div>
-
     </div>
 
-
-    <!-- TAB 2: CAREER SIMULATOR (放射師的一天) -->
-    <div id="view-career" class="hidden space-y-6">
-      
-      <!-- Level & Title Header -->
-      <div class="bg-gradient-to-br from-slate-800 to-slate-900 border-2 border-slate-700 rounded-2xl p-5 text-center relative overflow-hidden">
-        <div class="absolute -right-4 -bottom-4 opacity-10 text-9xl text-emerald-400">
-          <i class="fa-solid fa-hospital-user"></i>
-        </div>
-        <div class="relative z-10 space-y-2">
-          <span id="career-title-badge" class="bg-emerald-950 text-emerald-400 border border-emerald-800 text-xs font-black px-3 py-1 rounded-full inline-block">
-            🌱 菜鳥實習生
-          </span>
-          <h2 id="career-rank-name" class="text-xl font-black text-white">解鎖對位工具人，啟動全院工作區！</h2>
-          
-          <!-- Career Unlock Progress -->
-          <div class="space-y-1 pt-2">
-            <div class="flex justify-between text-xs font-extrabold">
-              <span class="text-slate-400">國考題目累積解鎖率</span>
-              <span id="career-unlock-pct" class="text-emerald-400">0%</span>
-            </div>
-            <div class="w-full bg-slate-950 h-3 rounded-full overflow-hidden border border-slate-800">
-              <div id="career-progress-fill" class="bg-emerald-500 h-full w-0 transition-all duration-500"></div>
-            </div>
-            <p id="career-unlock-hint" class="text-[11px] text-amber-400 font-medium pt-1">
-              ⚠️ 刷題總進度達 10% 即可解鎖【全院 13 大工作區域】！
-            </p>
-          </div>
-        </div>
+    <!-- VIEW 2: CAREER SIMULATOR (放射師的一天) -->
+    <div id="view-career" class="hidden space-y-4">
+      <div class="bg-slate-900 border border-slate-800 rounded-2xl p-4 text-center space-y-1">
+        <span class="text-xs text-emerald-400 font-extrabold bg-emerald-950 px-2.5 py-0.5 rounded-full border border-emerald-800">🏥 醫院工作區</span>
+        <h2 class="text-base font-black text-white">完成 10 個單元解鎖相對應科別</h2>
+        <p class="text-xs text-slate-400">職等：見習生 $\rightarrow$ 實習生 $\rightarrow$ PGY $\rightarrow$ 放射師 $\rightarrow$ 資深放射師</p>
       </div>
 
-      <!-- 13 Work Units Section -->
-      <div class="space-y-3">
-        <div class="flex justify-between items-center">
-          <h3 class="font-black text-base text-white flex items-center gap-2">
-            <i class="fa-solid fa-hospital-bay text-sky-400"></i> 13 大醫院放射工作區域
-          </h3>
-          <span class="text-[11px] text-slate-400">按上班次數獨立升級</span>
-        </div>
+      <div id="career-units-list" class="space-y-3">
+        <!-- 13 Units Generated Dynamically -->
+      </div>
+    </div>
 
-        <div id="work-units-list" class="grid grid-cols-1 gap-3">
-          <!-- Dynamically Generated 13 Units -->
-        </div>
+    <!-- VIEW 3: SHOP & UPGRADES (升級商店) -->
+    <div id="view-shop" class="hidden space-y-4">
+      <div class="bg-slate-900 border border-slate-800 rounded-2xl p-4">
+        <h2 class="text-base font-black text-amber-400 flex items-center gap-2">
+          <i class="fa-solid fa-store"></i> 花錢升級 & 裝備解鎖
+        </h2>
+        <p class="text-xs text-slate-400 mt-1">提升刷題收入倍率或購買防禦裝備！</p>
       </div>
 
-      <!-- Vent / Meme Shop (舒壓商城) -->
-      <div class="bg-slate-800/80 border border-slate-700 rounded-2xl p-4 space-y-3">
-        <h3 class="font-black text-sm text-amber-400 flex items-center gap-2">
-          <i class="fa-solid fa-face-laugh-squint"></i> 放射師舒壓黑色幽默解鎖區
-        </h3>
-        <p class="text-xs text-slate-400">用上班領到的薪水，購買各種職場內心 OS 吐槽對話卡！</p>
-        
-        <div id="meme-shop-items" class="space-y-2 pt-1">
-          <!-- Dynamically Generated Shop Items -->
-        </div>
+      <div id="shop-items-container" class="space-y-3">
+        <!-- Upgrades List -->
       </div>
-
     </div>
 
   </main>
 
-  <!-- Bottom Fixed Navigation (Manage & About) -->
+  <!-- FIXED FOOTER -->
   <footer class="fixed bottom-0 left-0 right-0 bg-slate-900 border-t border-slate-800 py-2.5 px-4 z-40">
-    <div class="max-w-md mx-auto flex justify-around text-center">
-      <button onclick="switchMainTab('quiz')" class="flex flex-col items-center text-slate-400 hover:text-emerald-400">
-        <i class="fa-solid fa-gamepad text-lg"></i>
-        <span class="text-[10px] font-bold mt-1">刷題</span>
+    <div class="max-w-md mx-auto flex justify-around text-center text-xs font-bold text-slate-400">
+      <button onclick="switchTab('quiz')" class="hover:text-emerald-400 flex flex-col items-center">
+        <i class="fa-solid fa-gamepad text-base"></i><span class="text-[10px] mt-1">闖關刷題</span>
       </button>
-      <button onclick="switchMainTab('career')" class="flex flex-col items-center text-slate-400 hover:text-emerald-400">
-        <i class="fa-solid fa-briefcase text-lg"></i>
-        <span class="text-[10px] font-bold mt-1">職場模擬</span>
+      <button onclick="switchTab('career')" class="hover:text-emerald-400 flex flex-col items-center">
+        <i class="fa-solid fa-hospital text-base"></i><span class="text-[10px] mt-1">職場模擬</span>
       </button>
-      <button onclick="openModal('editor-modal')" class="flex flex-col items-center text-slate-400 hover:text-sky-400">
-        <i class="fa-solid fa-pen-to-square text-lg"></i>
-        <span class="text-[10px] font-bold mt-1">題庫管理</span>
+      <button onclick="switchTab('shop')" class="hover:text-amber-400 flex flex-col items-center">
+        <i class="fa-solid fa-bag-shopping text-base"></i><span class="text-[10px] mt-1">升級商店</span>
       </button>
-      <button onclick="openModal('about-modal')" class="flex flex-col items-center text-slate-400 hover:text-purple-400">
-        <i class="fa-solid fa-circle-info text-lg"></i>
-        <span class="text-[10px] font-bold mt-1">關於作者</span>
+      <button onclick="openModal('modal-editor')" class="hover:text-sky-400 flex flex-col items-center">
+        <i class="fa-solid fa-pen-to-square text-base"></i><span class="text-[10px] mt-1">題庫管理</span>
       </button>
     </div>
   </footer>
 
-
-  <!-- MODAL: Question Editor (題庫管理) -->
-  <div id="editor-modal" class="hidden fixed inset-0 bg-black/80 backdrop-blur-sm z-50 flex items-center justify-center p-4">
-    <div class="bg-slate-900 border border-slate-800 rounded-2xl w-full max-w-md max-h-[85vh] flex flex-col shadow-2xl overflow-hidden">
+  <!-- MODAL: EDITOR (無程式碼題庫管理員) -->
+  <div id="modal-editor" class="hidden fixed inset-0 bg-black/80 backdrop-blur-sm z-50 flex items-center justify-center p-4">
+    <div class="bg-slate-900 border border-slate-800 rounded-2xl w-full max-w-md max-h-[85vh] flex flex-col overflow-hidden">
       <div class="p-4 border-b border-slate-800 flex justify-between items-center bg-slate-800/50">
-        <h3 class="font-black text-base text-white flex items-center gap-2">
-          <i class="fa-solid fa-sliders text-sky-400"></i> 免程式題庫管理員
-        </h3>
-        <button onclick="closeModal('editor-modal')" class="text-slate-400 hover:text-white p-1">
-          <i class="fa-solid fa-xmark text-lg"></i>
-        </button>
+        <h3 class="font-black text-sm text-white">🛠️ 無程式碼題庫管理員</h3>
+        <button onclick="closeModal('modal-editor')" class="text-slate-400 hover:text-white"><i class="fa-solid fa-xmark text-lg"></i></button>
       </div>
 
-      <div class="p-4 overflow-y-auto space-y-4 flex-1 text-xs">
-        
-        <!-- Import/Export Tools -->
+      <div class="p-4 overflow-y-auto space-y-4 text-xs">
+        <!-- Backup -->
         <div class="bg-slate-800 p-3 rounded-xl space-y-2 border border-slate-700">
-          <span class="font-bold text-slate-300 block">📥 題庫備份與分享</span>
+          <span class="font-bold text-slate-300">📥 題庫 JSON 匯入/匯出</span>
           <div class="grid grid-cols-2 gap-2">
-            <button onclick="exportQuestionsJSON()" class="py-2 bg-slate-700 hover:bg-slate-600 rounded-lg font-bold text-slate-200">
-              <i class="fa-solid fa-download mr-1"></i> 匯出 JSON
-            </button>
-            <label class="py-2 bg-sky-600 hover:bg-sky-500 rounded-lg font-bold text-white text-center cursor-pointer block">
-              <i class="fa-solid fa-upload mr-1"></i> 匯入 JSON
-              <input type="file" id="import-json-input" onchange="importQuestionsJSON(event)" class="hidden" accept=".json">
+            <button onclick="exportJSON()" class="py-2 bg-slate-700 hover:bg-slate-600 rounded-lg font-bold">匯出 JSON</button>
+            <label class="py-2 bg-sky-600 hover:bg-sky-500 rounded-lg font-bold text-center cursor-pointer">
+              匯入 JSON <input type="file" onchange="importJSON(event)" class="hidden" accept=".json">
             </label>
           </div>
         </div>
 
-        <!-- Add Question Form -->
-        <div class="bg-slate-800/60 p-3.5 rounded-xl border border-slate-700/80 space-y-3">
-          <span class="font-bold text-emerald-400 block text-sm">➕ 新增自訂題目</span>
+        <!-- New Q Form -->
+        <div class="bg-slate-800/60 p-3.5 rounded-xl border border-slate-700 space-y-3">
+          <span class="font-bold text-emerald-400 text-sm block">➕ 新增題目（支援圖片）</span>
           
           <div>
-            <label class="text-slate-400 block mb-1">科目歸類</label>
-            <select id="edit-subject" class="w-full bg-slate-900 border border-slate-700 rounded-lg p-2 text-slate-200">
+            <label class="text-slate-400 block mb-1">對應科目</label>
+            <select id="ed-subject" class="w-full bg-slate-900 border border-slate-700 rounded-lg p-2 text-slate-200">
               <option value="basic">1. 基礎醫學</option>
               <option value="physics">2. 醫學物理與輻射安全</option>
               <option value="equip">3. 放射線器材學</option>
@@ -337,650 +212,483 @@
           </div>
 
           <div>
-            <label class="text-slate-400 block mb-1">題目題型</label>
-            <select id="edit-type" onchange="toggleEditorFields()" class="w-full bg-slate-900 border border-slate-700 rounded-lg p-2 text-slate-200">
-              <option value="choice">一般單選題</option>
-              <option value="truefalse">1秒快問快答 (True/False)</option>
+            <label class="text-slate-400 block mb-1">題型選擇</label>
+            <select id="ed-type" class="w-full bg-slate-900 border border-slate-700 rounded-lg p-2 text-slate-200">
+              <option value="choice">標準 4 選 1 選擇題</option>
+              <option value="tf">1秒快問快答 (True/False)</option>
             </select>
           </div>
 
           <div>
-            <label class="text-slate-400 block mb-1">題目敘述</label>
-            <textarea id="edit-question" rows="2" placeholder="例：AAPM TG-51 主要用於哪種校正？" class="w-full bg-slate-900 border border-slate-700 rounded-lg p-2 text-slate-200"></textarea>
-          </div>
-
-          <!-- Choice Fields -->
-          <div id="field-choice-options" class="space-y-2">
-            <label class="text-slate-400 block">選項 (4選1)</label>
-            <input type="text" id="opt-0" placeholder="選項 A" class="w-full bg-slate-900 border border-slate-700 rounded-lg p-1.5 text-slate-200">
-            <input type="text" id="opt-1" placeholder="選項 B" class="w-full bg-slate-900 border border-slate-700 rounded-lg p-1.5 text-slate-200">
-            <input type="text" id="opt-2" placeholder="選項 C" class="w-full bg-slate-900 border border-slate-700 rounded-lg p-1.5 text-slate-200">
-            <input type="text" id="opt-3" placeholder="選項 D" class="w-full bg-slate-900 border border-slate-700 rounded-lg p-1.5 text-slate-200">
-            <label class="text-slate-400 block pt-1">正確答案 (0=A, 1=B, 2=C, 3=D)</label>
-            <input type="number" id="correct-opt-idx" min="0" max="3" value="0" class="w-full bg-slate-900 border border-slate-700 rounded-lg p-1.5 text-slate-200">
+            <label class="text-slate-400 block mb-1">題目文字敘述</label>
+            <textarea id="ed-text" rows="2" placeholder="輸入題目..." class="w-full bg-slate-900 border border-slate-700 rounded-lg p-2 text-slate-200"></textarea>
           </div>
 
           <div>
-            <label class="text-slate-400 block mb-1">答案解析/口訣記憶</label>
-            <input type="text" id="edit-explanation" placeholder="例：TG-51 為高能量光子與電子束吸收劑量校正 Protocol" class="w-full bg-slate-900 border border-slate-700 rounded-lg p-2 text-slate-200">
+            <label class="text-slate-400 block mb-1">圖片網址（可選，沒有可留空）</label>
+            <input type="url" id="ed-img" placeholder="https://..." class="w-full bg-slate-900 border border-slate-700 rounded-lg p-2 text-slate-200">
           </div>
 
-          <button onclick="addNewQuestionFromEditor()" class="w-full py-2.5 bg-emerald-600 hover:bg-emerald-500 rounded-xl font-bold text-slate-950">
-            儲存並加到本地題庫
+          <div id="ed-options-group" class="space-y-1.5">
+            <label class="text-slate-400 block">選項內容</label>
+            <input type="text" id="ed-opt-0" placeholder="選項 A" class="w-full bg-slate-900 border border-slate-700 rounded-lg p-1.5">
+            <input type="text" id="ed-opt-1" placeholder="選項 B" class="w-full bg-slate-900 border border-slate-700 rounded-lg p-1.5">
+            <input type="text" id="ed-opt-2" placeholder="選項 C" class="w-full bg-slate-900 border border-slate-700 rounded-lg p-1.5">
+            <input type="text" id="ed-opt-3" placeholder="選項 D" class="w-full bg-slate-900 border border-slate-700 rounded-lg p-1.5">
+            <label class="text-slate-400 block pt-1">正確答案 (0=A, 1=B, 2=C, 3=D)</label>
+            <input type="number" id="ed-correct" min="0" max="3" value="0" class="w-full bg-slate-900 border border-slate-700 rounded-lg p-1.5">
+          </div>
+
+          <div>
+            <label class="text-slate-400 block mb-1">答案解析</label>
+            <input type="text" id="ed-exp" placeholder="答案說明/記憶口訣..." class="w-full bg-slate-900 border border-slate-700 rounded-lg p-2">
+          </div>
+
+          <button onclick="saveQuestionToDB()" class="w-full py-2.5 bg-emerald-500 hover:bg-emerald-400 text-slate-950 font-black rounded-xl">
+            儲存題目至本地庫
           </button>
         </div>
 
-        <!-- Question List Counter -->
-        <div class="text-slate-400 text-center text-[11px]">
-          目前本地總題數：<span id="editor-total-count" class="text-emerald-400 font-bold">0</span> 題
+        <div class="text-center text-slate-400">
+          目前本地總題數：<span id="ed-total-count" class="text-emerald-400 font-bold">0</span> 題
         </div>
+      </div>
+    </div>
+  </div>
 
+  <!-- WORK SCENARIO MODAL (上班劇情彈窗) -->
+  <div id="modal-work-scenario" class="hidden fixed inset-0 bg-black/85 backdrop-blur-sm z-50 flex items-center justify-center p-4">
+    <div class="bg-slate-900 border border-slate-800 rounded-2xl w-full max-w-md p-5 space-y-4">
+      <div class="flex items-center space-x-3">
+        <div id="work-modal-icon" class="w-10 h-10 rounded-xl bg-sky-950 border border-sky-800 flex items-center justify-center text-sky-400 text-xl">
+          <i class="fa-solid fa-hospital-user"></i>
+        </div>
+        <div>
+          <h3 id="work-modal-title" class="font-black text-white text-sm">一般 X 光室上班中...</h3>
+          <span id="work-modal-rank" class="text-[10px] text-emerald-400 font-bold bg-emerald-950 px-2 py-0.5 rounded border border-emerald-800">見習生</span>
+        </div>
+      </div>
+
+      <!-- Event Narrative -->
+      <div id="work-event-box" class="bg-slate-800 p-3.5 rounded-xl border border-slate-700 text-xs text-slate-200 leading-relaxed">
+        劇情載入中...
+      </div>
+
+      <!-- Dialogue Choices -->
+      <div id="work-choices-container" class="space-y-2">
+        <!-- Generated Dynamically -->
       </div>
     </div>
   </div>
 
 
-  <!-- MODAL: About & Show off -->
-  <div id="about-modal" class="hidden fixed inset-0 bg-black/80 backdrop-blur-sm z-50 flex items-center justify-center p-4">
-    <div class="bg-slate-900 border border-slate-800 rounded-2xl w-full max-w-md p-5 space-y-4 text-center">
-      <div class="w-16 h-16 bg-gradient-to-tr from-emerald-400 to-sky-400 rounded-2xl mx-auto flex items-center justify-center text-3xl text-slate-950 font-black shadow-lg">
-        R
-      </div>
-      <div>
-        <h3 class="text-lg font-black text-white">Radingo 放射師國考無痛大作戰</h3>
-        <p class="text-xs text-emerald-400 font-extrabold mt-0.5">專為醫事放射師設計的遊戲化刷題 App</p>
-      </div>
-
-      <p class="text-xs text-slate-300 leading-relaxed text-left bg-slate-800/80 p-3 rounded-xl border border-slate-700">
-        💡 <b>開發初衷：</b> 誰說國考複習只能看無聊的阿摩或紙本刷題？透過多鄰國式的連勝機制與放射師 13 大職場模擬，讓你在實習空檔也能無痛內化國考重點！不用寫程式就能架設屬於自己的國考小遊戲！
-      </p>
-
-      <button onclick="closeModal('about-modal')" class="w-full py-2.5 bg-slate-800 hover:bg-slate-700 rounded-xl font-bold text-slate-200 text-xs">
-        關閉視窗
-      </button>
-    </div>
-  </div>
-
-
-  <!-- JAVASCRIPT LOGIC -->
+  <!-- LOGIC SCRIPT -->
   <script>
-    /* ===================================================
-       1. INITIAL DATA & DEFAULT QUESTION BANK (6 Subjects)
-       =================================================== */
-    
+    /* SUBJECTS DEFINITION */
     const SUBJECTS = {
-      basic: { id: 'basic', name: '基礎醫學', icon: 'fa-brain', color: 'from-pink-600 to-rose-700' },
-      physics: { id: 'physics', name: '醫學物理與輻射安全', icon: 'fa-atom', color: 'from-blue-600 to-indigo-700' },
-      equip: { id: 'equip', name: '放射線器材學', icon: 'fa-microchip', color: 'from-amber-600 to-orange-700' },
-      diag: { id: 'diag', name: '放射線診斷原理與技術學', icon: 'fa-x-ray', color: 'from-emerald-600 to-teal-700' },
-      therapy: { id: 'therapy', name: '放射線治療原理與技術學', icon: 'fa-crosshairs', color: 'from-purple-600 to-violet-700' },
-      nuc: { id: 'nuc', name: '核子醫學診療原理與技術學', icon: 'fa-radiation', color: 'from-cyan-600 to-sky-700' }
+      basic: { name: '基礎醫學', icon: 'fa-brain', color: 'from-pink-600 to-rose-700' },
+      physics: { name: '醫學物理與輻射安全', icon: 'fa-atom', color: 'from-blue-600 to-indigo-700' },
+      equip: { name: '放射線器材學', icon: 'fa-microchip', color: 'from-amber-600 to-orange-700' },
+      diag: { name: '放射线診斷原理與技術學', icon: 'fa-x-ray', color: 'from-emerald-600 to-teal-700' },
+      therapy: { name: '放射線治療原理與技術學', icon: 'fa-crosshairs', color: 'from-purple-600 to-violet-700' },
+      nuc: { name: '核子醫學診療原理與技術學', icon: 'fa-radiation', color: 'from-cyan-600 to-sky-700' }
     };
 
-    const DEFAULT_QUESTIONS = [
-      // 1. 基礎醫學
-      {
-        id: 'b1', subject: 'basic', type: 'choice',
-        question: '人體中對輻射敏感度最高的細胞特徵為？',
-        options: ['高分化、低分裂能力', '低分化、高分裂能力', '高分化、高分裂能力', '低分化、低分裂能力'],
-        correct: 1, explanation: '根據 Bergonié-Tribondeau 法則，細胞越低分化、有越高的有絲分裂能力，對輻射敏感度越高。'
-      },
-      // 2. 醫學物理
-      {
-        id: 'p1', subject: 'physics', type: 'choice',
-        question: '當 X 射線能量增加時，主要發生的物質互動效應會如何變化？',
-        options: ['光電效應比例大幅上升', '康普頓效應比例相對增加', '成對產生必定發生', '不相干散亂完全消失'],
-        correct: 1, explanation: '光电效应与能量的三次方成反比(1/E^3)，因此能量提高时，康普顿散射的比例相对增加。'
-      },
-      // 3. 器材學
-      {
-        id: 'e1', subject: 'equip', type: 'choice',
-        question: 'X 光管中，陽極靶面採用鎢 (Tungsten) 的主要原因不包括以下何者？',
-        options: ['高原子序 (Z=74)', '高熔點 (3410°C)', '良好導熱性', '低密度易於旋轉'],
-        correct: 3, explanation: '鎢具有高原子序、高熔點與良好散熱性，密度相當高，而非低密度。'
-      },
-      // 4. 診斷技術
-      {
-        id: 'd1', subject: 'diag', type: 'choice',
-        question: '在 CT 影像中，空氣的 Hounsfield Unit (HU) 值設定為多少？',
-        options: ['-1000 HU', '0 HU', '+1000 HU', '-50 HU'],
-        correct: 0, explanation: '水的 HU 值定義為 0，空氣為 -1000 HU，緻密骨質約為 +1000 HU。'
-      },
-      // 5. 治療技術
-      {
-        id: 't1', subject: 'therapy', type: 'choice',
-        question: '根據 AAPM TG-51 指引，高能量光子束之水假體吸收劑量校正參考深度為多少？',
-        options: ['1.5 cm', '5 cm', '10 cm', 'dmax 深度'],
-        correct: 2, explanation: 'TG-51 規定高能量光子束在水假體中的參考校正深度為 10 cm。'
-      },
-      // 6. 核子醫學
-      {
-        id: 'n1', subject: 'nuc', type: 'choice',
-        question: ' Tc-99m 半衰期約為 6 小時，其發射的主要 Gamma 射線能量為多少 keV？',
-        options: ['511 keV', '140 keV', '364 keV', '80 keV'],
-        correct: 1, explanation: 'Tc-99m 是核醫最常用同位素，主要發射 140 keV 的伽瑪射線，非常適合 Gamma Camera 偵測。'
-      }
-    ];
-
-    /* 13 WORK UNITS DATA (按上班次數獨立升級) */
+    /* 13 WORK UNITS & UNLOCK REQUIREMENTS */
     const WORK_UNITS = [
-      { id: 'xray', name: '一般 X 光室', icon: 'fa-x-ray', desc: '胸腔肺部、骨折照相，每天面對無數站立照的阿公阿嬤。' },
-      { id: 'er', name: '急診 (CT / X-ray)', icon: 'fa-truck-medical', desc: '節奏極快！創傷 Trauma 照相、頭部 CT，考驗心臟與反應速度。' },
-      { id: 'ct', name: '電腦斷層 (CT)', icon: 'fa-circle-notch', desc: '對位、打造影劑、MPR 重組 3D 影像，門診大排長龍的核心戰區。' },
-      { id: 'mri', name: '磁振造影 (MRI)', icon: 'fa-magnet', desc: '噪音大、時間長，檢查前必須嚴格確認金屬與心律調節器！' },
-      { id: 'mammo', name: '乳房攝影 (Mammo)', icon: 'fa-female', desc: '壓迫力道與角度的完美掌控，需要極度的耐心與溫柔提示。' },
-      { id: 'sono', name: '醫用超音波 (Sono)', icon: 'fa-wave-square', desc: '探頭手法與膠塗抹的藝術，腹部與甲狀腺掃描利器。' },
-      { id: 'cath', name: '心導管室 (Cath Lab)', icon: 'fa-heart-pulse', desc: '穿重鉛衣跟診，隨時準備緊急心絞痛與血管支架放置。' },
-      { id: 'dental', name: '牙科全景/Cone-Beam', icon: 'fa-tooth', desc: 'Panoramic 全景牙片與 CBCT，齒顎矯正與植牙評估必備。' },
-      { id: 'angio', name: '血管攝影 (Angio)', icon: 'fa-disease', desc: '腦血管、肝臟 EMB 塞栓術，高階干預性放射學核心。' },
-      { id: 'special', name: '特殊攝影 (Special)', icon: 'fa-flask-vial', desc: 'IVU、Barium swallow 鋇劑攝影，隨時注意病人吐鋇劑。' },
-      { id: 'dexa', name: '骨質密度 (DEXA)', icon: 'fa-bone', desc: 'L-spine 與 Hip 骨密測量，放射科相對平靜優雅的避風港。' },
-      { id: 'nuc', name: '核子醫學 (Nuclear)', icon: 'fa-atom', desc: 'Tc-99m 標誌、Bone scan、PET-CT 癌症追蹤與鉛屏屏蔽。' },
-      { id: 'rt', name: '放射線治療 (RT)', icon: 'fa-crosshairs', desc: '直線加速器、模具製作、DIBH、每天精準對位照光抗癌。' }
+      { id: 'xray', name: '一般 X 光', reqSubject: 'diag', icon: 'fa-x-ray' },
+      { id: 'er', name: '急診 (CT/X-ray)', reqSubject: 'diag', icon: 'fa-truck-medical' },
+      { id: 'ct', name: 'CT 電腦斷層', reqSubject: 'equip', icon: 'fa-circle-notch' },
+      { id: 'mri', name: 'MRI 磁振造影', reqSubject: 'equip', icon: 'fa-magnet' },
+      { id: 'mammo', name: 'Mammo 乳房攝影', reqSubject: 'basic', icon: 'fa-female' },
+      { id: 'sono', name: 'Sono 超音波', reqSubject: 'diag', icon: 'fa-wave-square' },
+      { id: 'cath', name: '心導管室', reqSubject: 'basic', icon: 'fa-heart-pulse' },
+      { id: 'dental', name: '牙科攝影', reqSubject: 'basic', icon: 'fa-tooth' },
+      { id: 'angio', name: 'Angio 血管攝影', reqSubject: 'basic', icon: 'fa-disease' },
+      { id: 'special', name: 'Special 特殊攝影', reqSubject: 'basic', icon: 'fa-flask-vial' },
+      { id: 'dexa', name: 'DEXA 骨質密度', reqSubject: 'basic', icon: 'fa-bone' },
+      { id: 'nuc', name: '核子醫學', reqSubject: 'nuc', icon: 'fa-atom' },
+      { id: 'rt', name: 'RT 放射線治療', reqSubject: 'therapy', icon: 'fa-crosshairs' }
     ];
 
-    /* MEME SHOP ITEMS */
-    const SHOP_ITEMS = [
-      { id: 's1', title: '【心裡話卡】「這輻射會讓我變蜘蛛人嗎？」', cost: 300, os: '「會，你回家記得找面牆爬爬看。」（微笑呈遞報告）' },
-      { id: 's2', title: '【心裡話卡】「門診家屬在門口敲門三連擊」', cost: 600, os: '「再敲門我就把影像放大到 500% 慢慢看給你看！」' },
-      { id: 's3', title: '【神器】大杯冰美式 (XP雙倍卡)', cost: 1000, os: '喝下一口美式，感覺靈魂重回身體，當天刷題經驗值 x2！' }
-    ];
+    const RANKS = ['見習生', '實習生', 'PGY', '放射師', '資深放射師'];
 
-
-    /* ===================================================
-       2. STATE MANAGEMENT & LOCAL STORAGE
-       =================================================== */
-    
+    /* STATE */
     let state = {
       questions: [],
-      userStats: { streak: 1, xp: 50, money: 1200 },
-      careerUnitLevels: {}, // { xray: 5, ct: 12 ... } (上班次數)
-      unlockedMemes: [],
+      userStats: { money: 200, xp: 0, bonusMultiplier: 1.0, defenseGear: 0 },
+      subjectUnits: { basic: 0, physics: 0, equip: 0, diag: 0, therapy: 0, nuc: 0 }, // 單元完成數
+      unitWorkCounts: {}, // { xray: 3 ... }
+      unlockedBadges: [],
       activeQuiz: null
     };
 
     function loadState() {
-      const savedQ = localStorage.getItem('radingo_questions');
-      state.questions = savedQ ? JSON.parse(savedQ) : DEFAULT_QUESTIONS;
+      const q = localStorage.getItem('radingo_v2_q');
+      state.questions = q ? JSON.parse(q) : [];
 
-      const savedStats = localStorage.getItem('radingo_stats');
-      if (savedStats) state.userStats = JSON.parse(savedStats);
+      const st = localStorage.getItem('radingo_v2_st');
+      if (st) state.userStats = JSON.parse(st);
 
-      const savedCareer = localStorage.getItem('radingo_career_units');
-      state.careerUnitLevels = savedCareer ? JSON.parse(savedCareer) : {};
+      const su = localStorage.getItem('radingo_v2_su');
+      if (su) state.subjectUnits = JSON.parse(su);
 
-      const savedMemes = localStorage.getItem('radingo_memes');
-      state.unlockedMemes = savedMemes ? JSON.parse(savedMemes) : [];
+      const uw = localStorage.getItem('radingo_v2_uw');
+      if (uw) state.unitWorkCounts = JSON.parse(uw);
 
       updateStatsUI();
     }
 
     function saveState() {
-      localStorage.setItem('radingo_questions', JSON.stringify(state.questions));
-      localStorage.setItem('radingo_stats', JSON.stringify(state.userStats));
-      localStorage.setItem('radingo_career_units', JSON.stringify(state.careerUnitLevels));
-      localStorage.setItem('radingo_memes', JSON.stringify(state.unlockedMemes));
+      localStorage.setItem('radingo_v2_q', JSON.stringify(state.questions));
+      localStorage.setItem('radingo_v2_st', JSON.stringify(state.userStats));
+      localStorage.setItem('radingo_v2_su', JSON.stringify(state.subjectUnits));
+      localStorage.setItem('radingo_v2_uw', JSON.stringify(state.unitWorkCounts));
       updateStatsUI();
     }
 
     function updateStatsUI() {
-      document.getElementById('stat-streak').innerText = state.userStats.streak;
-      document.getElementById('stat-xp').innerText = state.userStats.xp;
       document.getElementById('stat-money').innerText = state.userStats.money;
+      document.getElementById('stat-xp').innerText = state.userStats.xp;
     }
 
+    /* TAB SWITCHING */
+    function switchTab(tab) {
+      ['quiz', 'career', 'shop'].forEach(t => document.getElementById(`view-${t}`).classList.add('hidden'));
+      document.getElementById(`view-${tab}`).classList.remove('hidden');
 
-    /* ===================================================
-       3. NAVIGATION & TAB SWITCHING
-       =================================================== */
-    
-    function switchMainTab(tab) {
-      document.getElementById('view-quiz').classList.add('hidden');
-      document.getElementById('view-career').classList.add('hidden');
-
-      document.getElementById('tab-quiz').className = "flex-1 py-2 rounded-lg font-extrabold text-xs text-center transition flex justify-center items-center gap-1.5 text-slate-400 hover:text-slate-200";
-      document.getElementById('tab-career').className = "flex-1 py-2 rounded-lg font-extrabold text-xs text-center transition flex justify-center items-center gap-1.5 text-slate-400 hover:text-slate-200";
-
-      if (tab === 'quiz') {
-        document.getElementById('view-quiz').classList.remove('hidden');
-        document.getElementById('tab-quiz').className = "flex-1 py-2 rounded-lg font-extrabold text-xs text-center transition flex justify-center items-center gap-1.5 bg-emerald-500 text-slate-950 shadow";
-        renderSubjectCards();
-      } else if (tab === 'career') {
-        document.getElementById('view-career').classList.remove('hidden');
-        document.getElementById('tab-career').className = "flex-1 py-2 rounded-lg font-extrabold text-xs text-center transition flex justify-center items-center gap-1.5 bg-emerald-500 text-slate-950 shadow";
-        renderCareerTab();
-      }
+      if (tab === 'quiz') renderQuizMap();
+      if (tab === 'career') renderCareerUnits();
+      if (tab === 'shop') renderShop();
     }
 
-
-    /* ===================================================
-       4. QUIZ ENGINE (刷題與答題邏輯 - Bug 修復版)
-       =================================================== */
-    
-    function renderSubjectCards() {
-      const container = document.getElementById('subject-cards-container');
+    /* 1. QUIZ MAP RENDER */
+    function renderQuizMap() {
+      const container = document.getElementById('subject-node-container');
       container.innerHTML = '';
 
       Object.keys(SUBJECTS).forEach(key => {
         const sub = SUBJECTS[key];
-        const count = state.questions.filter(q => q.subject === key).length;
+        const unitsDone = state.subjectUnits[key] || 0;
+        const qCount = state.questions.filter(q => q.subject === key).length;
 
         const card = document.createElement('div');
-        card.className = "bg-slate-800 border-2 border-slate-700 hover:border-emerald-500 rounded-2xl p-4 transition cursor-pointer flex items-center justify-between group";
-        card.onclick = () => startQuizSession(key);
-
+        card.className = "bg-slate-900 border-2 border-slate-800 rounded-2xl p-4 space-y-3";
         card.innerHTML = `
-          <div class="flex items-center space-x-3.5">
-            <div class="w-12 h-12 rounded-xl bg-gradient-to-tr ${sub.color} flex items-center justify-center text-white text-xl shadow-md group-hover:scale-105 transition">
-              <i class="fa-solid ${sub.icon}"></i>
+          <div class="flex items-center justify-between">
+            <div class="flex items-center space-x-3">
+              <div class="w-10 h-10 rounded-xl bg-gradient-to-tr ${sub.color} flex items-center justify-center text-white text-lg">
+                <i class="fa-solid ${sub.icon}"></i>
+              </div>
+              <div>
+                <h3 class="font-extrabold text-sm text-slate-100">${sub.name}</h3>
+                <span class="text-[11px] text-slate-400">已完成 <b class="text-emerald-400">${unitsDone}</b> / 10 單元 (題目數: ${qCount})</span>
+              </div>
             </div>
-            <div>
-              <h3 class="font-extrabold text-sm text-slate-100 group-hover:text-emerald-400 transition">${sub.name}</h3>
-              <p class="text-xs text-slate-400 mt-0.5">收錄題數：<span class="text-emerald-400 font-bold">${count}</span> 題</p>
-            </div>
+            <button onclick="startUnitSession('${key}')" class="px-3.5 py-1.5 bg-emerald-500 hover:bg-emerald-400 text-slate-950 font-black text-xs rounded-xl btn-duo">
+              開始刷單元
+            </button>
           </div>
-          <i class="fa-solid fa-chevron-right text-slate-500 group-hover:text-emerald-400 transition"></i>
         `;
         container.appendChild(card);
       });
     }
 
-    function startQuizSession(subjectKey) {
-      const filtered = state.questions.filter(q => q.subject === subjectKey);
-      if (filtered.length === 0) {
-        alert('這個科目目前還沒有題目喔！快去「題庫管理」新增幾題吧！');
+    function startUnitSession(subKey) {
+      const subQuestions = state.questions.filter(q => q.subject === subKey);
+      if (subQuestions.length === 0) {
+        alert('這個科目目前沒有題目！請點擊右下角「題庫管理」新增題目喔！');
         return;
       }
 
+      // Random 5 Questions for 1 unit session
+      const shuffled = shuffle([...subQuestions]).slice(0, 5);
       state.activeQuiz = {
-        subject: subjectKey,
-        questions: shuffleArray([...filtered]),
-        currentIndex: 0,
-        selectedOption: null
+        subject: subKey,
+        questions: shuffled,
+        idx: 0,
+        selectedOpt: null
       };
 
-      document.getElementById('subject-select-screen').classList.add('hidden');
-      document.getElementById('quiz-screen').classList.remove('hidden');
-
-      loadCurrentQuestion();
+      document.getElementById('quiz-overlay').classList.remove('hidden');
+      loadQuizQuestion();
     }
 
-    function exitQuiz() {
-      hideFeedbackPanel(); // 離開時隱藏回饋框
-      document.getElementById('quiz-screen').classList.add('hidden');
-      document.getElementById('subject-select-screen').classList.remove('hidden');
-      renderSubjectCards();
+    function exitQuizSession() {
+      document.getElementById('quiz-overlay').classList.add('hidden');
+      renderQuizMap();
     }
 
-    /* 隱藏底部答案回饋區塊 (徹底修復殘留 Bug) */
-    function hideFeedbackPanel() {
-      const panel = document.getElementById('feedback-panel');
-      panel.classList.add('hidden');
-      panel.className = "hidden fixed bottom-0 left-0 right-0 p-4 border-t z-50 transition-transform duration-200";
-    }
-
-    function loadCurrentQuestion() {
-      hideFeedbackPanel(); // 每次載入新題目時，強制清空並隱藏回饋區
-
-      const qData = state.activeQuiz.questions[state.activeQuiz.currentIndex];
+    function loadQuizQuestion() {
+      const q = state.activeQuiz.questions[state.activeQuiz.idx];
       const total = state.activeQuiz.questions.length;
 
-      document.getElementById('quiz-counter').innerText = `${state.activeQuiz.currentIndex + 1}/${total}`;
-      document.getElementById('quiz-progress-bar').style.width = `${((state.activeQuiz.currentIndex) / total) * 100}%`;
-      document.getElementById('question-subject-tag').innerText = SUBJECTS[qData.subject].name;
-      document.getElementById('question-text').innerText = qData.question;
+      document.getElementById('quiz-step-counter').innerText = `${state.activeQuiz.idx + 1}/${total}`;
+      document.getElementById('quiz-progress-bar').style.width = `${(state.activeQuiz.idx / total) * 100}%`;
+      document.getElementById('q-text').innerText = q.question;
 
-      const answerZone = document.getElementById('answer-zone');
-      answerZone.innerHTML = '';
-      state.activeQuiz.selectedOption = null;
-
-      // Render Multiple Choice Options
-      qData.options.forEach((optText, idx) => {
-        const btn = document.createElement('button');
-        btn.className = "option-card w-full p-4 rounded-xl text-left font-extrabold text-sm text-slate-200 flex items-center justify-between";
-        btn.onclick = () => selectOption(idx, btn);
-        btn.innerHTML = `
-          <span>${optText}</span>
-          <div class="w-5 h-5 rounded-full border-2 border-slate-600 flex items-center justify-center text-xs check-indicator"></div>
-        `;
-        answerZone.appendChild(btn);
-      });
-
-      document.getElementById('submit-answer-btn').classList.remove('hidden');
-    }
-
-    function selectOption(idx, element) {
-      const allCards = document.querySelectorAll('.option-card');
-      allCards.forEach(c => c.classList.remove('selected'));
-
-      element.classList.add('selected');
-      state.activeQuiz.selectedOption = idx;
-    }
-
-    function checkAnswer() {
-      if (state.activeQuiz.selectedOption === null) {
-        alert('請先選擇一個答案喔！');
-        return;
+      // Image Handling
+      const imgBox = document.getElementById('q-img-container');
+      const imgEl = document.getElementById('q-img');
+      if (q.imgUrl) {
+        imgEl.src = q.imgUrl;
+        imgBox.classList.remove('hidden');
+      } else {
+        imgBox.classList.add('hidden');
       }
 
-      const qData = state.activeQuiz.questions[state.activeQuiz.currentIndex];
-      const isCorrect = state.activeQuiz.selectedOption === qData.correct;
+      // Options
+      const optContainer = document.getElementById('q-options-container');
+      optContainer.innerHTML = '';
+      state.activeQuiz.selectedOpt = null;
 
-      const allCards = document.querySelectorAll('.option-card');
-      allCards.forEach((card, idx) => {
-        card.classList.add('disabled');
-        if (idx === qData.correct) {
-          card.classList.add('correct');
-        } else if (idx === state.activeQuiz.selectedOption && !isCorrect) {
-          card.classList.add('wrong');
-        }
+      q.options.forEach((optStr, i) => {
+        const btn = document.createElement('button');
+        btn.className = "card-option w-full p-3.5 rounded-xl text-left font-bold text-xs flex justify-between items-center";
+        btn.onclick = () => {
+          document.querySelectorAll('.card-option').forEach(c => c.classList.remove('selected'));
+          btn.classList.add('selected');
+          state.activeQuiz.selectedOpt = i;
+        };
+        btn.innerHTML = `<span>${optStr}</span>`;
+        optContainer.appendChild(btn);
       });
 
-      // Show Feedback Panel
-      const panel = document.getElementById('feedback-panel');
-      const icon = document.getElementById('feedback-icon');
-      const title = document.getElementById('feedback-title');
-      const exp = document.getElementById('feedback-explanation');
-      const btn = document.getElementById('feedback-btn');
+      document.getElementById('feedback-panel').classList.add('hidden');
+      document.getElementById('btn-submit-answer').classList.remove('hidden');
+    }
 
+    function submitCurrentAnswer() {
+      if (state.activeQuiz.selectedOpt === null) { alert('請選擇一個答案！'); return; }
+
+      const q = state.activeQuiz.questions[state.activeQuiz.idx];
+      const isCorrect = state.activeQuiz.selectedOpt === q.correct;
+
+      const opts = document.querySelectorAll('.card-option');
+      opts.forEach((card, i) => {
+        card.classList.add('disabled');
+        if (i === q.correct) card.classList.add('correct');
+        else if (i === state.activeQuiz.selectedOpt && !isCorrect) card.classList.add('wrong');
+      });
+
+      const panel = document.getElementById('feedback-panel');
       panel.classList.remove('hidden');
 
       if (isCorrect) {
-        playSynthSound('correct');
-        panel.className = "fixed bottom-0 left-0 right-0 p-4 border-t border-emerald-700 bg-slate-900/95 text-emerald-400 z-50";
-        icon.innerHTML = '<i class="fa-solid fa-circle-check text-emerald-400"></i>';
-        title.innerText = '答對了！太神啦！ (+20 XP, +$50 薪水)';
-        btn.className = "w-full py-3 rounded-xl font-extrabold text-sm btn-duo btn-green text-slate-950";
-        btn.innerText = "下一題";
-
-        // Reward User
-        state.userStats.xp += 20;
-        state.userStats.money += 50;
+        const earnMoney = Math.round(80 * state.userStats.bonusMultiplier);
+        state.userStats.money += earnMoney;
+        state.userStats.xp += 15;
         saveState();
 
+        panel.className = "p-3 rounded-xl border bg-emerald-950/90 border-emerald-800 text-emerald-300 mb-3 space-y-1";
+        document.getElementById('feedback-icon').innerHTML = '✅';
+        document.getElementById('feedback-title').innerText = `答對了！(+$${earnMoney} 獎金, +15 XP)`;
       } else {
-        playSynthSound('wrong');
-        panel.className = "fixed bottom-0 left-0 right-0 p-4 border-t border-rose-700 bg-slate-900/95 text-rose-400 z-50";
-        icon.innerHTML = '<i class="fa-solid fa-circle-xmark text-rose-400"></i>';
-        title.innerText = '差一點點！再接再厲！';
-        btn.className = "w-full py-3 rounded-xl font-extrabold text-sm btn-duo bg-rose-600 hover:bg-rose-500 text-white";
-        btn.innerText = "再試一次";
+        panel.className = "p-3 rounded-xl border bg-rose-950/90 border-rose-800 text-rose-300 mb-3 space-y-1";
+        document.getElementById('feedback-icon').innerHTML = '❌';
+        document.getElementById('feedback-title').innerText = '答錯了，再接再厲！';
       }
 
-      exp.innerText = qData.explanation || '繼續保持，多看幾次就默默記住了！';
-      document.getElementById('submit-answer-btn').classList.add('hidden');
-    }
+      document.getElementById('feedback-exp').innerText = q.explanation || '多刷幾次就記住了！';
+      document.getElementById('btn-submit-answer').classList.add('hidden');
 
-    function handleFeedbackAction() {
-      const qData = state.activeQuiz.questions[state.activeQuiz.currentIndex];
-      const isCorrect = state.activeQuiz.selectedOption === qData.correct;
-
-      hideFeedbackPanel(); // 點擊按鈕後立刻隱藏面板
-
-      if (isCorrect) {
-        // Move to Next Question
-        state.activeQuiz.currentIndex++;
-        if (state.activeQuiz.currentIndex < state.activeQuiz.questions.length) {
-          loadCurrentQuestion();
+      setTimeout(() => {
+        state.activeQuiz.idx++;
+        if (state.activeQuiz.idx < state.activeQuiz.questions.length) {
+          loadQuizQuestion();
         } else {
-          // Session Completed
-          confetti({ particleCount: 100, spread: 70, origin: { y: 0.6 } });
-          alert('🎉 恭喜完成該科目本輪練習！XP 與津貼已存入帳戶！');
-          exitQuiz();
+          // Finish Unit Session
+          state.subjectUnits[state.activeQuiz.subject] = (state.subjectUnits[state.activeQuiz.subject] || 0) + 1;
+          saveState();
+          confetti({ particleCount: 80, spread: 60 });
+          alert('🎉 成功完成一個單元闖關！單元進度 +1！');
+          exitQuizSession();
         }
-      } else {
-        // Retry Question
-        loadCurrentQuestion();
-      }
+      }, 1800);
     }
 
-
-    /* ===================================================
-       5. CAREER SIMULATOR (放射師的一天 - 13大工作區獨立升級)
-       =================================================== */
-    
-    function renderCareerTab() {
-      // 1. Calculate Question Unlock Percentage
-      const totalQ = state.questions.length;
-      const unlockPct = Math.min(100, Math.round((totalQ / 20) * 100)); // 20 題以上即算大滿貫
-
-      document.getElementById('career-unlock-pct').innerText = `${unlockPct}%`;
-      document.getElementById('career-progress-fill').style.width = `${unlockPct}%`;
-
-      const isUnlockedAll = unlockPct >= 10; // 達到 10% 即全解鎖
-
-      if (isUnlockedAll) {
-        document.getElementById('career-title-badge').innerText = "🎯 對位工具人 (已全解鎖)";
-        document.getElementById('career-rank-name').innerText = "13 大醫院放射工作區全開！";
-        document.getElementById('career-unlock-hint').innerHTML = '<span class="text-emerald-400 font-bold">✨ 成功解鎖全院工作區！按上班次數獨立修練升級！</span>';
-      }
-
-      // 2. Render 13 Work Units
-      const container = document.getElementById('work-units-list');
+    /* 2. CAREER UNITS RENDER */
+    function renderCareerUnits() {
+      const container = document.getElementById('career-units-list');
       container.innerHTML = '';
 
-      WORK_UNITS.forEach(unit => {
-        const workCount = state.careerUnitLevels[unit.id] || 0;
-        
-        // Calculate Level based on work counts
-        let levelTitle = "🌱 菜鳥";
-        let levelColor = "text-slate-400 border-slate-700 bg-slate-900";
-        if (workCount >= 10) { levelTitle = "🔥 該區大師"; levelColor = "text-amber-400 border-amber-800 bg-amber-950/60"; }
-        else if (workCount >= 3) { levelTitle = "⚡ 熟手"; levelColor = "text-sky-400 border-sky-800 bg-sky-950/60"; }
+      WORK_UNITS.forEach(u => {
+        const reqUnitsDone = state.subjectUnits[u.reqSubject] || 0;
+        const isUnlocked = reqUnitsDone >= 10;
+        const workCount = state.unitWorkCounts[u.id] || 0;
+
+        // Rank Calculation
+        let rankIdx = Math.min(4, Math.floor(workCount / 3));
+        let rankTitle = RANKS[rankIdx];
 
         const card = document.createElement('div');
-        card.className = `bg-slate-800/90 border border-slate-700 rounded-2xl p-4 space-y-3 transition ${!isUnlockedAll ? 'opacity-60 grayscale' : ''}`;
+        card.className = `bg-slate-900 border border-slate-800 rounded-2xl p-4 flex justify-between items-center ${!isUnlocked ? 'opacity-50' : ''}`;
         
         card.innerHTML = `
-          <div class="flex items-start justify-between">
-            <div class="flex items-center space-x-3">
-              <div class="w-10 h-10 rounded-xl bg-slate-700 flex items-center justify-center text-sky-400 text-lg">
-                <i class="fa-solid ${unit.icon}"></i>
-              </div>
-              <div>
-                <h4 class="font-extrabold text-sm text-slate-100">${unit.name}</h4>
-                <span class="text-[10px] px-2 py-0.5 rounded-full border font-bold ${levelColor}">${levelTitle} (累計上班 ${workCount} 次)</span>
-              </div>
+          <div class="flex items-center space-x-3">
+            <div class="w-10 h-10 rounded-xl bg-slate-800 flex items-center justify-center text-sky-400 text-lg">
+              <i class="fa-solid ${u.icon}"></i>
             </div>
-            
-            <button onclick="workAtUnit('${unit.id}')" ${!isUnlockedAll ? 'disabled' : ''} class="px-3.5 py-1.5 rounded-xl font-bold text-xs btn-duo btn-emerald bg-emerald-500 text-slate-950">
-              <i class="fa-solid fa-briefcase mr-1"></i> 上班 (+薪水)
-            </button>
+            <div>
+              <h4 class="font-extrabold text-sm text-slate-100">${u.name}</h4>
+              ${isUnlocked ? 
+                `<span class="text-[10px] text-emerald-400 font-bold">職等: ${rankTitle} (上班 ${workCount} 次)</span>` : 
+                `<span class="text-[10px] text-amber-400">🔒 需先完成 ${SUBJECTS[u.reqSubject].name} 10 個單元 (${reqUnitsDone}/10)</span>`
+              }
+            </div>
           </div>
-          <p class="text-xs text-slate-400 leading-normal">${unit.desc}</p>
+          <button onclick="triggerWorkScenario('${u.id}')" ${!isUnlocked ? 'disabled' : ''} class="px-3 py-1.5 bg-sky-500 hover:bg-sky-400 text-slate-950 font-black text-xs rounded-xl">
+            上班
+          </button>
         `;
-
         container.appendChild(card);
       });
-
-      // 3. Render Vent Shop
-      renderShopItems();
     }
 
-    function workAtUnit(unitId) {
-      state.careerUnitLevels[unitId] = (state.careerUnitLevels[unitId] || 0) + 1;
-      state.userStats.money += 150; // 上班賺加給薪水
-      saveState();
+    function triggerWorkScenario(unitId) {
+      const unit = WORK_UNITS.find(u => u.id === unitId);
+      const workCount = state.unitWorkCounts[unitId] || 0;
+      let rankIdx = Math.min(4, Math.floor(workCount / 3));
 
-      playSynthSound('correct');
-      renderCareerTab();
-    }
+      document.getElementById('work-modal-title').innerText = `${unit.name} 上班中...`;
+      document.getElementById('work-modal-rank').innerText = RANKS[rankIdx];
 
-    function renderShopItems() {
-      const container = document.getElementById('meme-shop-items');
-      container.innerHTML = '';
+      // Random Events
+      const events = [
+        { desc: '急診急件送到！病人因為害怕發抖不配合對位。', c1: '溫柔安撫病人情緒', c2: '冷酷快速拍完', c3: '【心裡OS】「再動我就要把你綁起來了喔！」(花 $50 解鎖)' },
+        { desc: '門診大排長龍，今天不小心遲到了 5 分鐘！', c1: '向學長姐道歉並立刻上工', c2: '默默走進主控室裝沒事', c3: '【心裡OS】「時薪這麼低還催催催！」(花 $100 解鎖)' }
+      ];
+      const ev = events[Math.floor(Math.random() * events.length)];
 
-      SHOP_ITEMS.forEach(item => {
-        const isBought = state.unlockedMemes.includes(item.id);
+      document.getElementById('work-event-box').innerText = ev.desc;
+      const choicesBox = document.getElementById('work-choices-container');
+      choicesBox.innerHTML = '';
 
-        const div = document.createElement('div');
-        div.className = "bg-slate-900 border border-slate-700/80 rounded-xl p-3 space-y-2";
-        
-        div.innerHTML = `
-          <div class="flex justify-between items-center">
-            <span class="font-extrabold text-xs text-slate-200">${item.title}</span>
-            ${isBought ? 
-              '<span class="text-[10px] text-emerald-400 font-bold bg-emerald-950 px-2 py-0.5 rounded-full border border-emerald-800">已持有</span>' :
-              `<button onclick="buyShopItem('${item.id}', ${item.cost})" class="px-3 py-1 bg-amber-500 hover:bg-amber-400 text-slate-950 font-black text-xs rounded-lg shadow">
-                 $${item.cost} 解鎖
-               </button>`
-            }
-          </div>
-          ${isBought ? `<p class="text-xs text-amber-300 italic bg-slate-950 p-2 rounded-lg border border-slate-800">💭 心裡OS：${item.os}</p>` : ''}
-        `;
-
-        container.appendChild(div);
+      [ev.c1, ev.c2, ev.c3].forEach((cText, i) => {
+        const btn = document.createElement('button');
+        btn.className = "w-full p-2.5 bg-slate-800 hover:bg-slate-700 rounded-xl text-left text-xs text-slate-200 border border-slate-700 font-semibold";
+        btn.innerText = cText;
+        btn.onclick = () => finishWorkScenario(unitId, i);
+        choicesBox.appendChild(btn);
       });
+
+      document.getElementById('modal-work-scenario').classList.remove('hidden');
     }
 
-    function buyShopItem(itemId, cost) {
-      if (state.userStats.money < cost) {
-        alert('國考津貼/薪水不夠喔！多去「國考刷題」或是「工作區上班」賺錢吧！');
-        return;
+    function finishWorkScenario(unitId, choiceIdx) {
+      state.unitWorkCounts[unitId] = (state.unitWorkCounts[unitId] || 0) + 1;
+      
+      let basePay = 50; // 上班獲取的固定 20% 少量收益
+      if (choiceIdx === 2) {
+        // High Risk Risk choice
+        if (Math.random() > 0.5) {
+          alert('🤫 病人居然沒聽到！順利吐露心聲，獲得額外舒壓打賞 $100！');
+          basePay += 100;
+        } else {
+          alert('⚠️ 慘了！被病人向衛福部投訴！扣除罰款 $80！');
+          basePay -= 80;
+        }
+      } else {
+        alert(`順利完成上班任務！獲得津貼 $${basePay}！`);
       }
 
-      state.userStats.money -= cost;
-      state.unlockedMemes.push(itemId);
+      state.userStats.money = Math.max(0, state.userStats.money + basePay);
       saveState();
 
-      alert('🎉 成功解鎖黑色幽默卡片！');
-      renderCareerTab();
+      closeModal('modal-work-scenario');
+      renderCareerUnits();
     }
 
-
-    /* ===================================================
-       6. NO-CODE QUESTION EDITOR & JSON IMPORT/EXPORT
-       =================================================== */
-    
-    function toggleEditorFields() {
-      // Expandable for True/False in future
+    /* 3. SHOP RENDER */
+    function renderShop() {
+      const container = document.getElementById('shop-items-container');
+      container.innerHTML = `
+        <div class="bg-slate-900 border border-slate-800 p-4 rounded-2xl flex justify-between items-center">
+          <div>
+            <h4 class="font-extrabold text-sm text-slate-100">☕ 專注大杯冰美式 (刷題收入 +50%)</h4>
+            <p class="text-xs text-slate-400">目前加成倍率：${state.userStats.bonusMultiplier}x</p>
+          </div>
+          <button onclick="buyUpgrade('multiplier')" class="px-3.5 py-2 bg-amber-500 text-slate-950 font-black text-xs rounded-xl">
+            $500 升級
+          </button>
+        </div>
+      `;
     }
 
-    function addNewQuestionFromEditor() {
-      const sub = document.getElementById('edit-subject').value;
-      const qText = document.getElementById('edit-question').value.trim();
-      const exp = document.getElementById('edit-explanation').value.trim();
-
-      const opt0 = document.getElementById('opt-0').value.trim();
-      const opt1 = document.getElementById('opt-1').value.trim();
-      const opt2 = document.getElementById('opt-2').value.trim();
-      const opt3 = document.getElementById('opt-3').value.trim();
-      const correctIdx = parseInt(document.getElementById('correct-opt-idx').value) || 0;
-
-      if (!qText || !opt0 || !opt1) {
-        alert('請至少填寫題目敘述與選項 A、B 喔！');
-        return;
+    function buyUpgrade(type) {
+      if (type === 'multiplier') {
+        if (state.userStats.money < 500) { alert('金錢不夠喔！請多去闖關刷題！'); return; }
+        state.userStats.money -= 500;
+        state.userStats.bonusMultiplier += 0.5;
+        saveState();
+        alert('🎉 升級成功！刷題收入加成提升！');
+        renderShop();
       }
+    }
 
-      const newQ = {
-        id: 'user_' + Date.now(),
+    /* NO-CODE EDITOR FUNCTIONS */
+    function saveQuestionToDB() {
+      const sub = document.getElementById('ed-subject').value;
+      const qText = document.getElementById('ed-text').value.trim();
+      const imgUrl = document.getElementById('ed-img').value.trim();
+      const exp = document.getElementById('ed-exp').value.trim();
+
+      const o0 = document.getElementById('ed-opt-0').value.trim();
+      const o1 = document.getElementById('ed-opt-1').value.trim();
+      const o2 = document.getElementById('ed-opt-2').value.trim();
+      const o3 = document.getElementById('ed-opt-3').value.trim();
+      const correct = parseInt(document.getElementById('ed-correct').value) || 0;
+
+      if (!qText || !o0 || !o1) { alert('請填寫題目與至少前兩個選項！'); return; }
+
+      state.questions.unshift({
+        id: 'q_' + Date.now(),
         subject: sub,
         type: 'choice',
         question: qText,
-        options: [opt0, opt1, opt2, opt3].filter(o => o !== ''),
-        correct: correctIdx,
-        explanation: exp || '自訂題目練習'
-      };
+        imgUrl: imgUrl,
+        options: [o0, o1, o2, o3].filter(o => o !== ''),
+        correct: correct,
+        explanation: exp
+      });
 
-      state.questions.unshift(newQ);
       saveState();
-
-      alert('✅ 題目已成功新增至你的本地國考題庫！');
-      document.getElementById('edit-question').value = '';
-      document.getElementById('editor-total-count').innerText = state.questions.length;
-      closeModal('editor-modal');
+      alert('✅ 題目成功儲存至本地庫！');
+      document.getElementById('ed-text').value = '';
+      document.getElementById('ed-total-count').innerText = state.questions.length;
+      closeModal('modal-editor');
+      renderQuizMap();
     }
 
-    function exportQuestionsJSON() {
+    function exportJSON() {
       const dataStr = "data:text/json;charset=utf-8," + encodeURIComponent(JSON.stringify(state.questions, null, 2));
-      const downloadAnchor = document.createElement('a');
-      downloadAnchor.setAttribute("href", dataStr);
-      downloadAnchor.setAttribute("download", "radingo_questions_backup.json");
-      document.body.appendChild(downloadAnchor);
-      downloadAnchor.click();
-      downloadAnchor.remove();
+      const dl = document.createElement('a');
+      dl.setAttribute("href", dataStr);
+      dl.setAttribute("download", "radingo_questions.json");
+      dl.click();
     }
 
-    function importQuestionsJSON(event) {
-      const file = event.target.files[0];
+    function importJSON(e) {
+      const file = e.target.files[0];
       if (!file) return;
-
-      const reader = new FileReader();
-      reader.onload = function(e) {
-        try {
-          const imported = JSON.parse(e.target.result);
-          if (Array.isArray(imported)) {
-            state.questions = imported;
-            saveState();
-            alert(`🎉 成功匯入 ${imported.length} 題最新國考題庫！`);
-            location.reload();
-          }
-        } catch (err) {
-          alert('匯入失敗：JSON 格式不正確！');
-        }
+      const r = new FileReader();
+      r.onload = function(evt) {
+        state.questions = JSON.parse(evt.target.result);
+        saveState();
+        alert(`🎉 成功匯入 ${state.questions.length} 題題目！`);
+        location.reload();
       };
-      reader.readAsText(file);
+      r.readAsText(file);
     }
 
+    /* UTILS */
+    function openModal(id) { document.getElementById(id).classList.remove('hidden'); }
+    function closeModal(id) { document.getElementById(id).classList.add('hidden'); }
+    function shuffle(arr) { return arr.sort(() => Math.random() - 0.5); }
 
-    /* ===================================================
-       7. HELPER UTILITIES & SYNTH AUDIO
-       =================================================== */
-    
-    function openModal(id) {
-      document.getElementById(id).classList.remove('hidden');
-      if (id === 'editor-modal') {
-        document.getElementById('editor-total-count').innerText = state.questions.length;
-      }
-    }
-
-    function closeModal(id) {
-      document.getElementById(id).classList.add('hidden');
-    }
-
-    function shuffleArray(array) {
-      for (let i = array.length - 1; i > 0; i--) {
-        const j = Math.floor(Math.random() * (i + 1));
-        [array[i], array[j]] = [array[j], array[i]];
-      }
-      return array;
-    }
-
-    /* Web Audio API Sound Generator */
-    function playSynthSound(type) {
-      try {
-        const ctx = new (window.AudioContext || window.webkitAudioContext)();
-        const osc = ctx.createOscillator();
-        const gain = ctx.createGain();
-        osc.connect(gain);
-        gain.connect(ctx.destination);
-
-        if (type === 'correct') {
-          osc.frequency.setValueAtTime(523.25, ctx.currentTime); // C5
-          osc.frequency.setValueAtTime(659.25, ctx.currentTime + 0.1); // E5
-          gain.gain.setValueAtTime(0.2, ctx.currentTime);
-          gain.gain.exponentialRampToValueAtTime(0.01, ctx.currentTime + 0.3);
-          osc.start();
-          osc.stop(ctx.currentTime + 0.3);
-        } else if (type === 'wrong') {
-          osc.type = 'sawtooth';
-          osc.frequency.setValueAtTime(220, ctx.currentTime); // A3
-          osc.frequency.setValueAtTime(174.61, ctx.currentTime + 0.15); // F3
-          gain.gain.setValueAtTime(0.2, ctx.currentTime);
-          gain.gain.exponentialRampToValueAtTime(0.01, ctx.currentTime + 0.4);
-          osc.start();
-          osc.stop(ctx.currentTime + 0.4);
-        }
-      } catch (e) {
-        // Audio fallback
-      }
-    }
-
-
-    /* INITIALIZATION ON LOAD */
     window.onload = function() {
       loadState();
-      renderSubjectCards();
+      renderQuizMap();
     };
   </script>
 </body>
