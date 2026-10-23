@@ -40,7 +40,7 @@
     <div class="max-w-md mx-auto flex justify-between items-center">
       <div class="flex items-center space-x-2">
         <span class="text-2xl font-black text-emerald-400">Radingo</span>
-        <span class="bg-emerald-950 text-emerald-400 text-[10px] px-2 py-0.5 rounded-full font-bold border border-emerald-800">長篇物語版</span>
+        <span class="bg-emerald-950 text-emerald-400 text-[10px] px-2 py-0.5 rounded-full font-bold border border-emerald-800">長劇本物語版</span>
       </div>
 
       <div class="flex items-center space-x-3 font-extrabold text-xs">
@@ -63,7 +63,7 @@
         🎯 國考闖關刷題
       </button>
       <button id="tab-career" onclick="switchTab('career')" class="flex-1 py-2 rounded-lg font-black text-xs text-center text-slate-400 hover:text-slate-200">
-        🏥 職場物語
+        🏥 職場物語 (5-10分)
       </button>
       <button id="tab-shop" onclick="switchTab('shop')" class="flex-1 py-2 rounded-lg font-black text-xs text-center text-slate-400 hover:text-slate-200">
         🛍️ 升級商店
@@ -124,18 +124,18 @@
       </div>
     </div>
 
-    <!-- VIEW 2: CAREER STORY MAP (職場物語大廳) -->
+    <!-- VIEW 2: CAREER STORY MAP -->
     <div id="view-career" class="hidden space-y-4">
       <div class="bg-slate-900 border border-slate-800 rounded-2xl p-4 text-center space-y-1">
-        <span class="text-xs text-emerald-400 font-extrabold bg-emerald-950 px-2.5 py-0.5 rounded-full border border-emerald-800">🏥 醫院職場物語</span>
-        <h2 class="text-base font-black text-white">點擊科別展開長篇沈浸式「臨床生存劇本」</h2>
-        <p class="text-xs text-slate-400">職等：見習生 $\rightarrow$ 實習生 $\rightarrow$ PGY $\rightarrow$ 放射師 $\rightarrow$ 資深放射師</p>
+        <span class="text-xs text-emerald-400 font-extrabold bg-emerald-950 px-2.5 py-0.5 rounded-full border border-emerald-800">🏥 醫院長篇職場物語</span>
+        <h2 class="text-base font-black text-white">點擊科別體驗 5~10 分鐘「血淚搞笑上班一整天」</h2>
+        <p class="text-xs text-slate-400">含八卦、失憶阿公、請飲料防電與客訴風險！</p>
       </div>
 
       <div id="career-units-list" class="space-y-3"></div>
     </div>
 
-    <!-- VIEW 3: SHOP (升級商店) -->
+    <!-- VIEW 3: SHOP -->
     <div id="view-shop" class="hidden space-y-4">
       <div class="bg-slate-900 border border-slate-800 rounded-2xl p-4">
         <h2 class="text-base font-black text-amber-400 flex items-center gap-2">
@@ -149,27 +149,27 @@
 
   </main>
 
-  <!-- VN STORY DIALOGUE OVERLAY (長篇沈浸式劇情視窗) -->
+  <!-- VN STORY OVERLAY (長劇本與互動) -->
   <div id="vn-modal" class="hidden fixed inset-0 bg-black/90 backdrop-blur-md z-50 flex flex-col justify-end p-4">
     <div class="max-w-md w-full mx-auto space-y-3 vn-animate pb-6">
       
-      <!-- Character Scene Header -->
+      <!-- Character Header -->
       <div class="flex items-end justify-between px-2">
         <div class="flex items-center space-x-3">
           <div id="vn-char-avatar" class="w-14 h-14 rounded-2xl bg-gradient-to-tr from-sky-600 to-indigo-700 border-2 border-sky-400 flex items-center justify-center text-white text-2xl shadow-lg">
             <i class="fa-solid fa-user-doctor"></i>
           </div>
           <div>
-            <span id="vn-char-title" class="text-[10px] text-emerald-400 font-extrabold bg-emerald-950 px-2 py-0.5 rounded border border-emerald-800">08:30 晨間交班</span>
-            <h3 id="vn-char-name" class="text-base font-black text-white mt-0.5">王學姐</h3>
+            <span id="vn-char-title" class="text-[10px] text-emerald-400 font-extrabold bg-emerald-950 px-2 py-0.5 rounded border border-emerald-800">08:00 八卦晨報</span>
+            <h3 id="vn-char-name" class="text-base font-black text-white mt-0.5">控制室現場</h3>
           </div>
         </div>
         <button onclick="closeVNStory()" class="text-slate-400 hover:text-white px-2 py-1 text-xs bg-slate-800 rounded-lg border border-slate-700">
-          逃避現實 (退出)
+          退出職場
         </button>
       </div>
 
-      <!-- VN Dialogue Box -->
+      <!-- Dialogue Box -->
       <div class="bg-slate-900/95 border-2 border-slate-700 rounded-2xl p-5 shadow-2xl space-y-4 relative overflow-hidden">
         <div class="absolute -right-6 -bottom-6 text-slate-800 text-8xl pointer-events-none">
           <i class="fa-solid fa-quote-right"></i>
@@ -177,14 +177,14 @@
 
         <div id="vn-content-area" class="space-y-3 relative z-10">
           <p id="vn-dialogue-text" class="text-sm text-slate-100 font-medium leading-relaxed">
-            劇情載入中...
+            劇本讀取中...
           </p>
         </div>
 
         <div id="vn-choices-area" class="space-y-2 pt-2 relative z-10"></div>
       </div>
     </div>
-  </div>
+  </footer>
 
   <!-- FIXED FOOTER -->
   <footer class="fixed bottom-0 left-0 right-0 bg-slate-900 border-t border-slate-800 py-2.5 px-4 z-40">
@@ -204,7 +204,7 @@
     </div>
   </footer>
 
-  <!-- MODAL: EDITOR (題庫管理員) -->
+  <!-- MODAL: EDITOR -->
   <div id="modal-editor" class="hidden fixed inset-0 bg-black/80 backdrop-blur-sm z-50 flex items-center justify-center p-4">
     <div class="bg-slate-900 border border-slate-800 rounded-2xl w-full max-w-md max-h-[85vh] flex flex-col overflow-hidden">
       <div class="p-4 border-b border-slate-800 flex justify-between items-center bg-slate-800/50">
@@ -340,120 +340,72 @@
 
     const INITIAL_PRESET_QUESTIONS = [
       {
-        "id": "q_1792747175443",
-        "subject": "diag",
-        "type": "fill",
-        "question": "焦斑越大，影像越_",
-        "imgUrl": "",
-        "explanation": "焦斑越大，半影越大，影像越模糊",
-        "options": ["清晰", "模糊"],
-        "correct": 1
+        "id": "q_1792747175443", "subject": "diag", "type": "fill", "question": "焦斑越大，影像越_",
+        "imgUrl": "", "explanation": "焦斑越大，半影越大，影像越模糊", "options": ["清晰", "模糊"], "correct": 1
       },
       {
-        "id": "q_1792747019139",
-        "subject": "diag",
-        "type": "choice",
-        "question": "一般 X 光檢查，當管電壓為 90 kVp 的時候，過濾後的制動輻射能譜(filtered bremsstrahlung spectrum)，不可能出現下列那些能量的 X 光？①5 keV ②25 keV ③75 keV ④95 keV",
-        "imgUrl": "",
-        "explanation": "95 keV超過最大能量上限，5 keV被filter完全吸收",
-        "options": ["①②", "②③", "③④", "①④"],
-        "correct": 3
+        "id": "q_1792747019139", "subject": "diag", "type": "choice",
+        "question": "一般 X 光檢查，當管電壓為 90 kVp 的時候，過濾後的制動輻射能譜，不可能出現下列那些能量的 X 光？①5 keV ②25 keV ③75 keV ④95 keV",
+        "imgUrl": "", "explanation": "95 keV超過最大能量上限，5 keV被filter完全吸收", "options": ["①②", "②③", "③④", "①④"], "correct": 3
       },
       {
-        "id": "q_1792746873527",
-        "subject": "diag",
-        "type": "choice",
+        "id": "q_1792746873527", "subject": "diag", "type": "choice",
         "question": "半值層(half-value layer, HVL)會受到下列那一個因素影響？",
-        "imgUrl": "",
-        "explanation": "半值層（HVL）是指將 X 光束的強度減弱至原本一半所需的吸收材質厚度",
-        "options": ["入射光子數目", "管電流強度", "入射光子能量", "曝照時間"],
-        "correct": 2
+        "imgUrl": "", "explanation": "半值層是指將 X 光束的強度減弱至原本一半所需的吸收材質厚度", "options": ["入射光子數目", "管電流強度", "入射光子能量", "曝照時間"], "correct": 2
       },
       {
-        "id": "q_1792746633655",
-        "subject": "diag",
-        "type": "tf",
-        "question": "kVp 增加 15％相當於 mAs 減少 2 倍",
-        "imgUrl": "",
-        "explanation": "mAs 增加為 2 倍",
-        "tfCorrect": false
+        "id": "q_1792746633655", "subject": "diag", "type": "tf",
+        "question": "kVp 增加 15％相當於 mAs 減少 2 倍", "imgUrl": "", "explanation": "mAs 增加為 2 倍", "tfCorrect": false
       },
       {
-        "id": "q_1792746543366",
-        "subject": "diag",
-        "type": "matching",
-        "question": "選擇正確配對",
-        "imgUrl": "",
-        "explanation": "",
+        "id": "q_1792746543366", "subject": "diag", "type": "matching", "question": "選擇正確配對", "imgUrl": "", "explanation": "",
         "pairs": [
-          { "left": "焦斑", "right": "X 光管內發射的高速電子，撞擊陽極靶表面產生 X 光的區域，大小是決定 X 光影像清晰度，越小越清晰" },
-          { "left": "半影", "right": "因為X光不是從一個點發射出去而在邊緣產生的麼湖區域" }
+          { "left": "焦斑", "right": "撞擊陽極靶產生 X 光的區域，越小越清晰" },
+          { "left": "半影", "right": "因為非點源發射在邊緣產生的模糊區域" }
+        ]
+      }
+    ];
+
+    /* RICH MULTI-DAY SCRIPTS (豐富多樣故事庫) */
+    const STORY_DATABASE = [
+      {
+        id: "s_baby_talk",
+        t08: "早上踏進控制室，學長姐正在熱烈爭論生小孩的事。\n張學姐：「勸你千萬別生！養小孩超貴，連看劇時間都沒有！」\n李學長：「胡說！看著小孩長大超有成就感好嗎！」\n兩人同時轉頭看妳：「妳覺得呢？」",
+        c08: [
+          { txt: "「我連自己都養不活了，生什麼生（嘆氣）」", pay: 0 },
+          { txt: "「我也挺喜歡小孩的耶！」", pay: 10 },
+          { txt: "「我只知道我再不喝咖啡就要暴斃了。」", pay: 20 }
+        ],
+        t10: "推開門叫號，一位慈祥的失憶阿公走進來，凝視妳三秒：\n阿公：「阿妹仔...妳是我孫女小婷嗎？妳長大啦？」",
+        c10: [
+          { txt: "「阿公，我不是小婷啦！我是放射師，來幫你做檢查的喔！」", pay: 10, risk: false },
+          { txt: "「對啦阿公！小婷來看你了！那你可以乖乖躺好別動了嗎？」", pay: 50, risk: false },
+          { txt: "「阿公，你認錯人了，滾回去坐好。」(罵人白眼)", pay: 80, risk: true }
+        ],
+        t14: "下午一台急診床推進來，家屬情緒激動在門口叫囂大喊慢吞吞！",
+        c14: [
+          { txt: "耐心地向家屬解釋照相流程與防護安全", pay: 20, risk: false },
+          { txt: "【開嗆】「再叫我就把急診單拉到最後一個！」", pay: 100, risk: true }
         ]
       },
       {
-        "id": "q_1792746170443",
-        "subject": "diag",
-        "type": "choice",
-        "question": "在相同診斷條件之下，有關 X 光照相技術的敘述，下列何者最適當？",
-        "imgUrl": "",
-        "explanation": "A : 半影與焦斑尺寸成正比  B: 放大率取決於SOD、SID  D : mAs（決定 X 光子的總數），而 kVp 主要影響的是影像的對比度",
-        "options": [
-          "使用 2 mm 焦斑比 1 mm 更可減少半影",
-          "mAs 值必須大於 30％的改變才會產生放大率的效果",
-          "kVp 增加 15％相當 mAs 增加為 2 倍",
-          "OD 值的最關鍵條件為 kVp 的改變"
+        id: "s_boba_mistake",
+        t08: "今天一早，一位親切的家屬拎了三大袋手搖飲走進控制室！\n家屬：「放射師辛苦了！這幾杯珍奶請你們喝！」\n學長眼睛一亮，立刻搶過去一杯喝了大半。",
+        c08: [
+          { txt: "「謝謝家屬！今天工作動力滿滿！」", pay: 20 },
+          { txt: "「學長！留一杯無糖去冰給我啊！」", pay: 10 }
         ],
-        "correct": 2
-      },
-      {
-        "id": "q_1792745895470",
-        "subject": "diag",
-        "type": "choice",
-        "question": "頭顱側位攝影之 X 光中心點若在 EAM 上 5 公分射入，則可得到下列何種影像？",
-        "imgUrl": "",
-        "explanation": "EAM : 外耳道",
-        "options": ["lateral sinuses", "lateral nasal bone", "lateral mandible", "skull true lateral"],
-        "correct": 3
-      },
-      {
-        "id": "q_1792745758663",
-        "subject": "diag",
-        "type": "choice",
-        "question": "下列對於 X 光攝影的描述，何者最不適當？",
-        "imgUrl": "",
-        "explanation": "",
-        "options": [
-          "HSG 可檢查子宮腔及輸卵管的影像",
-          "IVU 可檢查腎盂、輸尿管及膀胱的影像",
-          "chest PA view 指 X 光行進是從胸部的後到前",
-          "就解剖位置，iliac crest 較 ASIS 遠離心臟"
+        t10: "中午遇到一位阿嬤要照腹部，妳正準備按曝光時，阿嬤突然開口：\n阿嬤：「對了放射師，我剛剛在等候區吃了一碗牛肉麵耶...」",
+        c10: [
+          { txt: "「阿嬤！這個檢查要禁食的捏！這樣影像會糊掉啦！」", pay: 10, risk: false },
+          { txt: "「算了照拍不誤，反正看得出形狀就好。」", pay: 30, risk: false },
+          { txt: "【暴怒】「牛肉麵？！妳怎麼不順便吃火鍋？！」", pay: 90, risk: true }
         ],
-        "correct": 3
-      },
-      {
-        "id": "q_1792745700539",
-        "subject": "diag",
-        "type": "choice",
-        "question": "關於攝影時對病人的保護，下列敘述何者正確？",
-        "imgUrl": "",
-        "explanation": "放置鉛版可改善影像對比度，同時減少周圍輻射",
-        "options": [
-          "使用較短的 SID 可減少病人移動性的模糊",
-          "十天法則(10-day rule)可指女性的輻射危險期",
-          "拍攝女性 KUB 時應給予性腺防護器",
-          "腰椎側位攝影時，可放置鉛板(lead mat)以吸收散射線"
-        ],
-        "correct": 3
-      },
-      {
-        "id": "q_1792745562583",
-        "subject": "diag",
-        "type": "choice",
-        "question": "Erect LAO 的姿勢進行 X 光攝影，最易取得下列何種結構？",
-        "imgUrl": "",
-        "explanation": "",
-        "options": ["右側創傷性肩部骨折", "雙邊常規鎖骨攝影", "橫膈下左後肋骨骨折", "側位肩胛骨體部攝影"],
-        "correct": 3
+        t14: "下午設備突然發出異音，機器走位卡住！妳驚慌地看向學長。",
+        c14: [
+          { txt: "冷靜重新啟動控制台系統，成功修復事故！", pay: 30, risk: false },
+          { txt: "拍打機器兩下喊：「壞了就給我動啊！」", pay: 60, risk: true }
+        ]
       }
     ];
 
@@ -472,12 +424,9 @@
     function loadState() {
       const q = localStorage.getItem('radingo_v8_q');
       state.questions = q ? JSON.parse(q) : INITIAL_PRESET_QUESTIONS;
-      const st = localStorage.getItem('radingo_v8_st');
-      if (st) state.userStats = JSON.parse(st);
-      const su = localStorage.getItem('radingo_v8_su');
-      if (su) state.subjectUnits = JSON.parse(su);
-      const uw = localStorage.getItem('radingo_v8_uw');
-      if (uw) state.unitWorkCounts = JSON.parse(uw);
+      const st = localStorage.getItem('radingo_v8_st'); if (st) state.userStats = JSON.parse(st);
+      const su = localStorage.getItem('radingo_v8_su'); if (su) state.subjectUnits = JSON.parse(su);
+      const uw = localStorage.getItem('radingo_v8_uw'); if (uw) state.unitWorkCounts = JSON.parse(uw);
       updateStatsUI();
     }
 
@@ -543,14 +492,7 @@
       }
 
       const shuffled = shuffle([...subQuestions]).slice(0, 5);
-      state.activeQuiz = {
-        subject: subKey,
-        questions: shuffled,
-        idx: 0,
-        selectedOpt: null,
-        userTFAnswer: null
-      };
-
+      state.activeQuiz = { subject: subKey, questions: shuffled, idx: 0, selectedOpt: null, userTFAnswer: null };
       document.getElementById('quiz-overlay').classList.remove('hidden');
       loadQuizQuestion();
     }
@@ -574,16 +516,11 @@
 
       const imgBox = document.getElementById('q-img-container');
       const imgEl = document.getElementById('q-img');
-      if (q.imgUrl) {
-        imgEl.src = q.imgUrl;
-        imgBox.classList.remove('hidden');
-      } else {
-        imgBox.classList.add('hidden');
-      }
+      if (q.imgUrl) { imgEl.src = q.imgUrl; imgBox.classList.remove('hidden'); } 
+      else { imgBox.classList.add('hidden'); }
 
       const zone = document.getElementById('q-interactive-zone');
-      zone.innerHTML = '';
-      state.activeQuiz.selectedOpt = null;
+      zone.innerHTML = ''; state.activeQuiz.selectedOpt = null;
 
       if (q.type === 'choice' || q.type === 'fill') {
         q.options.forEach((optStr, i) => {
@@ -633,9 +570,7 @@
           rightCol.appendChild(rBtn);
         });
 
-        grid.appendChild(leftCol);
-        grid.appendChild(rightCol);
-        zone.appendChild(grid);
+        grid.appendChild(leftCol); grid.appendChild(rightCol); zone.appendChild(grid);
       }
 
       document.getElementById('feedback-panel').classList.add('hidden');
@@ -689,9 +624,7 @@
 
       if (isCorrect) {
         const earnMoney = Math.round(80 * state.userStats.bonusMultiplier);
-        state.userStats.money += earnMoney;
-        state.userStats.xp += 15;
-        saveState();
+        state.userStats.money += earnMoney; state.userStats.xp += 15; saveState();
 
         panel.className = "p-3 rounded-xl border bg-emerald-950/90 border-emerald-800 text-emerald-300 mb-3 space-y-1";
         document.getElementById('feedback-icon').innerHTML = '✅';
@@ -719,7 +652,7 @@
       }, 1800);
     }
 
-    /* 2. CAREER STORY & IMMERSIVE VN ENGINE (長篇臨床劇本與多樣化故事) */
+    /* 2. CAREER LONG STORY ENGINE (多樣故事與時間軸) */
     function renderCareerUnits() {
       const container = document.getElementById('career-units-list');
       container.innerHTML = '';
@@ -748,7 +681,7 @@
               }
             </div>
           </div>
-          <button onclick="startImmersiveStory('${u.id}')" ${!isUnlocked ? 'disabled' : ''} class="px-3 py-1.5 bg-sky-500 hover:bg-sky-400 text-slate-950 font-black text-xs rounded-xl">
+          <button onclick="startLongDayStory('${u.id}')" ${!isUnlocked ? 'disabled' : ''} class="px-3 py-1.5 bg-sky-500 hover:bg-sky-400 text-slate-950 font-black text-xs rounded-xl">
             開始上班
           </button>
         `;
@@ -756,214 +689,189 @@
       });
     }
 
-    /* 多樣化劇本庫（隨機抽取不同的小故事，長達 5-7 個階段） */
-    const STORY_SCRIPTS = [
-      {
-        title: "大夜接班的靈異與崩潰交響曲",
-        morning: "清晨 07:30，交班學姐黑眼圈重得像熊貓，把報表甩在桌上：「昨天急診送來一個杯子卡在食道的阿伯，還有個堅持說 X 光機會吸走他靈魂的阿嬤，你自己保重。」",
-        patientEvent: {
-          desc: "此時一位拿著手機直播的網紅病人走進來：「喂！放射師！我這個角度拍起來不夠瘦，你們幫我把光束調整成美肌濾鏡模式好不好？」",
-          choices: [
-            { text: "「小姐，這是醫療設備不是美圖秀秀，請躺好。」", risk: false, bonus: 10 },
-            { text: "【心裡OS】「美肌妳個頭！再吵林北把你拍成骷髏人！」(花費 $40 罵人)", risk: true, cost: 40, bonus: 80 },
-            { text: "敷衍微笑：「好喔，我們機器內建 100 段骨骼美肌。」", risk: false, bonus: 0 }
-          ]
-        }
-      },
-      {
-        title: "空調壞掉與主治醫師的靈魂拷問",
-        morning: "下午 14:00，控制室冷氣突然故障，室溫高達 38 度。主治醫師端着冰咖啡晃進來：「喲，年輕人流汗像瀑布一樣，心靜自然涼嘛。」",
-        patientEvent: {
-          desc: "檢查台上躺著一位阿伯，家屬在旁邊急得大喊：「你們輻射這麼強，我爸照完會不會變成浩克啊？」",
-          choices: [
-            { text: "耐心解釋：「阿伯劑量很低，而且只會殺死癌細胞或看清病灶，不會變浩克。」", risk: false, bonus: 15 },
-            { text: "【心裡OS】「對啦！綠巨人浩克就是這樣誕生的，褲子等下會破掉！」(花費 $50 罵人)", risk: true, cost: 50, bonus: 90 },
-            { text: "冷漠回應：「不會變浩克，頂多頭髮掉光而已。」", risk: false, bonus: 5 }
-          ]
-        }
-      },
-      {
-        title: "急診外傷與迷路家屬的荒謬日常",
-        morning: "上午 10:30，推床鈴聲瘋狂大作，急診送來連環車禍患者。學姐大喊：「快！先拍 Trauma Cervical Spine 跟 Chest！」",
-        patientEvent: {
-          desc: "家屬急忙衝進管制區拉住你的白袍：「放射師！我剛才在外面扭蛋抽到隱藏版，妳幫我看一下這個會不會中獎？」",
-          choices: [
-            { text: "撥開家屬的手：「先生！這是管制區，病人生命徵象危急，請出去！」", risk: false, bonus: 20 },
-            { text: "【心裡OS】「中妳個大頭鬼！你爸都快斷氣了還在抽扭蛋！」(花費 $60 罵人)", risk: true, cost: 60, bonus: 100 },
-            { text: "無奈搖頭：「抽到這個不能幫你加薪，快出去。」", risk: false, bonus: 10 }
-          ]
-        }
-      }
-    ];
-
-    function startImmersiveStory(unitId) {
+    function startLongDayStory(unitId) {
       const unit = WORK_UNITS.find(u => u.id === unitId);
-      const workCount = state.unitWorkCounts[unitId] || 0;
-      let rankIdx = Math.min(4, Math.floor(workCount / 3));
-
-      // 隨機抽一個劇本
-      const script = STORY_SCRIPTS[Math.floor(Math.random() * STORY_SCRIPTS.length)];
+      const randomScript = STORY_DATABASE[Math.floor(Math.random() * STORY_DATABASE.length)];
 
       state.vnActive = {
         unitId: unitId,
         unitName: unit.name,
         reqSubject: unit.reqSubject,
-        script: script,
-        step: 1, // 1: 早上交班, 2: 臨床病人事件, 3: 學長姐抽考題庫, 4: 下班結算
-        earnedMoneyToday: 0
+        step: 1, // 1: 08:00八卦, 2: 10:00奇葩病人, 3: 12:00抽考/請飲料, 4: 14:30突發事件, 5: 17:00結算
+        script: randomScript,
+        earnedPay: 0,
+        complaintRisk: 0
       };
 
-      document.getElementById('vn-char-name').innerText = `${unit.name} 主控官`;
       document.getElementById('vn-modal').classList.remove('hidden');
-      loadImmersiveStep();
+      loadVNLongStep();
     }
 
-    function loadImmersiveStep() {
-      const step = state.vnActive.step;
+    function loadVNLongStep() {
+      const active = state.vnActive;
+      const step = active.step;
+      const script = active.script;
+
       const textEl = document.getElementById('vn-dialogue-text');
       const choicesEl = document.getElementById('vn-choices-area');
       const timeBadge = document.getElementById('vn-char-title');
       choicesEl.innerHTML = '';
 
       if (step === 1) {
-        timeBadge.innerText = "08:30 晨間交班";
-        textEl.innerText = `【${state.vnActive.script.title}】\n\n${state.vnActive.script.morning}`;
-        
-        const btn = document.createElement('button');
-        btn.className = "w-full p-3 bg-emerald-600 hover:bg-emerald-500 rounded-xl text-center text-xs text-slate-950 font-black";
-        btn.innerText = "打起精神，迎接今天的第一位奇葩病人！";
-        btn.onclick = () => { state.vnActive.step = 2; loadImmersiveStep(); };
-        choicesEl.appendChild(btn);
+        timeBadge.innerText = "08:00 晨間打卡與八卦";
+        textEl.innerText = script.t08;
+
+        script.c08.forEach((c) => {
+          const btn = document.createElement('button');
+          btn.className = "w-full p-3 bg-slate-800 hover:bg-slate-700 rounded-xl text-left text-xs text-slate-200 border border-slate-700 font-bold";
+          btn.innerText = c.txt;
+          btn.onclick = () => {
+            active.earnedPay += c.pay;
+            active.step = 2; loadVNLongStep();
+          };
+          choicesEl.appendChild(btn);
+        });
       } 
       else if (step === 2) {
-        timeBadge.innerText = "11:00 臨床奇葩事件";
-        const ev = state.vnActive.script.patientEvent;
-        textEl.innerHTML = `現場狀況：<br><b class="text-amber-300">${ev.desc}</b><br>請選擇你的應對策略：`;
+        timeBadge.innerText = "10:00 臨床奇葩事件";
+        textEl.innerText = script.t10;
 
-        ev.choices.forEach((opt) => {
+        script.c10.forEach((c) => {
           const btn = document.createElement('button');
-          btn.className = "w-full p-2.5 bg-slate-800 hover:bg-slate-700 rounded-xl text-left text-xs text-slate-200 border border-slate-700 font-semibold";
-          btn.innerText = opt.text;
+          btn.className = "w-full p-3 bg-slate-800 hover:bg-slate-700 rounded-xl text-left text-xs text-slate-200 border border-slate-700 font-bold";
+          btn.innerText = c.txt;
           btn.onclick = () => {
-            if (opt.risk) {
-              if (state.userStats.money < opt.cost) {
-                alert('金錢不足以支付罵人發洩的代價！乖乖選正常選項吧！');
-                return;
-              }
-              state.userStats.money -= opt.cost;
-              if (Math.random() > 0.5) {
-                alert(`🤫 罵得真痛快！病人沒聽見，反而獲得額外心靈紓壓獎金 +$${opt.bonus}！`);
-                state.vnActive.earnedMoneyToday += opt.bonus;
-              } else {
-                alert(`⚠️ 慘了！講太大聲被院長或病人聽到，遭到檢舉投訴！扣除罰款 $80！`);
-                state.vnActive.earnedMoneyToday -= 80;
-              }
-            } else {
-              state.vnActive.earnedMoneyToday += opt.bonus;
-              alert('✨ 危機順利解除，獲得學姐讚賞！');
-            }
-            saveState();
-            state.vnActive.step = 3;
-            loadImmersiveStep();
+            active.earnedPay += c.pay;
+            if (c.risk) active.complaintRisk += 0.4; // 增加被投訴機率
+            active.step = 3; loadVNLongStep();
           };
           choicesEl.appendChild(btn);
         });
       }
       else if (step === 3) {
-        timeBadge.innerText = "14:30 學長姐國考抽考";
-        const subjectQuestions = state.questions.filter(q => q.subject === state.vnActive.reqSubject);
+        timeBadge.innerText = "12:00 中午主控台學長姐抽考";
+        const subjectQuestions = state.questions.filter(q => q.subject === active.reqSubject);
 
-        if (subjectQuestions.length === 0) {
-          textEl.innerText = `學長：「我看你挺忙的，剛好『${SUBJECTS[state.vnActive.reqSubject].name}』題庫半題都沒有，這次先放過你！」`;
-          const btn = document.createElement('button');
-          btn.className = "w-full p-3 bg-emerald-600 text-slate-950 font-black rounded-xl text-xs";
-          btn.innerText = "進入下午班尾聲";
-          btn.onclick = () => { state.vnActive.step = 4; loadImmersiveStep(); };
-          choicesEl.appendChild(btn);
-          return;
-        }
+        textEl.innerHTML = `午餐時間到了，學長姊拿著菜單走過來：<br><span class="text-amber-400 font-bold">「你要接受國考題考核，還是請我們喝大杯珍奶讓我們閉嘴？」</span>`;
 
-        const q = subjectQuestions[Math.floor(Math.random() * subjectQuestions.length)];
-        state.vnActive.currentQuestion = q;
+        // Choice A: 正當答題
+        const btnQuiz = document.createElement('button');
+        btnQuiz.className = "w-full p-3 bg-blue-600 hover:bg-blue-500 rounded-xl text-left text-xs text-white font-bold";
+        btnQuiz.innerText = "✍️ 接受國考題目考核！(答對可賺加給)";
+        btnQuiz.onclick = () => triggerVNQuizMode(subjectQuestions);
+        choicesEl.appendChild(btnQuiz);
 
-        text.innerHTML = '';
-        textEl.innerHTML = `學長突然轉頭，拿著一本厚厚的原文書抽考你：<br><span class="text-amber-400 font-bold">⚡ 國考突襲：${q.question}</span>`;
-
-        // 珍奶避考題按鈕
-        const bubbleTeaBtn = document.createElement('button');
-        bubbleTeaBtn.className = "w-full p-2 bg-amber-600 hover:bg-amber-500 rounded-xl text-center text-xs text-slate-950 font-black mb-2 shadow";
-        bubbleTeaBtn.innerHTML = `<i class="fa-solid fa-mug-hot mr-1"></i> 花費 $80 請學長姐喝珍奶 (直接跳過此題)`;
-        bubbleTeaBtn.onclick = () => {
-          if (state.userStats.money < 80) { alert('身上的錢不夠買珍奶！只能自己硬著頭皮回答了！'); return; }
-          state.userStats.money -= 80;
-          saveState();
-          alert('🧋 學長吸了一大口珍珠奶茶：「好吧，看在你這杯珍奶很濃的份上，這題算你過關！」');
-          state.vnActive.step = 4;
-          loadImmersiveStep();
+        // Choice B: 花錢請飲料免考
+        const btnBribe = document.createElement('button');
+        btnBribe.className = "w-full p-3 bg-amber-500 hover:bg-amber-400 rounded-xl text-left text-xs text-slate-950 font-black";
+        btnBribe.innerText = "🧋 花費 $50 請學長姐喝珍奶！(直接跳過抽考)";
+        btnBribe.onclick = () => {
+          if (state.userStats.money < 50) { alert('金錢不足！只好接受考核了！'); return; }
+          state.userStats.money -= 50; saveState();
+          alert('🤫 學長姐吸著珍奶，滿意地揮手讓你去吃午餐！');
+          active.step = 4; loadVNLongStep();
         };
-        choicesEl.appendChild(bubbleTeaBtn);
-
-        if (q.type === 'choice' || q.type === 'fill') {
-          q.options.forEach((opt, i) => {
-            const btn = document.createElement('button');
-            btn.className = "w-full p-2.5 bg-slate-800 hover:bg-slate-700 rounded-xl text-left text-xs text-slate-200 border border-slate-700 font-semibold";
-            btn.innerText = opt;
-            btn.onclick = () => evaluateImmersiveAnswer(i === q.correct);
-            choicesEl.appendChild(btn);
-          });
-        } else if (q.type === 'tf') {
-          ['true', 'false'].forEach(val => {
-            const btn = document.createElement('button');
-            btn.className = "w-full p-2.5 bg-slate-800 hover:bg-slate-700 rounded-xl text-center text-xs text-slate-200 border border-slate-700 font-semibold";
-            btn.innerText = (val === 'true') ? '⭕ 正確 (True)' : '❌ 錯誤 (False)';
-            btn.onclick = () => evaluateImmersiveAnswer((val === 'true') === q.tfCorrect);
-            choicesEl.appendChild(btn);
-          });
-        } else {
-          textEl.innerText = `學長：「好啦，看你操作有模有樣的，配對題過關！」`;
-          const btn = document.createElement('button');
-          btn.className = "w-full p-3 bg-emerald-600 text-slate-950 font-black rounded-xl text-xs";
-          btn.innerText = "進入下午班";
-          btn.onclick = () => { state.vnActive.step = 4; loadImmersiveStep(); };
-          choicesEl.appendChild(btn);
-        }
+        choicesEl.appendChild(btnBribe);
       }
       else if (step === 4) {
-        timeBadge.innerText = "17:30 下班結算";
-        const totalEarn = 120 + state.vnActive.earnedMoneyToday;
-        textEl.innerHTML = `夕陽西下，終於響起了下班打卡鈴聲！\n\n今日職場物語結算：\n- 歷經各種荒謬病人與學長抽考\n- 今日獲得總薪資與津貼：<b class="text-emerald-400">\$${totalEarn}</b>\n- 經驗值 +30 XP`;
+        timeBadge.innerText = "14:30 下午突發狀況";
+        textEl.innerText = script.t14;
 
+        script.c14.forEach((c) => {
+          const btn = document.createElement('button');
+          btn.className = "w-full p-3 bg-slate-800 hover:bg-slate-700 rounded-xl text-left text-xs text-slate-200 border border-slate-700 font-bold";
+          btn.innerText = c.txt;
+          btn.onclick = () => {
+            active.earnedPay += c.pay;
+            if (c.risk) active.complaintRisk += 0.5;
+            active.step = 5; loadVNLongStep();
+          };
+          choicesEl.appendChild(btn);
+        });
+      }
+      else if (step === 5) {
+        timeBadge.innerText = "17:00 下班打卡結算";
+        
+        let complaintPenalty = 0;
+        let isComplained = Math.random() < active.complaintRisk;
+
+        if (isComplained) {
+          complaintPenalty = 80;
+          textEl.innerHTML = `⚠️ <b class="text-rose-400">不幸收到院長信箱投訴！</b><br>因為今天對病人太鬧或罵人，被扣除績效獎金 $80。<br><br>今日實領津貼：<b class="text-amber-400">\$${Math.max(20, active.earnedPay - complaintPenalty)}</b>`;
+        } else {
+          textEl.innerHTML = `✨ <b class="text-emerald-400">平安無事通關！</b><br>今天完美的臨床表現獲得學長姐一致好評！<br><br>今日實領津貼：<b class="text-emerald-400">\$${100 + active.earnedPay}</b>`;
+        }
+
+        const btnFinish = document.createElement('button');
+        btnFinish.className = "w-full p-3 bg-emerald-500 hover:bg-emerald-400 text-slate-950 font-black rounded-xl text-xs btn-duo";
+        btnFinish.innerText = "打卡下班！回家追劇！";
+        btnFinish.onclick = () => {
+          const finalPay = isComplained ? Math.max(20, active.earnedPay - 80) : (100 + active.earnedPay);
+          finishLongShift(finalPay);
+        };
+        choicesEl.appendChild(btnFinish);
+      }
+    }
+
+    function triggerVNQuizMode(questions) {
+      const textEl = document.getElementById('vn-dialogue-text');
+      const choicesEl = document.getElementById('vn-choices-area');
+      choicesEl.innerHTML = '';
+
+      if (questions.length === 0) {
+        textEl.innerText = "學長：「該科目目前沒有題目，這次算你過關！」";
         const btn = document.createElement('button');
-        btn.className = "w-full p-3 bg-emerald-500 hover:bg-emerald-400 text-slate-950 font-black rounded-xl text-xs btn-duo";
-        btn.innerText = "打卡下班，拿錢閃人！";
-        btn.onclick = () => finishImmersiveShift(totalEarn);
+        btn.className = "w-full p-3 bg-emerald-600 text-slate-950 font-black rounded-xl text-xs";
+        btn.innerText = "繼續下午班";
+        btn.onclick = () => { state.vnActive.step = 4; loadVNLongStep(); };
         choicesEl.appendChild(btn);
+        return;
       }
-    }
 
-    function evaluateImmersiveAnswer(isCorrect) {
-      if (isCorrect) {
-        alert('✅ 答對了！學長點頭稱讚：「底子不錯嘛，國考穩了！」（獎金 +$100）');
-        state.vnActive.earnedMoneyToday += 100;
+      const q = questions[Math.floor(Math.random() * questions.length)];
+      textEl.innerHTML = `<span class="text-amber-400 font-bold">⚡【學長抽考題目】</span><br><b>${q.question}</b>`;
+
+      if (q.type === 'choice' || q.type === 'fill') {
+        q.options.forEach((opt, i) => {
+          const btn = document.createElement('button');
+          btn.className = "w-full p-2.5 bg-slate-800 hover:bg-slate-700 rounded-xl text-left text-xs text-slate-200 border border-slate-700 font-semibold";
+          btn.innerText = opt;
+          btn.onclick = () => {
+            if (i === q.correct) { alert('✅ 答對了！加薪 $100！'); state.vnActive.earnedPay += 100; } 
+            else { alert('❌ 答錯了！被記點扣除 $30！'); state.vnActive.earnedPay -= 30; }
+            state.vnActive.step = 4; loadVNLongStep();
+          };
+          choicesEl.appendChild(btn);
+        });
+      } else if (q.type === 'tf') {
+        ['true', 'false'].forEach(val => {
+          const btn = document.createElement('button');
+          btn.className = "w-full p-2.5 bg-slate-800 hover:bg-slate-700 rounded-xl text-center text-xs text-slate-200 border border-slate-700 font-semibold";
+          btn.innerText = (val === 'true') ? '⭕ 正確' : '❌ 錯誤';
+          btn.onclick = () => {
+            if ((val === 'true') === q.tfCorrect) { alert('✅ 答對了！加薪 $100！'); state.vnActive.earnedPay += 100; } 
+            else { alert('❌ 答錯了！被記點扣除 $30！'); state.vnActive.earnedPay -= 30; }
+            state.vnActive.step = 4; loadVNLongStep();
+          };
+          choicesEl.appendChild(btn);
+        });
       } else {
-        alert('❌ 答錯了！學長嘆了一氣：「看來你的國考還得再加把勁啊...」（扣除績效獎金 $40）');
-        state.vnActive.earnedMoneyToday -= 40;
+        alert('配對題過關！');
+        state.vnActive.step = 4; loadVNLongStep();
       }
-      state.vnActive.step = 4;
-      loadImmersiveStep();
     }
 
-    function finishImmersiveShift(totalPay) {
+    function finishLongShift(finalPay) {
       const unitId = state.vnActive.unitId;
       state.unitWorkCounts[unitId] = (state.unitWorkCounts[unitId] || 0) + 1;
 
-      state.userStats.money += Math.max(30, totalPay);
+      state.userStats.money += finalPay;
       state.userStats.xp += 30;
       saveState();
 
-      closeVNStory();
+      document.getElementById('vn-modal').classList.add('hidden');
       renderCareerUnits();
-      alert(`🎉 成功完成長篇沈浸式職場物語！報酬已全數入帳！`);
+      alert(`🎉 順利撐過今天！獲得津貼 $${finalPay} 與 30 XP！`);
     }
 
     function closeVNStory() {
