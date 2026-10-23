@@ -40,7 +40,7 @@
     <div class="max-w-md mx-auto flex justify-between items-center">
       <div class="flex items-center space-x-2">
         <span class="text-2xl font-black text-emerald-400">Radingo</span>
-        <span class="bg-emerald-950 text-emerald-400 text-[10px] px-2 py-0.5 rounded-full font-bold border border-emerald-800">無限劇本宇宙版</span>
+        <span class="bg-emerald-950 text-emerald-400 text-[10px] px-2 py-0.5 rounded-full font-bold border border-emerald-800">長劇本物語版</span>
       </div>
 
       <div class="flex items-center space-x-3 font-extrabold text-xs">
@@ -63,7 +63,7 @@
         🎯 國考闖關刷題
       </button>
       <button id="tab-career" onclick="switchTab('career')" class="flex-1 py-2 rounded-lg font-black text-xs text-center text-slate-400 hover:text-slate-200">
-        🏥 職場物語
+        🏥 職場物語 (5-10分)
       </button>
       <button id="tab-shop" onclick="switchTab('shop')" class="flex-1 py-2 rounded-lg font-black text-xs text-center text-slate-400 hover:text-slate-200">
         🛍️ 升級商店
@@ -127,9 +127,9 @@
     <!-- VIEW 2: CAREER STORY MAP -->
     <div id="view-career" class="hidden space-y-4">
       <div class="bg-slate-900 border border-slate-800 rounded-2xl p-4 text-center space-y-1">
-        <span class="text-xs text-emerald-400 font-extrabold bg-emerald-950 px-2.5 py-0.5 rounded-full border border-emerald-800">🏥 醫院極致血淚日常</span>
-        <h2 class="text-base font-black text-white">點擊科別解鎖不重複的多樣化故事與升級路線</h2>
-        <p class="text-xs text-slate-400">晉升：見習 (0) $\rightarrow$ 實習 (20) $\rightarrow$ PGY (50) $\rightarrow$ 放射師 (100) $\rightarrow$ 資深帶教 (200)</p>
+        <span class="text-xs text-emerald-400 font-extrabold bg-emerald-950 px-2.5 py-0.5 rounded-full border border-emerald-800">🏥 醫院長篇職場物語</span>
+        <h2 class="text-base font-black text-white">點擊科別體驗 5~10 分鐘「血淚搞笑上班一整天」</h2>
+        <p class="text-xs text-slate-400">含八卦、失憶阿公、請飲料防電與客訴風險！</p>
       </div>
 
       <div id="career-units-list" class="space-y-3"></div>
@@ -149,7 +149,7 @@
 
   </main>
 
-  <!-- VN STORY OVERLAY -->
+  <!-- VN STORY OVERLAY (長劇本與互動) -->
   <div id="vn-modal" class="hidden fixed inset-0 bg-black/90 backdrop-blur-md z-50 flex flex-col justify-end p-4">
     <div class="max-w-md w-full mx-auto space-y-3 vn-animate pb-6">
       
@@ -160,7 +160,7 @@
             <i class="fa-solid fa-user-doctor"></i>
           </div>
           <div>
-            <span id="vn-char-title" class="text-[10px] text-emerald-400 font-extrabold bg-emerald-950 px-2 py-0.5 rounded border border-emerald-800">08:00 晨間打卡</span>
+            <span id="vn-char-title" class="text-[10px] text-emerald-400 font-extrabold bg-emerald-950 px-2 py-0.5 rounded border border-emerald-800">08:00 八卦晨報</span>
             <h3 id="vn-char-name" class="text-base font-black text-white mt-0.5">控制室現場</h3>
           </div>
         </div>
@@ -184,7 +184,7 @@
         <div id="vn-choices-area" class="space-y-2 pt-2 relative z-10"></div>
       </div>
     </div>
-  </div>
+  </footer>
 
   <!-- FIXED FOOTER -->
   <footer class="fixed bottom-0 left-0 right-0 bg-slate-900 border-t border-slate-800 py-2.5 px-4 z-40">
@@ -366,137 +366,50 @@
       }
     ];
 
-    /* 各科別專屬多元故事庫 (支持極高不重複率與動態對話反應) */
-    const STORY_POOLS = {
-      xray: [
-        {
-          id: 'xr_boba_baby',
-          nodes: {
-            n1: {
-              title: "08:00 八卦晨報",
-              text: "早上拿著茶葉蛋進控制室，學長姊正拿著菜單爭論生小孩。\n張學姐：「千萬別生！養小孩超貴，連劇都沒時間追！」\n李學長：「胡說！看著小孩長大超有成就感好嗎！」\n學長看到妳：「喂！今天家屬請喝珍奶，我有買一杯半糖去冰，妳要喝嗎？」",
-              choices: [
-                { txt: "「學長太讚了吧！留給我，我等等喝！」", nextNode: "n1_boba_yes", pay: 20 },
-                { txt: "「生小孩？我連自己都養不活了生什麼生（嘆氣）」", nextNode: "n1_baby_no", pay: 10 }
-              ]
-            },
-            n1_boba_yes: {
-              title: "08:15 控制室回應",
-              text: "李學長笑著說：「算妳有良心！飲料冰在第二層，今天加油啦！」",
-              choices: [{ txt: "「好耶！叫第一位病人！」", nextNode: "n2" }]
-            },
-            n1_baby_no: {
-              title: "08:15 控制室回應",
-              text: "張學姐大喊：「看吧！連新人都懂！養自己才是王道！」（李學長在一旁翻白眼）",
-              choices: [{ txt: "「好啦，開始準備今天第一位病人吧！」", nextNode: "n2" }]
-            },
-            n2: {
-              title: "10:00 臨床奇葩阿公",
-              text: "一位失憶阿公走進來，凝視妳三秒：\n阿公：「阿妹仔...妳是我孫女小婷嗎？妳長大啦？」",
-              choices: [
-                { txt: "「阿公我不是小婷啦！我是放射師，來幫你做檢查的！」", nextNode: "n3_quiz", pay: 20 },
-                { txt: "「對啦阿公！小婷來看你了！那你乖乖躺好別動喔！」", nextNode: "n3_quiz", pay: 50 },
-                { txt: "「認錯人了啦，回去坐好（翻白眼）」", nextNode: "n3_quiz", pay: 80, risk: 0.5 }
-              ]
-            },
-            n3_quiz: {
-              title: "12:00 學長抽考 / 請飲料",
-              text: "到了中午，學長拿著國考考古題走過來：\n「要接受題目抽考，還是花 $50 請我們喝飲料讓我們閉嘴？」",
-              isQuizNode: true,
-              nextNode: "n4"
-            },
-            n4: {
-              title: "15:00 急診大叫囂",
-              text: "一台急診推床送過來，家屬在門口叫囂太慢！",
-              choices: [
-                { txt: "耐心地向家屬解釋檢查流程與安全防護", nextNode: "n_end", pay: 20 },
-                { txt: "【開嗆】「再叫我就把急診單拉到最後一個！」", nextNode: "n_end", pay: 100, risk: 0.6 }
-              ]
-            }
-          }
-        },
-        {
-          id: 'xr_bicycle_fall',
-          nodes: {
-            n1: {
-              title: "08:00 晨間打卡",
-              text: "學長低頭啃著三明治：「今天天氣好，等一下肯定一堆騎腳踏車摔倒的骨折病人。」",
-              choices: [
-                { txt: "「學長不要立 Flag 啦！」", nextNode: "n2" },
-                { txt: "「沒關係，我今天對位速度極快！」", nextNode: "n2", pay: 20 }
-              ]
-            },
-            n2: {
-              title: "10:30 真的立 Flag 了",
-              text: "果不其然，送來一位騎車摔倒手肘變形的年輕人，同伴在旁邊猛拍照打卡！\n同伴：「放射師！等等拍完可以順便傳給我嗎？我要發限動！」",
-              choices: [
-                { txt: "「不行喔，醫療影像有隱私法規，請遵守規定！」", nextNode: "n3_quiz", pay: 20 },
-                { txt: "「發限動？要不要我幫你開美顏相機拍？」(酸哥酸妹)", nextNode: "n3_quiz", pay: 50 },
-                { txt: "【開罵】「手都斷了還發限動！出去！」", nextNode: "n3_quiz", pay: 90, risk: 0.4 }
-              ]
-            },
-            n3_quiz: {
-              title: "12:00 控台隨堂考",
-              text: "學長轉頭說：「剛剛那個擺位手法不錯，但我還是要抽考妳一題診斷學！」",
-              isQuizNode: true,
-              nextNode: "n_end"
-            }
-          }
-        }
-      ],
-      ct: [
-        {
-          id: 'ct_contrast_scare',
-          nodes: {
-            n1: {
-              title: "08:00 CT 室打卡",
-              text: "走進 CT 控制室，學姐正拿著對比劑檢測表。\n學姐：「今天有 15 台 Contrast 增強掃描，打針一定要看清楚血管喔！」",
-              choices: [
-                { txt: "「沒問題！我今天手感爆棚！」", nextNode: "n2", pay: 20 },
-                { txt: "「血管太細的我可以推給學姐嗎（抖）」", nextNode: "n2" }
-              ]
-            },
-            n2: {
-              title: "11:00 顯影劑熱感驚魂",
-              text: "推進一位照腹部 CT 的大哥，注入對比劑後，大哥突然大喊：\n「哇！放射師！我下面整個熱起來了！我是不是失禁了？！」",
-              choices: [
-                { txt: "「大哥別慌！對比劑本來就會有全身發熱的正常現象啦！」", nextNode: "n3_quiz", pay: 30 },
-                { txt: "「沒事沒事，那只是命運的熱流～」", nextNode: "n3_quiz", pay: 50 },
-                { txt: "「真的失禁了嗎？！那你要自己清喔！」(白眼)", nextNode: "n3_quiz", pay: 80, risk: 0.5 }
-              ]
-            },
-            n3_quiz: {
-              title: "14:00 重建工作站考題",
-              text: "學長在 MPR 工作站前切片：「來，回答這題器材學，答對今天早半小時下班！」",
-              isQuizNode: true,
-              nextNode: "n_end"
-            }
-          }
-        }
-      ]
-    };
-
-    /* 取得適合該科別的劇本 (若沒有專屬則使用 generic) */
-    function getDepartmentScript(unitId) {
-      const pool = STORY_POOLS[unitId] || STORY_POOLS['xray'];
-      return pool[Math.floor(Math.random() * pool.length)];
-    }
-
-    const RANKS = [
-      { min: 0, title: '見習生' },
-      { min: 20, title: '實習生' },
-      { min: 50, title: 'PGY' },
-      { min: 100, title: '放射師' },
-      { min: 200, title: '資深帶教放射師' }
+    /* RICH MULTI-DAY SCRIPTS (豐富多樣故事庫) */
+    const STORY_DATABASE = [
+      {
+        id: "s_baby_talk",
+        t08: "早上踏進控制室，學長姐正在熱烈爭論生小孩的事。\n張學姐：「勸你千萬別生！養小孩超貴，連看劇時間都沒有！」\n李學長：「胡說！看著小孩長大超有成就感好嗎！」\n兩人同時轉頭看妳：「妳覺得呢？」",
+        c08: [
+          { txt: "「我連自己都養不活了，生什麼生（嘆氣）」", pay: 0 },
+          { txt: "「我也挺喜歡小孩的耶！」", pay: 10 },
+          { txt: "「我只知道我再不喝咖啡就要暴斃了。」", pay: 20 }
+        ],
+        t10: "推開門叫號，一位慈祥的失憶阿公走進來，凝視妳三秒：\n阿公：「阿妹仔...妳是我孫女小婷嗎？妳長大啦？」",
+        c10: [
+          { txt: "「阿公，我不是小婷啦！我是放射師，來幫你做檢查的喔！」", pay: 10, risk: false },
+          { txt: "「對啦阿公！小婷來看你了！那你可以乖乖躺好別動了嗎？」", pay: 50, risk: false },
+          { txt: "「阿公，你認錯人了，滾回去坐好。」(罵人白眼)", pay: 80, risk: true }
+        ],
+        t14: "下午一台急診床推進來，家屬情緒激動在門口叫囂大喊慢吞吞！",
+        c14: [
+          { txt: "耐心地向家屬解釋照相流程與防護安全", pay: 20, risk: false },
+          { txt: "【開嗆】「再叫我就把急診單拉到最後一個！」", pay: 100, risk: true }
+        ]
+      },
+      {
+        id: "s_boba_mistake",
+        t08: "今天一早，一位親切的家屬拎了三大袋手搖飲走進控制室！\n家屬：「放射師辛苦了！這幾杯珍奶請你們喝！」\n學長眼睛一亮，立刻搶過去一杯喝了大半。",
+        c08: [
+          { txt: "「謝謝家屬！今天工作動力滿滿！」", pay: 20 },
+          { txt: "「學長！留一杯無糖去冰給我啊！」", pay: 10 }
+        ],
+        t10: "中午遇到一位阿嬤要照腹部，妳正準備按曝光時，阿嬤突然開口：\n阿嬤：「對了放射師，我剛剛在等候區吃了一碗牛肉麵耶...」",
+        c10: [
+          { txt: "「阿嬤！這個檢查要禁食的捏！這樣影像會糊掉啦！」", pay: 10, risk: false },
+          { txt: "「算了照拍不誤，反正看得出形狀就好。」", pay: 30, risk: false },
+          { txt: "【暴怒】「牛肉麵？！妳怎麼不順便吃火鍋？！」", pay: 90, risk: true }
+        ],
+        t14: "下午設備突然發出異音，機器走位卡住！妳驚慌地看向學長。",
+        c14: [
+          { txt: "冷靜重新啟動控制台系統，成功修復事故！", pay: 30, risk: false },
+          { txt: "拍打機器兩下喊：「壞了就給我動啊！」", pay: 60, risk: true }
+        ]
+      }
     ];
 
-    function getRankTitle(workCount) {
-      let title = RANKS[0].title;
-      for (let r of RANKS) {
-        if (workCount >= r.min) title = r.title;
-      }
-      return title;
-    }
+    const RANKS = ['見習生', '實習生', 'PGY', '放射師', '資深放射師'];
 
     let state = {
       questions: [],
@@ -509,18 +422,19 @@
     };
 
     function loadState() {
-      const q = localStorage.getItem('radingo_v9_q'); state.questions = q ? JSON.parse(q) : INITIAL_PRESET_QUESTIONS;
-      const st = localStorage.getItem('radingo_v9_st'); if (st) state.userStats = JSON.parse(st);
-      const su = localStorage.getItem('radingo_v9_su'); if (su) state.subjectUnits = JSON.parse(su);
-      const uw = localStorage.getItem('radingo_v9_uw'); if (uw) state.unitWorkCounts = JSON.parse(uw);
+      const q = localStorage.getItem('radingo_v8_q');
+      state.questions = q ? JSON.parse(q) : INITIAL_PRESET_QUESTIONS;
+      const st = localStorage.getItem('radingo_v8_st'); if (st) state.userStats = JSON.parse(st);
+      const su = localStorage.getItem('radingo_v8_su'); if (su) state.subjectUnits = JSON.parse(su);
+      const uw = localStorage.getItem('radingo_v8_uw'); if (uw) state.unitWorkCounts = JSON.parse(uw);
       updateStatsUI();
     }
 
     function saveState() {
-      localStorage.setItem('radingo_v9_q', JSON.stringify(state.questions));
-      localStorage.setItem('radingo_v9_st', JSON.stringify(state.userStats));
-      localStorage.setItem('radingo_v9_su', JSON.stringify(state.subjectUnits));
-      localStorage.setItem('radingo_v9_uw', JSON.stringify(state.unitWorkCounts));
+      localStorage.setItem('radingo_v8_q', JSON.stringify(state.questions));
+      localStorage.setItem('radingo_v8_st', JSON.stringify(state.userStats));
+      localStorage.setItem('radingo_v8_su', JSON.stringify(state.subjectUnits));
+      localStorage.setItem('radingo_v8_uw', JSON.stringify(state.unitWorkCounts));
       updateStatsUI();
     }
 
@@ -538,7 +452,7 @@
       if (tab === 'shop') renderShop();
     }
 
-    /* QUIZ MAP & ENGINE */
+    /* 1. QUIZ MAP & ENGINE */
     function renderQuizMap() {
       const container = document.getElementById('subject-node-container');
       container.innerHTML = '';
@@ -572,7 +486,10 @@
 
     function startUnitSession(subKey) {
       const subQuestions = state.questions.filter(q => q.subject === subKey);
-      if (subQuestions.length === 0) { alert('這個科目目前沒有題目！請點擊右下角「題庫管理」新增題目喔！'); return; }
+      if (subQuestions.length === 0) {
+        alert('這個科目目前沒有題目！請點擊右下角「題庫管理」新增題目喔！');
+        return;
+      }
 
       const shuffled = shuffle([...subQuestions]).slice(0, 5);
       state.activeQuiz = { subject: subKey, questions: shuffled, idx: 0, selectedOpt: null, userTFAnswer: null };
@@ -599,7 +516,8 @@
 
       const imgBox = document.getElementById('q-img-container');
       const imgEl = document.getElementById('q-img');
-      if (q.imgUrl) { imgEl.src = q.imgUrl; imgBox.classList.remove('hidden'); } else { imgBox.classList.add('hidden'); }
+      if (q.imgUrl) { imgEl.src = q.imgUrl; imgBox.classList.remove('hidden'); } 
+      else { imgBox.classList.add('hidden'); }
 
       const zone = document.getElementById('q-interactive-zone');
       zone.innerHTML = ''; state.activeQuiz.selectedOpt = null;
@@ -613,9 +531,11 @@
             btn.classList.add('selected');
             state.activeQuiz.selectedOpt = i;
           };
-          btn.innerHTML = `<span>${optStr}</span>`; zone.appendChild(btn);
+          btn.innerHTML = `<span>${optStr}</span>`;
+          zone.appendChild(btn);
         });
-      } else if (q.type === 'tf') {
+      } 
+      else if (q.type === 'tf') {
         ['true', 'false'].forEach(val => {
           const btn = document.createElement('button');
           btn.className = "card-option w-full p-4 rounded-xl text-center font-black text-sm";
@@ -627,18 +547,27 @@
           btn.innerText = val === 'true' ? '⭕ 正確 (True)' : '❌ 錯誤 (False)';
           zone.appendChild(btn);
         });
-      } else if (q.type === 'matching') {
+      }
+      else if (q.type === 'matching') {
         state.matchingState = { selectedLeft: null, matchedCount: 0 };
-        const grid = document.createElement('div'); grid.className = "grid grid-cols-2 gap-2";
+        const grid = document.createElement('div');
+        grid.className = "grid grid-cols-2 gap-2";
+
         const leftCol = document.createElement('div'); leftCol.className = "space-y-2";
         const rightCol = document.createElement('div'); rightCol.className = "space-y-2";
 
         q.pairs.forEach((p, idx) => {
-          const lBtn = document.createElement('div'); lBtn.className = "matching-card p-3 rounded-xl text-xs font-bold text-center";
-          lBtn.innerText = p.left; lBtn.onclick = () => selectMatchingLeft(idx, lBtn); leftCol.appendChild(lBtn);
+          const lBtn = document.createElement('div');
+          lBtn.className = "matching-card p-3 rounded-xl text-xs font-bold text-center";
+          lBtn.innerText = p.left;
+          lBtn.onclick = () => selectMatchingLeft(idx, lBtn);
+          leftCol.appendChild(lBtn);
 
-          const rBtn = document.createElement('div'); rBtn.className = "matching-card p-3 rounded-xl text-xs font-bold text-center";
-          rBtn.innerText = p.right; rBtn.onclick = () => selectMatchingRight(idx, rBtn, q.pairs.length); rightCol.appendChild(rBtn);
+          const rBtn = document.createElement('div');
+          rBtn.className = "matching-card p-3 rounded-xl text-xs font-bold text-center";
+          rBtn.innerText = p.right;
+          rBtn.onclick = () => selectMatchingRight(idx, rBtn, q.pairs.length);
+          rightCol.appendChild(rBtn);
         });
 
         grid.appendChild(leftCol); grid.appendChild(rightCol); zone.appendChild(grid);
@@ -650,16 +579,22 @@
 
     function selectMatchingLeft(idx, element) {
       document.querySelectorAll('.matching-card').forEach(c => c.classList.remove('selected'));
-      element.classList.add('selected'); state.matchingState.selectedLeft = idx;
+      element.classList.add('selected');
+      state.matchingState.selectedLeft = idx;
     }
 
     function selectMatchingRight(idx, element, totalPairs) {
       if (state.matchingState.selectedLeft === null) { alert('請先點選左邊的項目！'); return; }
+
       if (state.matchingState.selectedLeft === idx) {
         element.classList.add('matched');
         document.querySelectorAll('.matching-card.selected').forEach(c => c.classList.add('matched'));
-        state.matchingState.matchedCount++; state.matchingState.selectedLeft = null;
-        if (state.matchingState.matchedCount === totalPairs) state.activeQuiz.selectedOpt = 0;
+        state.matchingState.matchedCount++;
+        state.matchingState.selectedLeft = null;
+
+        if (state.matchingState.matchedCount === totalPairs) {
+          state.activeQuiz.selectedOpt = 0;
+        }
       } else {
         alert('配對不正確喔！再試一次！');
         document.querySelectorAll('.matching-card').forEach(c => c.classList.remove('selected'));
@@ -674,19 +609,23 @@
       if (q.type === 'choice' || q.type === 'fill') {
         if (state.activeQuiz.selectedOpt === null) { alert('請選擇一個答案！'); return; }
         isCorrect = state.activeQuiz.selectedOpt === q.correct;
-      } else if (q.type === 'tf') {
+      } 
+      else if (q.type === 'tf') {
         if (state.activeQuiz.userTFAnswer === null) { alert('請選擇 O 或 X！'); return; }
         isCorrect = state.activeQuiz.userTFAnswer === q.tfCorrect;
-      } else if (q.type === 'matching') {
+      }
+      else if (q.type === 'matching') {
         if (state.matchingState.matchedCount < q.pairs.length) { alert('請完成所有項目配對！'); return; }
         isCorrect = true;
       }
 
-      const panel = document.getElementById('feedback-panel'); panel.classList.remove('hidden');
+      const panel = document.getElementById('feedback-panel');
+      panel.classList.remove('hidden');
 
       if (isCorrect) {
         const earnMoney = Math.round(80 * state.userStats.bonusMultiplier);
         state.userStats.money += earnMoney; state.userStats.xp += 15; saveState();
+
         panel.className = "p-3 rounded-xl border bg-emerald-950/90 border-emerald-800 text-emerald-300 mb-3 space-y-1";
         document.getElementById('feedback-icon').innerHTML = '✅';
         document.getElementById('feedback-title').innerText = `答對了！(+$${earnMoney} 獎金, +15 XP)`;
@@ -713,7 +652,7 @@
       }, 1800);
     }
 
-    /* CAREER LONG STORY ENGINE */
+    /* 2. CAREER LONG STORY ENGINE (多樣故事與時間軸) */
     function renderCareerUnits() {
       const container = document.getElementById('career-units-list');
       container.innerHTML = '';
@@ -722,7 +661,9 @@
         const reqUnitsDone = state.subjectUnits[u.reqSubject] || 0;
         const isUnlocked = reqUnitsDone >= 10;
         const workCount = state.unitWorkCounts[u.id] || 0;
-        let rankTitle = getRankTitle(workCount);
+
+        let rankIdx = Math.min(4, Math.floor(workCount / 3));
+        let rankTitle = RANKS[rankIdx];
 
         const card = document.createElement('div');
         card.className = `bg-slate-900 border border-slate-800 rounded-2xl p-4 flex justify-between items-center ${!isUnlocked ? 'opacity-50' : ''}`;
@@ -740,7 +681,7 @@
               }
             </div>
           </div>
-          <button onclick="startDepartmentStory('${u.id}')" ${!isUnlocked ? 'disabled' : ''} class="px-3 py-1.5 bg-sky-500 hover:bg-sky-400 text-slate-950 font-black text-xs rounded-xl">
+          <button onclick="startLongDayStory('${u.id}')" ${!isUnlocked ? 'disabled' : ''} class="px-3 py-1.5 bg-sky-500 hover:bg-sky-400 text-slate-950 font-black text-xs rounded-xl">
             開始上班
           </button>
         `;
@@ -748,86 +689,131 @@
       });
     }
 
-    function startDepartmentStory(unitId) {
+    function startLongDayStory(unitId) {
       const unit = WORK_UNITS.find(u => u.id === unitId);
-      const script = getDepartmentScript(unitId);
+      const randomScript = STORY_DATABASE[Math.floor(Math.random() * STORY_DATABASE.length)];
 
       state.vnActive = {
         unitId: unitId,
         unitName: unit.name,
         reqSubject: unit.reqSubject,
-        script: script,
-        currentNodeId: 'n1',
+        step: 1, // 1: 08:00八卦, 2: 10:00奇葩病人, 3: 12:00抽考/請飲料, 4: 14:30突發事件, 5: 17:00結算
+        script: randomScript,
         earnedPay: 0,
         complaintRisk: 0
       };
 
       document.getElementById('vn-modal').classList.remove('hidden');
-      renderVNNode();
+      loadVNLongStep();
     }
 
-    function renderVNNode() {
+    function loadVNLongStep() {
       const active = state.vnActive;
-      const node = active.script.nodes[active.currentNodeId];
+      const step = active.step;
+      const script = active.script;
 
       const textEl = document.getElementById('vn-dialogue-text');
       const choicesEl = document.getElementById('vn-choices-area');
       const timeBadge = document.getElementById('vn-char-title');
       choicesEl.innerHTML = '';
 
-      if (!node) {
-        finishShiftAndSettle();
-        return;
+      if (step === 1) {
+        timeBadge.innerText = "08:00 晨間打卡與八卦";
+        textEl.innerText = script.t08;
+
+        script.c08.forEach((c) => {
+          const btn = document.createElement('button');
+          btn.className = "w-full p-3 bg-slate-800 hover:bg-slate-700 rounded-xl text-left text-xs text-slate-200 border border-slate-700 font-bold";
+          btn.innerText = c.txt;
+          btn.onclick = () => {
+            active.earnedPay += c.pay;
+            active.step = 2; loadVNLongStep();
+          };
+          choicesEl.appendChild(btn);
+        });
+      } 
+      else if (step === 2) {
+        timeBadge.innerText = "10:00 臨床奇葩事件";
+        textEl.innerText = script.t10;
+
+        script.c10.forEach((c) => {
+          const btn = document.createElement('button');
+          btn.className = "w-full p-3 bg-slate-800 hover:bg-slate-700 rounded-xl text-left text-xs text-slate-200 border border-slate-700 font-bold";
+          btn.innerText = c.txt;
+          btn.onclick = () => {
+            active.earnedPay += c.pay;
+            if (c.risk) active.complaintRisk += 0.4; // 增加被投訴機率
+            active.step = 3; loadVNLongStep();
+          };
+          choicesEl.appendChild(btn);
+        });
       }
-
-      timeBadge.innerText = node.title || "職場對話";
-      textEl.innerText = node.text;
-
-      // 特殊考題/請飲料節點處理
-      if (node.isQuizNode) {
+      else if (step === 3) {
+        timeBadge.innerText = "12:00 中午主控台學長姐抽考";
         const subjectQuestions = state.questions.filter(q => q.subject === active.reqSubject);
 
+        textEl.innerHTML = `午餐時間到了，學長姊拿著菜單走過來：<br><span class="text-amber-400 font-bold">「你要接受國考題考核，還是請我們喝大杯珍奶讓我們閉嘴？」</span>`;
+
+        // Choice A: 正當答題
         const btnQuiz = document.createElement('button');
         btnQuiz.className = "w-full p-3 bg-blue-600 hover:bg-blue-500 rounded-xl text-left text-xs text-white font-bold";
-        btnQuiz.innerText = "✍️ 接受國考題目考核！(答對加薪 $100)";
-        btnQuiz.onclick = () => triggerNodeQuiz(subjectQuestions, node.nextNode);
+        btnQuiz.innerText = "✍️ 接受國考題目考核！(答對可賺加給)";
+        btnQuiz.onclick = () => triggerVNQuizMode(subjectQuestions);
         choicesEl.appendChild(btnQuiz);
 
+        // Choice B: 花錢請飲料免考
         const btnBribe = document.createElement('button');
         btnBribe.className = "w-full p-3 bg-amber-500 hover:bg-amber-400 rounded-xl text-left text-xs text-slate-950 font-black";
-        btnBribe.innerText = "🧋 花費 $50 請學長姐喝珍奶！(免考跳過)";
+        btnBribe.innerText = "🧋 花費 $50 請學長姐喝珍奶！(直接跳過抽考)";
         btnBribe.onclick = () => {
           if (state.userStats.money < 50) { alert('金錢不足！只好接受考核了！'); return; }
           state.userStats.money -= 50; saveState();
-          alert('🤫 學長姐吸著珍奶，滿意地揮手讓你過關！');
-          active.currentNodeId = node.nextNode;
-          renderVNNode();
+          alert('🤫 學長姐吸著珍奶，滿意地揮手讓你去吃午餐！');
+          active.step = 4; loadVNLongStep();
         };
         choicesEl.appendChild(btnBribe);
-        return;
       }
+      else if (step === 4) {
+        timeBadge.innerText = "14:30 下午突發狀況";
+        textEl.innerText = script.t14;
 
-      // 一般選項節點
-      node.choices.forEach(c => {
-        const btn = document.createElement('button');
-        btn.className = "w-full p-3 bg-slate-800 hover:bg-slate-700 rounded-xl text-left text-xs text-slate-200 border border-slate-700 font-bold";
-        btn.innerText = c.txt;
-        btn.onclick = () => {
-          if (c.pay) active.earnedPay += c.pay;
-          if (c.risk) active.complaintRisk += c.risk;
+        script.c14.forEach((c) => {
+          const btn = document.createElement('button');
+          btn.className = "w-full p-3 bg-slate-800 hover:bg-slate-700 rounded-xl text-left text-xs text-slate-200 border border-slate-700 font-bold";
+          btn.innerText = c.txt;
+          btn.onclick = () => {
+            active.earnedPay += c.pay;
+            if (c.risk) active.complaintRisk += 0.5;
+            active.step = 5; loadVNLongStep();
+          };
+          choicesEl.appendChild(btn);
+        });
+      }
+      else if (step === 5) {
+        timeBadge.innerText = "17:00 下班打卡結算";
+        
+        let complaintPenalty = 0;
+        let isComplained = Math.random() < active.complaintRisk;
 
-          if (c.nextNode === 'n_end') {
-            finishShiftAndSettle();
-          } else {
-            active.currentNodeId = c.nextNode;
-            renderVNNode();
-          }
+        if (isComplained) {
+          complaintPenalty = 80;
+          textEl.innerHTML = `⚠️ <b class="text-rose-400">不幸收到院長信箱投訴！</b><br>因為今天對病人太鬧或罵人，被扣除績效獎金 $80。<br><br>今日實領津貼：<b class="text-amber-400">\$${Math.max(20, active.earnedPay - complaintPenalty)}</b>`;
+        } else {
+          textEl.innerHTML = `✨ <b class="text-emerald-400">平安無事通關！</b><br>今天完美的臨床表現獲得學長姐一致好評！<br><br>今日實領津貼：<b class="text-emerald-400">\$${100 + active.earnedPay}</b>`;
+        }
+
+        const btnFinish = document.createElement('button');
+        btnFinish.className = "w-full p-3 bg-emerald-500 hover:bg-emerald-400 text-slate-950 font-black rounded-xl text-xs btn-duo";
+        btnFinish.innerText = "打卡下班！回家追劇！";
+        btnFinish.onclick = () => {
+          const finalPay = isComplained ? Math.max(20, active.earnedPay - 80) : (100 + active.earnedPay);
+          finishLongShift(finalPay);
         };
-        choicesEl.appendChild(btn);
-      });
+        choicesEl.appendChild(btnFinish);
+      }
     }
 
-    function triggerNodeQuiz(questions, nextNodeId) {
+    function triggerVNQuizMode(questions) {
       const textEl = document.getElementById('vn-dialogue-text');
       const choicesEl = document.getElementById('vn-choices-area');
       choicesEl.innerHTML = '';
@@ -836,8 +822,8 @@
         textEl.innerText = "學長：「該科目目前沒有題目，這次算你過關！」";
         const btn = document.createElement('button');
         btn.className = "w-full p-3 bg-emerald-600 text-slate-950 font-black rounded-xl text-xs";
-        btn.innerText = "繼續上班";
-        btn.onclick = () => { state.vnActive.currentNodeId = nextNodeId; renderVNNode(); };
+        btn.innerText = "繼續下午班";
+        btn.onclick = () => { state.vnActive.step = 4; loadVNLongStep(); };
         choicesEl.appendChild(btn);
         return;
       }
@@ -853,7 +839,7 @@
           btn.onclick = () => {
             if (i === q.correct) { alert('✅ 答對了！加薪 $100！'); state.vnActive.earnedPay += 100; } 
             else { alert('❌ 答錯了！被記點扣除 $30！'); state.vnActive.earnedPay -= 30; }
-            state.vnActive.currentNodeId = nextNodeId; renderVNNode();
+            state.vnActive.step = 4; loadVNLongStep();
           };
           choicesEl.appendChild(btn);
         });
@@ -865,40 +851,34 @@
           btn.onclick = () => {
             if ((val === 'true') === q.tfCorrect) { alert('✅ 答對了！加薪 $100！'); state.vnActive.earnedPay += 100; } 
             else { alert('❌ 答錯了！被記點扣除 $30！'); state.vnActive.earnedPay -= 30; }
-            state.vnActive.currentNodeId = nextNodeId; renderVNNode();
+            state.vnActive.step = 4; loadVNLongStep();
           };
           choicesEl.appendChild(btn);
         });
       } else {
-        alert('配對題過關！'); state.vnActive.currentNodeId = nextNodeId; renderVNNode();
+        alert('配對題過關！');
+        state.vnActive.step = 4; loadVNLongStep();
       }
     }
 
-    function finishShiftAndSettle() {
-      const active = state.vnActive;
-      const isComplained = Math.random() < active.complaintRisk;
-      let finalPay = 100 + active.earnedPay;
-
-      if (isComplained) {
-        finalPay = Math.max(20, finalPay - 80);
-        alert(`⚠️ 不幸收到院長信箱客訴！扣除獎金後今日實領：$${finalPay}`);
-      } else {
-        alert(`🎉 今日順利打卡下班！獲得津貼 $${finalPay} 與 30 XP！`);
-      }
-
-      const unitId = active.unitId;
+    function finishLongShift(finalPay) {
+      const unitId = state.vnActive.unitId;
       state.unitWorkCounts[unitId] = (state.unitWorkCounts[unitId] || 0) + 1;
+
       state.userStats.money += finalPay;
       state.userStats.xp += 30;
       saveState();
 
-      closeVNStory();
+      document.getElementById('vn-modal').classList.add('hidden');
       renderCareerUnits();
+      alert(`🎉 順利撐過今天！獲得津貼 $${finalPay} 與 30 XP！`);
     }
 
-    function closeVNStory() { document.getElementById('vn-modal').classList.add('hidden'); }
+    function closeVNStory() {
+      document.getElementById('vn-modal').classList.add('hidden');
+    }
 
-    /* SHOP */
+    /* 3. SHOP */
     function renderShop() {
       const container = document.getElementById('shop-items-container');
       container.innerHTML = `
@@ -974,7 +954,9 @@
     function deleteQuestion(id) {
       if (confirm('確定要刪除這道題目嗎？')) {
         state.questions = state.questions.filter(q => q.id !== id);
-        saveState(); renderEditorQuestionList(); renderQuizMap();
+        saveState();
+        renderEditorQuestionList();
+        renderQuizMap();
       }
     }
 
@@ -987,7 +969,14 @@
 
       if (!qText) { alert('請填寫題目敘述！'); return; }
 
-      let qObj = { id: 'q_' + Date.now(), subject: sub, type: type, question: qText, imgUrl: imgUrl, explanation: exp };
+      let qObj = {
+        id: 'q_' + Date.now(),
+        subject: sub,
+        type: type,
+        question: qText,
+        imgUrl: imgUrl,
+        explanation: exp
+      };
 
       if (type === 'choice' || type === 'fill') {
         const o0 = document.getElementById('ed-opt-0').value.trim();
@@ -1006,35 +995,55 @@
         qObj.pairs = [{ left: l0, right: r0 }, { left: l1, right: r1 }].filter(p => p.left && p.right);
       }
 
-      state.questions.unshift(qObj); saveState();
+      state.questions.unshift(qObj);
+      saveState();
+
       alert('✅ 題目成功儲存至本地庫！');
       document.getElementById('ed-text').value = '';
-      renderEditorQuestionList(); renderQuizMap();
+      renderEditorQuestionList();
+      renderQuizMap();
     }
 
     function exportJSON() {
       const dataStr = "data:text/json;charset=utf-8," + encodeURIComponent(JSON.stringify(state.questions, null, 2));
-      const dl = document.createElement('a'); dl.setAttribute("href", dataStr); dl.setAttribute("download", "radingo_questions.json"); dl.click();
+      const dl = document.createElement('a');
+      dl.setAttribute("href", dataStr);
+      dl.setAttribute("download", "radingo_questions.json");
+      dl.click();
     }
 
     function importJSON(e) {
-      const file = e.target.files[0]; if (!file) return;
+      const file = e.target.files[0];
+      if (!file) return;
       const r = new FileReader();
       r.onload = function(evt) {
         try {
-          state.questions = JSON.parse(evt.target.result); saveState();
+          state.questions = JSON.parse(evt.target.result);
+          saveState();
           alert(`🎉 成功匯入 ${state.questions.length} 題題目！`);
-          renderEditorQuestionList(); renderQuizMap();
-        } catch (err) { alert('匯入失敗：JSON 格式錯誤！'); }
+          renderEditorQuestionList();
+          renderQuizMap();
+        } catch (err) {
+          alert('匯入失敗：JSON 格式錯誤！');
+        }
       };
       r.readAsText(file);
     }
 
-    function openModal(id) { document.getElementById(id).classList.remove('hidden'); if (id === 'modal-editor') renderEditorQuestionList(); }
+    function openModal(id) { 
+      document.getElementById(id).classList.remove('hidden'); 
+      if (id === 'modal-editor') {
+        renderEditorQuestionList();
+      }
+    }
+    
     function closeModal(id) { document.getElementById(id).classList.add('hidden'); }
     function shuffle(arr) { return arr.sort(() => Math.random() - 0.5); }
 
-    window.onload = function() { loadState(); renderQuizMap(); };
+    window.onload = function() {
+      loadState();
+      renderQuizMap();
+    };
   </script>
 </body>
 </html>
