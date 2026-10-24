@@ -203,6 +203,13 @@
                         ...
                     </p>
 
+                    <!-- 午休抽考專用題目容器 -->
+                    <div id="noon-quiz-container" class="hidden bg-amber-50 p-4 rounded-xl border border-amber-200 space-y-3">
+                        <div class="text-xs font-bold text-amber-700">【學長姐突襲抽考題】</div>
+                        <div id="noon-quiz-title" class="font-bold text-slate-800 text-sm"></div>
+                        <div id="noon-quiz-options" class="space-y-2"></div>
+                    </div>
+
                     <div id="story-options" class="space-y-3 pt-2">
                         <!-- 選項 -->
                     </div>
@@ -326,7 +333,7 @@
 
     <script>
         /* ==========================================================================
-           1. 全局狀態與科目對照表
+           1. 全局狀態與科目/科別對照表
            ========================================================================== */
         const SUBJECTS = [
             { id: 'med_base', name: '基礎醫學', icon: 'fa-brain', color: 'bg-red-500' },
@@ -334,8 +341,25 @@
             { id: 'rad_equip', name: '放射線器材學', icon: 'fa-gears', color: 'bg-emerald-500' },
             { id: 'rad_diag', name: '放射線診斷原理與技術學', icon: 'fa-x-ray', color: 'bg-sky-500' },
             { id: 'rad_therapy', name: '放射線治療原理與技術學', icon: 'fa-crosshairs', color: 'bg-indigo-500' },
-            { id: 'nuc_med', name: '核子醫學診療原理與技術學', icon: 'fa-atom', color: 'bg-purple-500' }
+            { id: 'nuc_med', name: '核子醫學診療原理與技術学', icon: 'fa-atom', color: 'bg-purple-500' }
         ];
+
+        // 科別對應預設練習科目 id
+        const DEPT_SUBJECT_MAP = {
+            "一般 X 光": "rad_diag",
+            "急診": "rad_diag",
+            "CT": "rad_diag",
+            "MRI": "rad_diag",
+            "Mammo": "rad_diag",
+            "Sono": "rad_diag",
+            "心導管": "rad_diag",
+            "牙科": "rad_diag",
+            "血管攝影": "rad_diag",
+            "特殊攝影": "rad_diag",
+            "DEXA": "rad_physics",
+            "核醫": "nuc_med",
+            "RT": "rad_therapy"
+        };
 
         const DEPARTMENTS = [
             "一般 X 光", "急診", "CT", "MRI", "Mammo", "Sono", 
@@ -353,191 +377,228 @@
         };
 
         /* ==========================================================================
-           2. 13 個獨立科別隔離劇本庫 (每科 5 個時間段各具獨家專屬情節)
+           2. 13 個獨立科別隔離劇本庫 (含有搞笑幽默、酸哥酸妹互動與客訴風險)
            ========================================================================== */
         const DEPARTMENT_SCRIPTS = {
             "一般 X 光": {
                 t0800: [
-                    { title: "【一般 X 光】08:00 晨間打卡", text: "早晨第一班門診病人湧入，門口排滿了持 X 光單的民眾。學長正在校正 Bucky 桌，大喊：「今天 Chest 和 KUB 預估超過 100 人！」", options: [{ text: "A: 迅速開啟兩間攝影室，協助引導引號。", cost: 0, coins: 20, xp: 15, textResult: "流暢排班使早上等候時間縮短半小時，學長大讚！" }] },
-                    { title: "【一般 X 光】08:00 交接與奶茶", text: "夜班學長遞上一杯早餐冰奶茶，笑稱「今天照胸部 X 光照到手軟，接下來交給你了！」", options: [{ text: "A: 活力滿滿收下奶茶開工！", cost: 0, coins: 15, xp: 10, textResult: "活力充沛開始了一天！" }] }
-                ],
-                t1100: [
-                    { title: "【一般 X 光】11:00 照 Chest PA", text: "一位阿伯照 Chest PA 時一直無法深吸氣憋住，影像屢屢晃動。", options: [
-                        { text: "A: 耐心使用聯鎖口令引導阿伯吸氣憋住。", cost: 0, coins: 25, xp: 20, textResult: "阿伯終於吸足氣，照出肺底清晰優良的清晰影像！" },
-                        { text: "B: 開嗆：「阿伯！你吸這口氣比吸珍珠奶茶還小力！」", cost: 20, coins: 0, xp: 30, risk: true, textResult: "阿伯驚呆後突然深吸一大口氣，意外成功了！" }
+                    { title: "【一般 X 光】08:00 八卦與奶茶", text: "一早進去放射科，學姐一手拿著大杯大冰奶，一手滑著手機抱怨：「現在的小年輕騎腳踏車摔斷手，送到醫院第一件事不是哭，是叫同伴拿手機拍照打卡發限動...」", options: [
+                        { text: "A: 搞笑回應：「發限動可以，要不要順便幫他開美顏濾鏡？」", cost: 0, coins: 15, xp: 10, textResult: "學姐噗哧笑出來，直呼你懂幽默，開工氣氛融洽！" },
+                        { text: "B: 認真學術：「學姐，這叫紀錄病歷資料的現代化呈現！」", cost: 0, coins: 10, xp: 15, textResult: "學姐翻了個白眼，叫你趕快去把門口 30 個待照病人消掉。" }
                     ]}
                 ],
-                t1200: [{ title: "【一般 X 光】12:00 午休抽測", text: "學長問：「照 Chest PA 時，標準焦距 SID 設定為多少？」", options: [{ text: "A: 挑戰回答：180 cm (1.8公尺)！", cost: 0, isQuizChallenge: true }] }],
-                t1500: [{ title: "【一般 X 光】15:00 夾板立板故障", text: "壁掛式直立架夾板卡住無法升降，現場等候人數開始增加。", options: [{ text: "A: 冷靜手動重置微動開關與磁扣。", cost: 0, coins: 30, xp: 25, textResult: "成功排解故障，排隊人潮迅速消化！" }] }],
-                t1700: [{ title: "【一般 X 光】17:00 順利下班", text: "結束今日一般 X 光高強度拍攝，完成本日打卡。", options: [{ text: "打卡下班領取津貼！", cost: 0, isFinishShift: true }] }]
+                t1100: [
+                    { title: "【一般 X 光】11:00 吸氣憋住的挑戰", text: "一位滑板少年照 Chest PA 時狂晃動，對著鏡頭擺 Pose 喊：「放射師哥，拍帥一點我要放 IG！」", options: [
+                        { text: "A: 搭配口令：「深吸氣...憋住！擺最酷的姿勢 3 秒鐘！」", cost: 0, coins: 25, xp: 20, textResult: "少年完美配合，照出肺底極度清晰優良的 Chest PA！" },
+                        { text: "B: 開嗆：「再動就把你照成靈魂出竅照！連濾鏡都救不了你！」", cost: 0, coins: 0, xp: 30, risk: true, textResult: "少年驚呆不敢動，順利拍攝！但少年在限動吐槽你很兇 (客訴風險 10%)。" }
+                    ]}
+                ],
+                t1200: [{ title: "【一般 X 光】12:00 午休抽考考驗", text: "學長端著便當走進來：「學弟，想要安穩吃午餐？來回答一題放射線診斷學題目，或是花 $50 請我喝大杯紅茶買平安！」", options: [
+                    { text: "A: 挑戰題目！(答對加薪 $40，答錯扣 $20)", isNoonChallenge: true },
+                    { text: "B: 花 $50 請學長喝紅茶買平安！", cost: 50, coins: 0, xp: 10, textResult: "學長高興接過紅茶，放你安心吃便當！" }
+                ]}],
+                t1500: [{ title: "【一般 X 光】15:00 牆壁 Bucky 卡住", text: "下午門診人潮爆滿，壁掛直立架突然卡在最高點，病人站著照不到。", options: [
+                    { text: "A: 熟練施展「放射師密技」——輕拍兩下重置電磁扣。", cost: 0, coins: 30, xp: 25, textResult: "咔噠一聲瞬間恢復正常！現場病人高聲驚呼讚嘆！" }
+                ]}],
+                t1700: [{ title: "【一般 X 光】17:00 順利打卡離場", text: "結束今日一般 X 光高強度 150 人次拍攝，拍張照發限動：「今天又是拯救胸腔的一天！」", options: [{ text: "打卡下班領取津貼！", isFinishShift: true }] }]
             },
             "急診": {
-                t0800: [
-                    { title: "【急診】08:00 晨間交接", text: "一進急診 X 光室，紅燈警示亮起，推床聲此起彼落。夜班放射師說：「昨晚車禍多，移動式 X 光機都快推到輪胎冒煙了！」", options: [{ text: "A: 檢查移動式 C-arm 與可攜式 X 光機電量。", cost: 0, coins: 20, xp: 20, textResult: "設備整備完成，隨時應付重症打擊！" }] }
-                ],
-                t1100: [
-                    { title: "【急診】11:00 重症 trauma 檢驗", text: "急診送來一位疑似骨盆骨折車禍患者，無法自行移動。", options: [
-                        { text: "A: 協同護理師使用滑墊，在不挪動脊椎下放置 IP 板。", cost: 0, coins: 35, xp: 30, textResult: "專業保護患者脊椎，完美完成 AP 照相！" },
-                        { text: "B: 大喊：「大家保持安全距離，準備倒數拍攝！」", cost: 0, coins: 15, xp: 15, textResult: "指揮有序，現場急診團隊配合默契。" }
-                    ]}
-                ],
-                t1200: [{ title: "【急診】12:00 午休問答", text: "急診醫師跑來問：「骨盆 AP 攝影時，雙腳大拇趾要向內旋轉幾度才能看清大轉子？」", options: [{ text: "A: 正確回答：15-20 度！", cost: 0, isQuizChallenge: true }] }],
-                t1500: [{ title: "【急診】15:00 酒醉患者鬧場", text: "滿身酒氣大叔大吵大鬧不想配合拍照，揚言認識院長。", options: [{ text: "A: 保持冷靜，通知急診駐衛警協助安撫。", cost: 0, coins: 30, xp: 25, textResult: "警衛迅速協助控制場面，順利拍攝。" }] }],
-                t1700: [{ title: "【急診】17:00 打卡交接", text: "急診戰場順利完成交接，辛苦了一整天！", options: [{ text: "打卡下班領取津貼！", cost: 0, isFinishShift: true }] }]
+                t0800: [{ title: "【急診】08:00 晨間交接戰況", text: "夜班放射師頂著黑眼圈交接：「昨晚車禍多，移動式 X 光機都快被推到輪胎冒煙了！」", options: [
+                    { text: "A: 迅速檢查 C-arm 與移動式 X 光機電量備戰。", cost: 0, coins: 20, xp: 20, textResult: "設備完備，隨時應付重症傷患！" }
+                ]}],
+                t1100: [{ title: "【急診】11:00 酒醉大叔的鬧劇", text: "滿身酒氣的大叔被送進急診，大吵大鬧說不想照 X 光，揚言認識院長。", options: [
+                    { text: "A: 冷靜應對，安撫其情緒並請駐衛警協助。", cost: 0, coins: 30, xp: 25, textResult: "警衛協助安撫，順利完成 KUB 照相！" },
+                    { text: "B: 搞笑說：「大叔！院長現在就在這張 X 光片裡看著你呢！」", cost: 0, coins: 15, xp: 20, textResult: "大叔愣住 3 秒後配合躺平！" }
+                ]}],
+                t1200: [{ title: "【急診】12:00 午休抽考", text: "急診醫師捧著咖啡過來：「來一題急診影像題，或是請我喝珍奶直接 pass！」", options: [
+                    { text: "A: 挑戰題目！(答對加薪 $40，答錯扣 $20)", isNoonChallenge: true },
+                    { text: "B: 花 $50 請醫師喝珍奶！", cost: 50, coins: 0, xp: 10, textResult: "醫師滿意地吸著珍珠離開了。" }
+                ]}],
+                t1500: [{ title: "【急診】15:00 重傷 Trauma 檢驗", text: "送來一位骨盆骨折車禍患者，急診團隊快速圍過來準備移動。", options: [
+                    { text: "A: 協助使用滑墊，在不挪動脊椎下精準放置 IP 板。", cost: 0, coins: 40, xp: 35, textResult: "專業防護，獲得急診團隊一致讚賞！" }
+                ]}],
+                t1700: [{ title: "【急診】17:00 打卡離場", text: "急診戰場順利完成交接，發限動：「今天也是平安度過急診的一天！」", options: [{ text: "打卡下班領取津貼！", isFinishShift: true }] }]
             },
             "CT": {
-                t0800: [
-                    { title: "【CT】08:00 晨間品管", text: "開啟 128 刷多切面 CT 儀器進行每日 Phantom 水射線校正，確認 HU 值與噪訊比。", options: [{ text: "A: 仔細完成水假體測試並記錄。", cost: 0, coins: 20, xp: 20, textResult: "水質 HU 值剛好為 0，品管完美通過！" }] }
-                ],
-                t1100: [
-                    { title: "【CT】11:00 顯影劑命運熱流", text: "注射靜脈對比劑前，病人緊張問：「聽說打這個藥全身會發熱甚至尿失禁？」", options: [
-                        { text: "A: 溫柔解釋：「血管擴張會有正常溫熱感，不用擔心尿失禁喔！」", cost: 0, coins: 30, xp: 25, textResult: "病人放鬆配合，血管造影影像品質超高！" },
-                        { text: "B: 搞笑說：「熱熱的是正常現象，如果有股暖流...那是心靈的昇華啦！」", cost: 0, coins: 20, xp: 20, textResult: "病人被你逗笑，順利完成自動高壓注藥。" }
-                    ]}
-                ],
-                t1200: [{ title: "【CT】12:00 午休考題", text: "學長問：「CT 影像中，空氣的 Hounsfield Unit (HU) 值通常定義為多少？」", options: [{ text: "A: 正確回答：-1000 HU！", cost: 0, isQuizChallenge: true }] }],
-                t1500: [{ title: "【CT】15:00 心臟冠狀動脈 CTA 挑戰", text: "病人 HR 心跳原本高達 85 bpm，服藥後下降至 58 bpm，準備進行心臟閘門攝影。", options: [{ text: "A: 精準設定 ECG 門閥相位開拍。", cost: 0, coins: 40, xp: 35, textResult: "冠狀動脈無搏動假影，主治醫師讚不絕口！" }] }],
-                t1700: [{ title: "【CT】17:00 交接下班", text: "結束一整天的高壓高精準度 CT 掃描。", options: [{ text: "打卡領取每日獎勵！", cost: 0, isFinishShift: true }] }]
+                t0800: [{ title: "【CT】08:00 晨間水假體校正", text: "啟動 128 切 CT 機台進行每日水射線校正，學長問要不要賭水的 HU 值是不是 0。", options: [
+                    { text: "A: 仔細測試，確認 HU 值為標準的 0。", cost: 0, coins: 20, xp: 20, textResult: "校正完美通過，今天品管 100 分！" }
+                ]}],
+                t1100: [{ title: "【CT】11:00 顯影劑熱流事件", text: "病人打顯影劑前極度緊張：「聽說打這個藥全身會熱熱的，該不會尿失禁吧？！」", options: [
+                    { text: "A: 溫柔解釋：「血管擴張會有溫熱感，那是正常現象，不會尿出來喔！」", cost: 0, coins: 30, xp: 25, textResult: "病人放鬆配合，血管造影超漂亮！" },
+                    { text: "B: 搞笑說：「熱熱的是心靈的升華，放輕鬆感受它！」", cost: 0, coins: 20, xp: 20, textResult: "病人被你逗笑，成功完成注藥！" }
+                ]}],
+                t1200: [{ title: "【CT】12:00 午休抽考", text: "CT 主治醫師走過來：「答對這題 CT 題，或是請我喝咖啡跳過！」", options: [
+                    { text: "A: 挑戰題目！(答對加薪 $40，答錯扣 $20)", isNoonChallenge: true },
+                    { text: "B: 花 $50 請醫師喝美式咖啡！", cost: 50, coins: 0, xp: 10, textResult: "醫師接過咖啡，點頭讚許！" }
+                ]}],
+                t1500: [{ title: "【CT】15:00 心臟 CTA 高心跳挑戰", text: "心臟 CTA 病人 HR 85 bpm 服藥後降至 58 bpm，準備抓 ECG 相位。", options: [
+                    { text: "A: 精準設定 ECG 門閥相位開拍。", cost: 0, coins: 40, xp: 35, textResult: "冠狀動脈無搏動假影，品質超高！" }
+                ]}],
+                t1700: [{ title: "【CT】17:00 打卡下班", text: "結束高壓高精準度的 CT 掃描，發限動：「今天也是精準切片的一天！」", options: [{ text: "打卡領取每日獎勵！", isFinishShift: true }] }]
             },
             "MRI": {
-                t0800: [
-                    { title: "【MRI】08:00 磁場與金屬安檢", text: "進入 3.0T 超導磁浮掃描室前，檢查是否有人帶鐵磁性物品進入安全區。", options: [{ text: "A: 使用金屬探測棒落實安檢關卡。", cost: 0, coins: 20, xp: 20, textResult: "成功攔截民眾口袋裡的鐵螺絲起子，避免飛彈危機！" }] }
-                ],
-                t1100: [
-                    { title: "【MRI】11:00 幽閉恐懼症克服", text: "病人進到狹窄磁頭孔洞內突然恐慌發作，大喊：「這裡好逼仄我快不能呼吸了！」", options: [
-                        { text: "A: 為病人戴上耳機放周杰倫歌曲，並開啟孔洞通風小風扇。", cost: 0, coins: 30, xp: 30, textResult: "聽著流行音樂，病人放鬆順利做完 30 分鐘腦部 Brain MRI！" },
-                        { text: "B: 隔空安慰：「閉上眼睛，想像你在馬爾地夫海灘曬太陽！」", cost: 0, coins: 20, xp: 20, textResult: "病人深呼吸，成功克服幽閉恐懼！" }
-                    ]}
-                ],
-                t1200: [{ title: "【MRI】12:00 午休抽考", text: "學姐問：「人體 MRI 訊號主要是來自於哪種原子核的自旋共振？」", options: [{ text: "A: 迅速回答：氫原子核 (Hydrogen, 1H)！", cost: 0, isQuizChallenge: true }] }],
-                t1500: [{ title: "【MRI】15:00 T1/T2 序列調整", text: "膝關節膝十字韌帶掃描，需要高解析度 PD-fat sat 序列。", options: [{ text: "A: 精確優化 TR 與 TE 參數值。", cost: 0, coins: 35, xp: 25, textResult: "韌帶撕裂傷清晰可見，報告準確度大幅提升！" }] }],
-                t1700: [{ title: "【MRI】17:00 打卡離場", text: "結束高噪音卻高精密的 MRI 診間任務。", options: [{ text: "打卡領取津貼！", cost: 0, isFinishShift: true }] }]
+                t0800: [{ title: "【MRI】08:00 3.0T 強磁場安檢", text: "進入 MRI 門前，嚴格檢查所有人身上的鐵磁性金屬物品。", options: [
+                    { text: "A: 使用金屬探測棒進行雙重安檢。", cost: 0, coins: 25, xp: 20, textResult: "成功攔截民眾口袋裡的鋼筆，化解飛彈危機！" }
+                ]}],
+                t1100: [{ title: "【MRI】11:00 幽閉恐懼症克服", text: "病人進到磁頭孔洞內突然恐慌大喊：「這裡好窄我不能呼吸了！」", options: [
+                    { text: "A: 為病人戴上耳機放流行音樂，並開啟通風小風扇。", cost: 0, coins: 35, xp: 30, textResult: "聽著音樂，病人放鬆順利做完 Brain MRI！" },
+                    { text: "B: 隔空安慰：「想像你在馬爾地夫海灘躺著看星空！」", cost: 0, coins: 20, xp: 20, textResult: "病人深呼吸，成功克服幽閉感！" }
+                ]}],
+                t1200: [{ title: "【MRI】12:00 午休抽考", text: "資深學姐走過來：「答對一題 MRI 題目，或者花 $50 請我喝拿鐵！」", options: [
+                    { text: "A: 挑戰題目！(答對加薪 $40，答錯扣 $20)", isNoonChallenge: true },
+                    { text: "B: 花 $50 請學姐喝拿鐵！", cost: 50, coins: 0, xp: 10, textResult: "學姐接過拿鐵，笑著讓你去休息。" }
+                ]}],
+                t1500: [{ title: "【MRI】15:00 膝關節 T1/T2 序列優化", text: "遇到懷疑韌帶撕裂的病人，需要優化 PD-fat sat 序列。", options: [
+                    { text: "A: 精確調整 TR 與 TE 參數值。", cost: 0, coins: 35, xp: 25, textResult: "前十字韌帶影像極度清晰！" }
+                ]}],
+                t1700: [{ title: "【MRI】17:00 打卡下班", text: "結束高噪音但超清晰的 MRI 任務，發限動：「今天磁場全開！」", options: [{ text: "打卡領取獎勵！", isFinishShift: true }] }]
             },
             "Mammo": {
-                t0800: [
-                    { title: "【Mammo】08:00 乳房攝影室開啟", text: "啟動乳房攝影專用機台，確認壓迫板壓力和自動曝光控制 (AEC) 正常。", options: [{ text: "A: 進行壓迫力與影像品質品管測試。", cost: 0, coins: 20, xp: 20, textResult: "機台壓迫感應器極度精準，完成整備。" }] }
-                ],
-                t1100: [
-                    { title: "【Mammo】11:00 壓迫力學與尖叫", text: "婦人做 CC 與 MLO 攝影時，因壓迫板加壓痛得尖叫大喊：「好痛啊！能不能不要壓這麼緊！」", options: [
-                        { text: "A: 溫柔鼓勵：「再忍耐 5 秒鐘，加壓才能把組織展開、減少輻射量與假影喔！」", cost: 0, coins: 35, xp: 30, textResult: "婦人配合忍耐，照出極度微小鈣化點清晰影像！" },
-                        { text: "B: 開壓迫板笑說：「一口氣壓到底最不痛！長痛不如短痛！」", cost: 0, coins: 20, xp: 20, textResult: "快速完成拍攝，婦人鬆了一口氣！" }
-                    ]}
-                ],
-                t1200: [{ title: "【Mammo】12:00 午休問答", text: "學姐問：「乳房攝影 X 光管的靶極與濾片常選用什麼材質組合？」", options: [{ text: "A: 正確回答：鉬 (Mo) / 銠 (Rh)！", cost: 0, isQuizChallenge: true }] }],
-                t1500: [{ title: "【Mammo】15:00 微小鈣化點審視", text: "篩檢發現疑似微小鈣化集群，需要加照局部放大攝影 (Magnification view)。", options: [{ text: "A: 使用放大座與小壓迫板精準定位。", cost: 0, coins: 30, xp: 25, textResult: "成功定位出 0.2mm 微小鈣化！" }] }],
-                t1700: [{ title: "【Mammo】17:00 打卡下班", text: "今日乳房癌篩任務圓滿達成。", options: [{ text: "領取獎勵下班！", cost: 0, isFinishShift: true }] }]
+                t0800: [{ title: "【Mammo】08:00 壓迫感應器品管", text: "開啟乳房攝影專用機台，確認 AEC 與壓迫板力學感應器。", options: [
+                    { text: "A: 進行壓迫力與品質測試。", cost: 0, coins: 20, xp: 20, textResult: "壓迫感應器極度精準，完成整備！" }
+                ]}],
+                t1100: [{ title: "【Mammo】11:00 壓迫力學與尖叫", text: "婦人做 CC 與 MLO 攝影時，因壓迫板加壓痛得大喊：「能不能不要壓這麼緊！」", options: [
+                    { text: "A: 溫柔衛教：「忍耐 5 秒鐘，加壓才能把組織展開、減少輻射與假影喔！」", cost: 0, coins: 35, xp: 30, textResult: "婦人配合忍耐，照出極微小鈣化點！" },
+                    { text: "B: 開壓迫板笑說：「一口氣壓到底最不痛！長痛不如短痛！」", cost: 0, coins: 20, xp: 20, textResult: "快速完成拍攝，婦人鬆了一口氣！" }
+                ]}],
+                t1200: [{ title: "【Mammo】12:00 午休抽考", text: "學姐問：「答對乳攝影題目，或請喝水果茶過關！」", options: [
+                    { text: "A: 挑戰題目！(答對加薪 $40，答錯扣 $20)", isNoonChallenge: true },
+                    { text: "B: 花 $50 請學姐喝水果茶！", cost: 50, coins: 0, xp: 10, textResult: "學姐開心喝茶放行！" }
+                ]}],
+                t1500: [{ title: "【Mammo】15:00 微小鈣化點局部放大", text: "篩檢發現疑似微小鈣化集群，需要加照局部放大攝影 (Magnification)。", options: [
+                    { text: "A: 使用放大座與小壓迫板精準定位。", cost: 0, coins: 30, xp: 25, textResult: "成功定位出 0.2mm 微小鈣化！" }
+                ]}],
+                t1700: [{ title: "【Mammo】17:00 打卡下班", text: "今日乳房癌篩任務圓滿達成，發限動：「關心女性健康的一天！」", options: [{ text: "領取獎勵下班！", isFinishShift: true }] }]
             },
             "Sono": {
-                t0800: [
-                    { title: "【Sono】08:00 超音波探頭校正", text: "整備腹部凸型探頭與淺層高頻直線探頭，備妥大量耦合凝膠 (Gel)。", options: [{ text: "A: 補充溫熱凝膠瓶，避免冷冰冰嚇到病人。", cost: 0, coins: 20, xp: 20, textResult: "病人大讚溫熱凝膠超貼心！" }] }
-                ],
-                t1100: [
-                    { title: "【Sono】11:00 膽囊結石與深呼吸", text: "掃描上腹部超音波時，病人腸氣太多擋住膽囊。", options: [
-                        { text: "A: 請病人吸氣憋住，並改變體位為左側斜臥 (LPO)。", cost: 0, coins: 30, xp: 25, textResult: "腸氣移開，清晰掃出膽囊內 0.5cm 強回音結石！" },
-                        { text: "B: 拿起探頭滑來滑去笑說：「這像是在肚皮上玩冰壺遊戲！」", cost: 0, coins: 15, xp: 15, textResult: "氣氛緩和，順利找到聲影 (Acoustic shadow)。" }
-                    ]}
-                ],
-                t1200: [{ title: "【Sono】12:00 午休抽問", text: "醫師問：「醫用診斷超音波的常用頻率範圍大約在哪裡？」", options: [{ text: "A: 正確回答：2 MHz ~ 15 MHz！", cost: 0, isQuizChallenge: true }] }],
-                t1500: [{ title: "【Sono】15:00 多普勒血流測量", text: "進行頸動脈彩色多普勒超音波，測量 Peak Systolic Velocity (PSV)。", options: [{ text: "A: 調整 Doppler angle 角度使其小於 60 度。", cost: 0, coins: 35, xp: 30, textResult: "速度計算精準，發現微小血栓！" }] }],
-                t1700: [{ title: "【Sono】17:00 清理下班", text: "擦拭探頭進行消毒，順利下班。", options: [{ text: "打卡領取津貼！", cost: 0, isFinishShift: true }] }]
+                t0800: [{ title: "【Sono】08:00 探頭與溫熱凝膠", text: "整備腹部凸型探頭與高頻直線探頭，補充溫熱凝膠 (Gel)。", options: [
+                    { text: "A: 補充溫熱凝膠瓶，避免冷冰冰嚇到病人。", cost: 0, coins: 20, xp: 20, textResult: "病人大讚溫熱凝膠貼心！" }
+                ]}],
+                t1100: [{ title: "【Sono】11:00 膽囊結石與深呼吸", text: "掃描腹部超音波時，病人腸氣太多擋住膽囊。", options: [
+                    { text: "A: 請病人吸氣憋住，並改為左側斜臥 (LPO)。", cost: 0, coins: 30, xp: 25, textResult: "腸氣移開，清晰掃出膽囊內 0.5cm 強回音結石！" },
+                    { text: "B: 搞笑說：「這像是在肚皮上玩冰壺遊戲！」", cost: 0, coins: 15, xp: 15, textResult: "氣氛緩和，順利找到聲影 (Acoustic shadow)。" }
+                ]}],
+                t1200: [{ title: "【Sono】12:00 午休抽考", text: "主治醫師過來問：「來一題超音波題，或花 $50 請喝青茶！」", options: [
+                    { text: "A: 挑戰題目！(答對加薪 $40，答錯扣 $20)", isNoonChallenge: true },
+                    { text: "B: 花 $50 請醫師喝青茶！", cost: 50, coins: 0, xp: 10, textResult: "醫師滿意離去。" }
+                ]}],
+                t1500: [{ title: "【Sono】15:00 多普勒血流測量", text: "進行頸動脈彩色多普勒超音波，測量 Peak Systolic Velocity。", options: [
+                    { text: "A: 調整 Doppler angle 角度使其小於 60 度。", cost: 0, coins: 35, xp: 30, textResult: "血流速度計算極度精準！" }
+                ]}],
+                t1700: [{ title: "【Sono】17:00 打卡下班", text: "擦拭探頭進行消毒，發限動：「今天也是超音波探索者！」", options: [{ text: "打卡領取津貼！", isFinishShift: true }] }]
             },
             "心導管": {
-                t0800: [
-                    { title: "【心導管】08:00 重裝鉛衣穿戴", text: "穿上重達 5 公斤的厚重鉛衣、鉛脖，準備進導管室配合心臟內科醫師開工。", options: [{ text: "A: 確實穿戴鉛衣並配戴個人輻射佩章。", cost: 0, coins: 25, xp: 20, textResult: "防護完備，腰酸背痛也值得！" }] }
-                ],
-                t1100: [
-                    { title: "【心導管】11:00 急性心肌梗塞 (AMI)", text: "急診送來 STEMI 急救病人，心導管室啟動緊急血管支架置放術。", options: [
-                        { text: "A: 精準操控 C-arm 旋轉角度 (LAO/RAO Cranial/Caudal view)。", cost: 0, coins: 40, xp: 35, textResult: "醫師順利定位 LAD 冠狀動脈堵塞點並打通血管！" },
-                        { text: "B: 快速踩踏腳踏板進行動態連續攝影 (Cine)。", cost: 0, coins: 25, xp: 20, textResult: "影像清晰，搶救成功！" }
-                    ]}
-                ],
-                t1200: [{ title: "【心導管】12:00 午休考驗", text: "心內醫師問：「看冠狀動脈左前降支 (LAD) 最常用的經典 C-arm 視角是？」", options: [{ text: "A: 迅速回答：LAO Cranial (左前斜蛛網位)！", cost: 0, isQuizChallenge: true }] }],
-                t1500: [{ title: "【心導管】15:00 鉛玻璃遮蔽與防護", text: "長時間路徑圖 (Roadmap) 踩射中，評估散射劑量。", options: [{ text: "A: 移動懸掛式鉛玻璃擋在醫師與自己身前。", cost: 0, coins: 30, xp: 25, textResult: "有效降低 80% 散射輻射！" }] }],
-                t1700: [{ title: "【心導管】17:00 脫下鉛衣下班", text: "脫下沉重的鉛衣，感覺全身輕盈無比！", options: [{ text: "打卡領取獎勵！", cost: 0, isFinishShift: true }] }]
+                t0800: [{ title: "【心導管】08:00 重裝鉛衣穿戴", text: "穿上重達 5 公斤的厚重鉛衣與鉛脖，準備進導管室開工。", options: [
+                    { text: "A: 確實穿戴鉛衣並配戴個人輻射佩章。", cost: 0, coins: 25, xp: 20, textResult: "防護完備，腰酸背痛也值得！" }
+                ]}],
+                t1100: [{ title: "【心導管】11:00 急性心肌梗塞搶救", text: "急診送來 STEMI 急救病人，心導管室啟動緊急血管支架置放術。", options: [
+                    { text: "A: 精準操控 C-arm 旋轉角度 (LAO/RAO Cranial/Caudal)。", cost: 0, coins: 40, xp: 35, textResult: "醫師順利定位 LAD 塞點打通血管！" }
+                ]}],
+                t1200: [{ title: "【心導管】12:00 午休抽考", text: "心內醫師問：「挑戰一題心導管問題，或請我喝拿鐵！」", options: [
+                    { text: "A: 挑戰題目！(答對加薪 $40，答錯扣 $20)", isNoonChallenge: true },
+                    { text: "B: 花 $50 請醫師喝拿鐵！", cost: 50, coins: 0, xp: 10, textResult: "醫師笑著接過拿鐵。" }
+                ]}],
+                t1500: [{ title: "【心導管】15:00 鉛玻璃遮蔽與防護", text: "長時間連續踩射中，評估散射劑量。", options: [
+                    { text: "A: 移動懸掛式鉛玻璃擋在身前。", cost: 0, coins: 30, xp: 25, textResult: "有效降低 80% 散射輻射！" }
+                ]}],
+                t1700: [{ title: "【心導管】17:00 脱下鉛衣下班", text: "脫下沉重的鉛衣，發限動：「重獲新生！脫下鉛衣感覺會飛！」", options: [{ text: "打卡領取獎勵！", isFinishShift: true }] }]
             },
             "牙科": {
-                t0800: [
-                    { title: "【牙科】08:00 牙科全景機校正", text: "校正 Dental Panorama 與 CBCT 機台，確認雷射定位光束線。", options: [{ text: "A: 使用齒科定位假體完成校正。", cost: 0, coins: 20, xp: 15, textResult: "雷射光精準對準門牙切齒點！" }] }
-                ],
-                t1100: [
-                    { title: "【牙科】11:00 全景 Panorama咬合棒", text: "小朋友做全景攝影時，咬不緊塑膠咬合棒而且一直晃動。", options: [
-                        { text: "A: 用趣味話術引導：「咬住小棒棒，像企鵝一樣站好不要動 10 秒喔！」", cost: 0, coins: 25, xp: 20, textResult: "小朋友順利站好，全景齒列無重疊！" },
-                        { text: "B: 誇張示範給小朋友看咬合動作。", cost: 0, coins: 15, xp: 15, textResult: "逗樂小朋友，順利完成拍攝。" }
-                    ]}
-                ],
-                t1200: [{ title: "【牙科】12:00 午休抽問", text: "學長問：「根尖片 (Periapical view) 常用之等分線分角技術 (Bisecting angle) 原理是？」", options: [{ text: "A: 正確回答：X 光垂直於牙齒長軸與底片夾角的角平分線！", cost: 0, isQuizChallenge: true }] }],
-                t1500: [{ title: "【牙科】15:00 植牙 3D CBCT 掃描", text: "進行局部高解析度錐狀射束 CT (CBCT) 掃描以評估齒槽骨高度。", options: [{ text: "A: 設定小 FOV 以降低劑量並提升空間解析度。", cost: 0, coins: 30, xp: 25, textResult: "植牙醫師大讚骨質密度評估極佳！" }] }],
-                t1700: [{ title: "【牙科】17:00 打卡下班", text: "結束一日輕鬆但精細的牙科影像服務。", options: [{ text: "打卡領取津貼！", cost: 0, isFinishShift: true }] }]
+                t0800: [{ title: "【牙科】08:00 全景機雷射光校正", text: "校正 Dental Panorama 與 CBCT 機台的雷射定位光束線。", options: [
+                    { text: "A: 使用齒科定位假體完成校正。", cost: 0, coins: 20, xp: 15, textResult: "雷射光精準對準門牙切齒點！" }
+                ]}],
+                t1100: [{ title: "【牙科】11:00 全景咬合棒的小朋友", text: "小朋友做全景攝影時，咬不緊塑膠咬合棒一直晃動。", options: [
+                    { text: "A: 趣味引導：「咬住小棒棒，像企鵝一樣站好不要動 10 秒喔！」", cost: 0, coins: 25, xp: 20, textResult: "小朋友順利站好，全景齒列無重疊！" }
+                ]}],
+                t1200: [{ title: "【牙科】12:00 午休抽考", text: "牙科醫師問：「答對牙科影像題，或花 $50 請喝冬瓜檸檬！」", options: [
+                    { text: "A: 挑戰題目！(答對加薪 $40，答錯扣 $20)", isNoonChallenge: true },
+                    { text: "B: 花 $50 請喝冬瓜檸檬！", cost: 50, coins: 0, xp: 10, textResult: "醫師高興收下。" }
+                ]}],
+                t1500: [{ title: "【牙科】15:00 植牙 3D CBCT 掃描", text: "進行局部高解析度 CBCT 掃描以評估齒槽骨高度。", options: [
+                    { text: "A: 設定小 FOV 以降低劑量並提升空間解析度。", cost: 0, coins: 30, xp: 25, textResult: "植牙醫師大讚骨質密度評估極佳！" }
+                ]}],
+                t1700: [{ title: "【牙科】17:00 打卡下班", text: "結束輕鬆精細的一天，發限動：「齒列清晰令人心曠神怡！」", options: [{ text: "打卡領取津貼！", isFinishShift: true }] }]
             },
             "血管攝影": {
-                t0800: [
-                    { title: "【血管攝影】08:00 血管室無菌準備", text: "準備 DSA 數位減影血管攝影室，鋪設無菌單與高壓注藥器裝填。", options: [{ text: "A: 嚴格執行無菌技術裝填對比劑導管。", cost: 0, coins: 25, xp: 20, textResult: "無菌環境準備就緒！" }] }
-                ],
-                t1100: [
-                    { title: "【血管攝影】11:00 肝動脈栓塞 (TAE)", text: "進行肝癌 TACE 栓塞手術，需要 DSA 減影將骨骼影像扣除。", options: [
-                        { text: "A: 提醒病人呼吸暫停，避免 DSA 產生運動偽影 (Pixel shift)。", cost: 0, coins: 35, xp: 30, textResult: "血管減影極為清晰，成功找到腫瘤供血血管！" },
-                        { text: "B: 使用後處理軟體進行 Pixel shift 像素平移修復。", cost: 0, coins: 25, xp: 20, textResult: "完美修復減影偽影！" }
-                    ]}
-                ],
-                t1200: [{ title: "【血管攝影】12:00 午休考驗", text: "醫師問：「DSA 減影技術中，尚未注入對比劑前的第一張 X 光影像稱作？」", options: [{ text: "A: 迅速回答：面罩影像 (Mask image)！", cost: 0, isQuizChallenge: true }] }],
-                t1500: [{ title: "【血管攝影】15:00 腦血管造影 (Brain DSA)", text: "評估顱內動脈瘤，進行 3D 旋轉血管造影 (3D-RA)。", options: [{ text: "A: 設定 C-arm 200 度高速旋轉掃描。", cost: 0, coins: 40, xp: 35, textResult: "重建出精美的 3D 動脈瘤立體結構！" }] }],
-                t1700: [{ title: "【血管攝影】17:00 整理下班", text: "完成本日血管介入手術支援。", options: [{ text: "打卡下班！", cost: 0, isFinishShift: true }] }]
+                t0800: [{ title: "【血管攝影】08:00 無菌準備與高壓注藥", text: "準備 DSA 血管攝影室，鋪設無菌單與裝填高壓注藥器。", options: [
+                    { text: "A: 嚴格執行無菌技術裝填對比劑。", cost: 0, coins: 25, xp: 20, textResult: "無菌環境整備就緒！" }
+                ]}],
+                t1100: [{ title: "【血管攝影】11:00 肝動脈栓塞 TACE", text: "進行肝癌 TACE 栓塞，需要 DSA 減影將骨骼扣除。", options: [
+                    { text: "A: 提醒病人呼吸暫停，避免產生運動偽影 (Pixel shift)。", cost: 0, coins: 35, xp: 30, textResult: "減影極為清晰，成功找到腫瘤供血血管！" }
+                ]}],
+                t1200: [{ title: "【血管攝影】12:00 午休抽考", text: "學長問：「答對 DSA 題目，或花 $50 請喝黑糖珍珠！」", options: [
+                    { text: "A: 挑戰題目！(答對加薪 $40，答錯扣 $20)", isNoonChallenge: true },
+                    { text: "B: 花 $50 請喝黑糖珍珠！", cost: 50, coins: 0, xp: 10, textResult: "學長爽快 pass！" }
+                ]}],
+                t1500: [{ title: "【血管攝影】15:00 3D 旋轉血管造影", text: "評估顱內動脈瘤，進行 3D 旋轉血管造影 (3D-RA)。", options: [
+                    { text: "A: 設定 C-arm 200 度高速旋轉掃描。", cost: 0, coins: 40, xp: 35, textResult: "重建出精美的 3D 動脈瘤立體結構！" }
+                ]}],
+                t1700: [{ title: "【血管攝影】17:00 打卡下班", text: "完成介入手術支援，發限動：「血管地圖繪製成功！」", options: [{ text: "打卡下班！", isFinishShift: true }] }]
             },
             "特殊攝影": {
-                t0800: [
-                    { title: "【特殊攝影】08:00 鋇劑透視機台準備", text: "調製巴里亞 (Barium) 鋇劑懸浮液，測試透視 (Fluoro) 腳踏板與遙控桌。", options: [{ text: "A: 調製適當濃度的鋇劑並確認胃腸攝影參數。", cost: 0, coins: 20, xp: 20, textResult: "懸浮液均勻，設備運作順暢！" }] }
-                ],
-                t1100: [
-                    { title: "【特殊攝影】11:00 上消化道 UGIS 雙重對比", text: "進行 UGI 胃雙重對比攝影，病人喝下產氣顆粒後忍住不打嗝。", options: [
-                        { text: "A: 迅速指導病人滾動體位，使鋇劑均勻塗抹胃壁。", cost: 0, coins: 35, xp: 30, textResult: "胃黏膜雙重對比清晰呈現，發現微小潰瘍！" },
-                        { text: "B: 幽默說：「忍住這一口氣！打出來胃就扁掉囉！」", cost: 0, coins: 20, xp: 20, textResult: "病人成功憋住，順利拍照！" }
-                    ]}
-                ],
-                t1200: [{ title: "【特殊攝影】12:00 午休抽問", text: "學長問：「進行大腸雙重對比灌腸 (Barium Enema) 時，除了鋇劑還需灌入什麼？」", options: [{ text: "A: 迅速回答：空氣 (Air)！", cost: 0, isQuizChallenge: true }] }],
-                t1500: [{ title: "【特殊攝影】15:00 Barium Enema 爆漿危機", text: "大腸灌鋇攝影中，氣球導管差點滑脫。", options: [{ text: "A: 冷靜調整氣球壓力並請病人夾緊。", cost: 0, coins: 40, xp: 30, textResult: "化解爆漿危機，透視攝影順利完成！" }] }],
-                t1700: [{ title: "【特殊攝影】17:00 打卡下班", text: "收拾清理透視室，準備打卡。", options: [{ text: "領取津貼下班！", cost: 0, isFinishShift: true }] }]
+                t0800: [{ title: "【特殊攝影】08:00 鋇劑透視機台準備", text: "調製巴里亞 (Barium) 鋇劑懸浮液，測試透視 (Fluoro) 腳踏板。", options: [
+                    { text: "A: 調製適當濃度的鋇劑並確認透視參數。", cost: 0, coins: 20, xp: 20, textResult: "懸浮液均勻，設備運作順暢！" }
+                ]}],
+                t1100: [{ title: "【特殊攝影】11:00 胃雙重對比 UGIS", text: "病人喝下產氣顆粒後忍住不打嗝，準備滾動體位。", options: [
+                    { text: "A: 指導病人滾動體位，使鋇劑均勻塗抹胃壁。", cost: 0, coins: 35, xp: 30, textResult: "胃黏膜雙重對比清晰呈現！" }
+                ]}],
+                t1200: [{ title: "【特殊攝影】12:00 午休抽考", text: "資深放射師問：「答對特殊攝影題，或請喝四季春茶！」", options: [
+                    { text: "A: 挑戰題目！(答對加薪 $40，答錯扣 $20)", isNoonChallenge: true },
+                    { text: "B: 花 $50 請喝四季春茶！", cost: 50, coins: 0, xp: 10, textResult: "順利通過午休抽考！" }
+                ]}],
+                t1500: [{ title: "【特殊攝影】15:00 Barium Enema 爆漿危機", text: "大腸灌鋇攝影中，氣球導管差點滑脫！", options: [
+                    { text: "A: 冷靜調整氣球壓力並請病人夾緊。", cost: 0, coins: 40, xp: 30, textResult: "成功化解爆漿危機！" }
+                ]}],
+                t1700: [{ title: "【特殊攝影】17:00 打卡下班", text: "清理透視室，發限動：「今天也是完美塗佈的一天！」", options: [{ text: "領取津貼下班！", isFinishShift: true }] }]
             },
             "DEXA": {
-                t0800: [
-                    { title: "【DEXA】08:00 骨密儀品質品管", text: "使用脊椎假體 (Spine Phantom) 進行 DEXA 雙能量 X 光骨質密度儀每日校正。", options: [{ text: "A: 進行光束與能量校正測試。", cost: 0, coins: 20, xp: 15, textResult: "偏差值低於 0.5%，校正通過！" }] }
-                ],
-                t1100: [
-                    { title: "【DEXA】11:00 鑽石手鍊與金飾危機", text: "貴婦阿嬤做 腰椎 (L-spine) 與髖骨 (Hip) 骨密，全身戴滿純金項鍊與金條手鍊，堅持不拆。", options: [
-                        { text: "A: 說明雙能量 X 光會被金屬吸收導致 T-score 誤判為超高骨質。", cost: 0, coins: 30, xp: 25, textResult: "貴婦驚覺後配合配合摘下，測出真實骨質！" },
-                        { text: "B: 開玩笑說：「阿嬤！你這項鍊照出來骨頭會變成黃金骨喔！」", cost: 0, coins: 20, xp: 20, textResult: "阿嬤笑開懷，順利拿去保管盒存放。" }
-                    ]}
-                ],
-                t1200: [{ title: "【DEXA】12:00 午休問答", text: "醫師問：「DEXA 報告中，停經後婦女與 50 歲以上男性主要參考什麼數值？」", options: [{ text: "A: 正確回答：T-score (T分數)！", cost: 0, isQuizChallenge: true }] }],
-                t1500: [{ title: "【DEXA】15:00 髖關節內旋定位", text: "測量左側 Femur Neck 骨密度，需要使用定位腳架將雙腳內旋 15 度。", options: [{ text: "A: 使用腳架將雙腳固定內旋。", cost: 0, coins: 25, xp: 20, textResult: "股骨頸完全展平，測量極為精準！" }] }],
-                t1700: [{ title: "【DEXA】17:00 打卡下班", text: "輕鬆優雅地完成一日骨質密度檢測。", options: [{ text: "打卡領取每日津貼！", cost: 0, isFinishShift: true }] }]
+                t0800: [{ title: "【DEXA】08:00 Spine Phantom 品質校正", text: "使用脊椎假體 (Spine Phantom) 進行 DEXA 雙能量 X 光骨密儀校正。", options: [
+                    { text: "A: 進行光束與能量校正測試。", cost: 0, coins: 20, xp: 15, textResult: "偏差值低於 0.5%，校正通過！" }
+                ]}],
+                t1100: [{ title: "【DEXA】11:00 純金項鍊與金條手鍊", text: "貴婦阿嬤做骨密，全身戴滿純金項鍊與手鍊堅持不拆。", options: [
+                    { text: "A: 說明雙能量 X 光會被金屬吸收導致 T-score 誤判。", cost: 0, coins: 30, xp: 25, textResult: "阿嬤配合配合摘下，測出真實骨質！" },
+                    { text: "B: 開玩笑：「阿嬤！你這照出來骨頭會變成黃金骨喔！」", cost: 0, coins: 20, xp: 20, textResult: "阿嬤笑開懷，順利交由保管盒存放。" }
+                ]}],
+                t1200: [{ title: "【DEXA】12:00 午休抽考", text: "醫師問：「答對 DEXA 題目，或花 $50 請喝鮮奶茶！」", options: [
+                    { text: "A: 挑戰題目！(答對加薪 $40，答錯扣 $20)", isNoonChallenge: true },
+                    { text: "B: 花 $50 請喝鮮奶茶！", cost: 50, coins: 0, xp: 10, textResult: "醫師開心接過奶茶。" }
+                ]}],
+                t1500: [{ title: "【DEXA】15:00 髖關節內旋定位", text: "測量股骨頸骨密度，需要使用定位腳架將雙腳內旋 15 度。", options: [
+                    { text: "A: 使用腳架將雙腳固定內旋。", cost: 0, coins: 25, xp: 20, textResult: "股骨頸完全展平，測量極為精準！" }
+                ]}],
+                t1700: [{ title: "【DEXA】17:00 打卡下班", text: "輕鬆優雅地完成一日檢測，發限動：「骨質密度護衛者！」", options: [{ text: "打卡領取每日津貼！", isFinishShift: true }] }]
             },
             "核醫": {
-                t0800: [
-                    { title: "【核醫】08:00 放射藥物調配與熱室", text: "在 Hot lab 熱室鉛玻璃防護罩內，使用 Mo-99/Tc-99m 產生器抽出 Technetium-99m。", options: [{ text: "A: 使用 Dose Calibrator 活度計量測劑量並記錄。", cost: 0, coins: 25, xp: 25, textResult: "活度精確無誤，防護極佳！" }] }
-                ],
-                t1100: [
-                    { title: "【核醫】11:00 FDG-PET/CT 禁食與血糖", text: "做 FDG 全身癌症掃描的病人，報到時血糖值高達 220 mg/dL。", options: [
-                        { text: "A: 評估高血糖競爭影響，依 SOP 請示核醫科醫師處置。", cost: 0, coins: 30, xp: 25, textResult: "專業處理，確保 PET 影像不因高血糖而造影失敗！" },
-                        { text: "B: 提醒病人：「FDG 就是帶有放射線的葡萄糖喔！」", cost: 0, coins: 20, xp: 20, textResult: "病人恍然大悟配合衛教。" }
-                    ]}
-                ],
-                t1200: [{ title: "【核醫】12:00 午休抽考", text: "學姐問：「核醫最常用之 Tc-99m 放射性同位素，其物理半衰期 (t1/2) 約為多少？」", options: [{ text: "A: 迅速回答：6 小時！", cost: 0, isQuizChallenge: true }] }],
-                t1500: [{ title: "【核醫】15:00 Gamma Camera 骨骼掃描 (Bone Scan)", text: "進行 Tc-99m-MDP 全身骨骼掃描，尋找有無癌症骨轉移。", options: [{ text: "A: 設定雙探頭全身掃描速度 15 cm/min。", cost: 0, coins: 35, xp: 30, textResult: "影像品質優良，明確標示熱點 (Hot spot)！" }] }],
-                t1700: [{ title: "【核醫】17:00 廢棄物與打卡", text: "確認衰變廢棄物妥善存放鉛桶，打卡下班。", options: [{ text: "領取津貼下班！", cost: 0, isFinishShift: true }] }]
+                t0800: [{ title: "【核醫】08:00 熱室 Radiopharmacy 抽藥", text: "在 Hot lab 鉛玻璃防護罩內，抽出 Tc-99m 放射藥物。", options: [
+                    { text: "A: 使用 Dose Calibrator 活度計量測劑量並記錄。", cost: 0, coins: 25, xp: 25, textResult: "活度精確無誤，防護極佳！" }
+                ]}],
+                t1100: [{ title: "【核醫】11:00 FDG-PET 高血糖問題", text: "做 FDG 全身癌症掃描的病人，報到時血糖值高達 220 mg/dL。", options: [
+                    { text: "A: 評估高血糖競爭影響，依 SOP 請示核醫科醫師處置。", cost: 0, coins: 30, xp: 25, textResult: "專業處理，確保 PET 影像不因高血糖而造影失敗！" }
+                ]}],
+                t1200: [{ title: "【核醫】12:00 午休抽考", text: "學姐問：「答對核醫題目，或花 $50 請喝美式！」", options: [
+                    { text: "A: 挑戰題目！(答對加薪 $40，答錯扣 $20)", isNoonChallenge: true },
+                    { text: "B: 花 $50 請喝美式！", cost: 50, coins: 0, xp: 10, textResult: "學姐滿意回辦公室。" }
+                ]}],
+                t1500: [{ title: "【核醫】15:00 骨骼掃描 Bone Scan 熱點", text: "進行 Tc-99m-MDP 全身骨骼掃描，尋找骨轉移熱點。", options: [
+                    { text: "A: 設定雙探頭全身掃描速度 15 cm/min。", cost: 0, coins: 35, xp: 30, textResult: "影像品質優良，明確標示 Hot spot！" }
+                ]}],
+                t1700: [{ title: "【核醫】17:00 打卡下班", text: "確認廢棄物妥善存放鉛桶，發限動：「衰變完畢，準備下班！」", options: [{ text: "領取津貼下班！", isFinishShift: true }] }]
             },
             "RT": {
-                t0800: [
-                    { title: "【RT】08:00 直線加速器每日品管", text: "啟動醫用直線加速器 (LINAC)，使用 Phantom 進行雷射十字光束與能量輸出 Dose 品管。", options: [{ text: "A: 確認雷射對心誤差在 1mm 以內。", cost: 0, coins: 25, xp: 25, textResult: "品管完全符合規範，允許進行治療！" }] }
-                ],
-                t1100: [
-                    { title: "【RT】11:00 IGRT 影像導引擺位", text: "腦瘤病人進行 VMAT 放射治療，使用 Cone-Beam CT (CBCT) 進行擺位對心。", options: [
-                        { text: "A: 比對 CT 模擬影像，進行 6D 側移與旋轉床精細微調 (1.2mm)。", cost: 0, coins: 40, xp: 35, textResult: "擺位誤差極小，精準打擊腫瘤保護正常腦組織！" },
-                        { text: "B: 使用熱塑面具固定頭部並安慰病人。", cost: 0, coins: 25, xp: 20, textResult: "病人十分安心配合治療。" }
-                    ]}
-                ],
-                t1200: [{ title: "【RT】12:00 午休問答", text: "學長問：「放射治療中，為了使劑量分佈更均勻或保護正常組織，常用什麼擋塊技術？」", options: [{ text: "A: 正確回答：多葉准直儀 (MLC, Multileaf Collimator)！", cost: 0, isQuizChallenge: true }] }],
-                t1500: [{ title: "【RT】15:00 模具製作與 CT 定位", text: "新病人前來製作專屬熱塑面具與真空墊 (Vac-Lok)。", options: [{ text: "A: 使用 70 度熱水泡軟面具塑型。", cost: 0, coins: 30, xp: 25, textResult: "模具貼合度完美，完成模擬定位！" }] }],
-                t1700: [{ title: "【RT】17:00 順利下班", text: "完成今日所有癌症放射治療療程。", options: [{ text: "打卡領取每日獎勵！", cost: 0, isFinishShift: true }] }]
+                t0800: [{ title: "【RT】08:00 直線加速器 LINAC 每日 QA", text: "啟動醫用直線加速器，使用 Phantom 進行雷射十字光束與 Dose 品管。", options: [
+                    { text: "A: 確認雷射對心誤差在 1mm 以內。", cost: 0, coins: 25, xp: 25, textResult: "品管完全符合規範，允許進行治療！" }
+                ]}],
+                t1100: [{ title: "【RT】11:00 IGRT 6D 擺位微調", text: "腦瘤病人進行 VMAT 放射治療，使用 CBCT 進行擺位對心。", options: [
+                    { text: "A: 比對 CT 模擬影像，進行 6D 側移與旋轉床 1.2mm 微調。", cost: 0, coins: 40, xp: 35, textResult: "誤差極小，精準打擊腫瘤！" }
+                ]}],
+                t1200: [{ title: "【RT】12:00 午休抽考", text: "學長問：「答對放療題目，或花 $50 請喝無糖綠！」", options: [
+                    { text: "A: 挑戰題目！(答對加薪 $40，答錯扣 $20)", isNoonChallenge: true },
+                    { text: "B: 花 $50 請喝無糖綠！", cost: 50, coins: 0, xp: 10, textResult: "學長喝綠茶笑開懷。" }
+                ]}],
+                t1500: [{ title: "【RT】15:00 熱塑面具製作與 CT 模擬", text: "新病人前來製作專屬熱塑面具與真空墊 (Vac-Lok)。", options: [
+                    { text: "A: 使用 70 度熱水泡軟面具塑型。", cost: 0, coins: 30, xp: 25, textResult: "模具貼合度完美，完成模擬定位！" }
+                ]}],
+                t1700: [{ title: "【RT】17:00 打卡下班", text: "完成今日所有放射治療，發限動：「抗癌路上，我們同在！」", options: [{ text: "打卡領取每日獎勵！", isFinishShift: true }] }]
             }
         };
 
@@ -1069,10 +1130,11 @@
         }
 
         /* ==========================================================================
-           6. 13 科獨立職場物語 RPG 與 5 段時間軸抽選
+           6. 13 科獨立職場物語 RPG 與 5 段時間軸抽選 (含午休題庫即時抽考機制)
            ========================================================================== */
         let shiftStep = 0; // 0: 08:00, 1: 11:00, 2: 12:00, 3: 15:00, 4: 17:00
         let currentShiftScript = null;
+        let activeNoonQuestion = null;
 
         function renderDeptSelectors() {
             const container = document.getElementById('dept-selector-grid');
@@ -1100,6 +1162,7 @@
             const dept = gameState.selectedDept;
             const scripts = DEPARTMENT_SCRIPTS[dept] || DEPARTMENT_SCRIPTS["一般 X 光"];
             document.getElementById('story-result-box').classList.add('hidden');
+            document.getElementById('noon-quiz-container').classList.add('hidden');
 
             let timeTagText = "";
             let pool = [];
@@ -1136,6 +1199,21 @@
                 return;
             }
 
+            // 選項 A: 挑戰當前科目的國考抽考題
+            if (opt.isNoonChallenge) {
+                const targetSub = DEPT_SUBJECT_MAP[gameState.selectedDept] || "rad_diag";
+                const pool = gameState.questions.filter(q => q.subject === targetSub);
+
+                if (pool.length === 0) {
+                    alert(`你目前的題庫中還沒有【${targetSub}】對應科目的題目！請先至「題庫管理員」手動新增題目！`);
+                    return;
+                }
+
+                activeNoonQuestion = pool[Math.floor(Math.random() * pool.length)];
+                renderNoonQuizUI();
+                return;
+            }
+
             if (opt.cost) gameState.coins -= opt.cost;
             if (opt.coins) gameState.coins += opt.coins;
             if (opt.xp) gameState.xp += opt.xp;
@@ -1145,12 +1223,7 @@
             const resBox = document.getElementById('story-result-box');
             const resText = document.getElementById('story-result-text');
 
-            if (opt.isQuizChallenge) {
-                resText.innerText = "【午休挑戰成功】回答正確！獲得獎金 $30，+25 XP！";
-                gameState.coins += 30;
-                gameState.xp += 25;
-                saveGameState();
-            } else if (opt.isFinishShift) {
+            if (opt.isFinishShift) {
                 const bonus = 100;
                 const xpBonus = 50;
                 gameState.coins += bonus;
@@ -1163,6 +1236,58 @@
                 resText.innerText = `🎉 順利完成今天【${gameState.selectedDept}】的班表！獲得每日津貼 +$${bonus}，+${xpBonus} XP！上班次數 +1！`;
             } else {
                 resText.innerText = opt.textResult || "順利處理突發狀況！";
+            }
+
+            resBox.classList.remove('hidden');
+        }
+
+        function renderNoonQuizUI() {
+            const container = document.getElementById('noon-quiz-container');
+            const titleEl = document.getElementById('noon-quiz-title');
+            const optsEl = document.getElementById('noon-quiz-options');
+
+            container.classList.remove('hidden');
+            titleEl.innerText = activeNoonQuestion.title;
+
+            if (activeNoonQuestion.type === 'choice' || activeNoonQuestion.type === 'fill') {
+                optsEl.innerHTML = activeNoonQuestion.options.map(o => `
+                    <button onclick="submitNoonAnswer('${o}')" class="w-full text-left p-3 rounded-xl border border-amber-300 bg-white hover:bg-amber-100 font-bold text-slate-700 text-xs transition">
+                        ${o}
+                    </button>
+                `).join('');
+            } else if (activeNoonQuestion.type === 'tf') {
+                optsEl.innerHTML = `
+                    <div class="flex gap-2">
+                        <button onclick="submitNoonAnswer('True')" class="w-1/2 p-3 rounded-xl border border-emerald-300 bg-emerald-50 hover:bg-emerald-100 font-bold text-emerald-700 text-xs">正確 (True)</button>
+                        <button onclick="submitNoonAnswer('False')" class="w-1/2 p-3 rounded-xl border border-rose-300 bg-rose-50 hover:bg-rose-100 font-bold text-rose-700 text-xs">錯誤 (False)</button>
+                    </div>
+                `;
+            } else {
+                // 配對題或其他預設自動通過簡化測試
+                optsEl.innerHTML = `
+                    <button onclick="submitNoonAnswer('MATCH_PASS')" class="w-full p-3 rounded-xl border border-amber-300 bg-white hover:bg-amber-100 font-bold text-slate-700 text-xs">
+                        完成觀念對應 (點擊送出)
+                    </button>
+                `;
+            }
+        }
+
+        function submitNoonAnswer(userAns) {
+            document.getElementById('noon-quiz-container').classList.add('hidden');
+            const resBox = document.getElementById('story-result-box');
+            const resText = document.getElementById('story-result-text');
+
+            let isCorrect = (userAns === 'MATCH_PASS') || (userAns === activeNoonQuestion.answer);
+
+            if (isCorrect) {
+                gameState.coins += 40;
+                gameState.xp += 30;
+                saveGameState();
+                resText.innerText = `🎯 【午休抽考答對】恭喜回答正確！獲得學長姐讚賞！獎金 +$40，+30 XP！\n解析：${activeNoonQuestion.explanation}`;
+            } else {
+                gameState.coins = Math.max(0, gameState.coins - 20);
+                saveGameState();
+                resText.innerText = `❌ 【午休抽考答錯】回答錯誤！扣款 -$20 以茲懲戒！\n正確答案為：${activeNoonQuestion.answer}\n解析：${activeNoonQuestion.explanation}`;
             }
 
             resBox.classList.remove('hidden');
