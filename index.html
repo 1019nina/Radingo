@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Radingo - 放射師國考與動態職場物語 (終極升級版)</title>
+  <title>Radingo - 放射師國考與職場物語 (終極架構優化版)</title>
   <script src="https://cdn.tailwindcss.com"></script>
   <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
@@ -40,7 +40,7 @@
     <div class="max-w-md mx-auto flex justify-between items-center">
       <div class="flex items-center space-x-2">
         <span class="text-2xl font-black text-emerald-400">Radingo</span>
-        <span class="bg-emerald-950 text-emerald-400 text-[10px] px-2 py-0.5 rounded-full font-bold border border-emerald-800">終極 RPG 版</span>
+        <span class="bg-emerald-950 text-emerald-400 text-[10px] px-2 py-0.5 rounded-full font-bold border border-emerald-800">5大職等 RPG 版</span>
       </div>
 
       <div class="flex items-center space-x-3 font-extrabold text-sm">
@@ -123,9 +123,11 @@
     <!-- VIEW 2: CAREER STORY MAP -->
     <div id="view-career" class="hidden space-y-4">
       <div class="bg-slate-900 border border-slate-800 rounded-2xl p-4 text-center space-y-1">
-        <span class="text-xs text-emerald-400 font-extrabold bg-emerald-950 px-2.5 py-0.5 rounded-full border border-emerald-800">🏥 13科動態故事 JSON 庫 (隨機抽樣 + 5階段升官)</span>
-        <h2 class="text-base font-black text-white mt-1">選擇指定科別，隨機體驗職場物語或帶教模式！</h2>
-        <p class="text-[11px] text-slate-400 mt-1">晉升：見習生(0) ➔ 實習生(20) ➔ PGY(50) ➔ 放射師(100) ➔ 資深帶教放射師(200+解鎖老鳥虐徒模式)</p>
+        <span class="text-xs text-emerald-400 font-extrabold bg-emerald-950 px-2.5 py-0.5 rounded-full border border-emerald-800">🏥 5大職等動態故事 JSON 庫 (隨機抽樣)</span>
+        <h2 class="text-base font-black text-white mt-1">選擇指定科別，系統自動依當前職等隨機抽樣劇本！</h2>
+        <p class="text-[11px] text-slate-400 mt-1">
+          晉升制度：0~19(見習生) ➔ 20~49(實習生) ➔ 50~99(PGY) ➔ 100~199(放射師) ➔ 200+(資深帶教老鳥)
+        </p>
       </div>
 
       <div id="career-units-list" class="space-y-3"></div>
@@ -200,11 +202,11 @@
     </div>
   </footer>
 
-  <!-- MODAL: DUAL EDITOR (QUIZ DB & STORY DB WITH METADATA FILTERS) -->
+  <!-- MODAL: DUAL EDITOR (QUIZ DB & STORY DB WITH RANK TIER FILTERS) -->
   <div id="modal-editor" class="hidden fixed inset-0 bg-black/80 backdrop-blur-sm z-50 flex items-center justify-center p-4">
     <div class="bg-slate-900 border border-slate-800 rounded-2xl w-full max-w-md max-h-[85vh] flex flex-col overflow-hidden">
       <div class="p-4 border-b border-slate-800 flex justify-between items-center bg-slate-800/50">
-        <h3 class="font-black text-sm text-white">🛠️ 雙效資料庫與 Metadata 管理員</h3>
+        <h3 class="font-black text-sm text-white">🛠️ 雙效資料庫與 5 職等管理員</h3>
         <button onclick="closeModal('modal-editor')" class="text-slate-400 hover:text-white"><i class="fa-solid fa-xmark text-lg"></i></button>
       </div>
 
@@ -301,11 +303,11 @@
           </div>
         </div>
 
-        <!-- SUB-VIEW 2: STORY EDITOR WITH METADATA FILTERS -->
+        <!-- SUB-VIEW 2: STORY EDITOR WITH RANK TIER FILTERS -->
         <div id="ed-subview-story" class="hidden space-y-4">
           <div class="bg-slate-800 p-3 rounded-xl space-y-2 border border-slate-700">
             <span class="font-bold text-sky-400">📖 職場故事 JSON 檔案管理</span>
-            <p class="text-[11px] text-slate-400">每篇故事包含 `department`（13科）與 `isMentorMode`（是否為200+資深帶教模式）。</p>
+            <p class="text-[11px] text-slate-400">每篇故事包含 `department`（13科）與 `rankTier`（0~4職等）。</p>
             <div class="grid grid-cols-2 gap-2 pt-1">
               <button onclick="exportStoryJSON()" class="py-2 bg-slate-700 hover:bg-slate-600 rounded-lg font-bold">匯出故事庫 JSON</button>
               <label class="py-2 bg-sky-600 hover:bg-sky-500 rounded-lg font-bold text-center cursor-pointer">
@@ -315,7 +317,7 @@
           </div>
 
           <div class="bg-slate-800 p-3.5 rounded-xl border border-slate-700 space-y-3">
-            <span class="font-bold text-emerald-400 text-sm block">🔍 科別篩選檢視 (Metadata Filter)</span>
+            <span class="font-bold text-emerald-400 text-sm block">🔍 職等與科別篩選檢視</span>
             <div class="grid grid-cols-2 gap-2">
               <div>
                 <label class="text-slate-400 block mb-1 text-[11px]">篩選科別 (Department)</label>
@@ -337,11 +339,14 @@
                 </select>
               </div>
               <div>
-                <label class="text-slate-400 block mb-1 text-[11px]">模式篩選</label>
-                <select id="filter-story-mode" onchange="renderEditorStoryList()" class="w-full bg-slate-900 border border-slate-700 rounded-lg p-2 text-slate-200 text-xs">
-                  <option value="all">全部模式</option>
-                  <option value="normal">一般實習模式</option>
-                  <option value="mentor">資深帶教模式 (200+)</option>
+                <label class="text-slate-400 block mb-1 text-[11px]">篩選職等 (Rank Tier)</label>
+                <select id="filter-story-tier" onchange="renderEditorStoryList()" class="w-full bg-slate-900 border border-slate-700 rounded-lg p-2 text-slate-200 text-xs">
+                  <option value="all">全部職等</option>
+                  <option value="0">0: 見習生 (0~19次)</option>
+                  <option value="1">1: 實習生 (20~49次)</option>
+                  <option value="2">2: PGY (50~99次)</option>
+                  <option value="3">3: 放射師 (100~199次)</option>
+                  <option value="4">4: 資深帶教老鳥 (200+次)</option>
                 </select>
               </div>
             </div>
@@ -387,199 +392,106 @@
       { id: 'rt', name: 'RT 放射線治療', reqSubject: 'therapy', icon: 'fa-crosshairs' }
     ];
 
-    /* 預設 13 科故事庫 (具備 department Metadata 標籤與 200+ 帶教/虐待模式) */
+    /* 預設 13 科具備 5 階段職等 (rankTier 0~4) 的故事庫 */
     const DEFAULT_STORY_DATABASE = [
-      // --- 1. X-RAY ---
+      // --- 1. X-RAY (一般 X 光) ---
       {
-        id: 'xr_arc_1', department: 'xray', isMentorMode: false, title: '滑板少年的限動風波',
+        id: 'xr_tier_0', department: 'xray', rankTier: 0, title: '【見習生】初入 X 光控制室的震驚',
         nodes: {
-          n_08: { title: "08:00 晨間打卡 (X光)", text: "走進 X 光控制室，學姐看著新聞搖頭抱怨：「現在的小年輕騎腳踏車摔斷手，送到醫院第一件事不是哭，是叫同伴拿手機拍照打卡發限動！」", choices: [{ txt: "「真的假的！太誇張了吧！」", nextNode: "n_11" }, { txt: "「可能...這就是年輕人的儀式感？」", nextNode: "n_11" }] },
-          n_11: { title: "11:00 臨床事件 (X光)", text: "果不其然！送來一位滑板摔斷手肘骨折變形的少年，旁邊朋友獨立舉起手機狂拍：「放射師！等等拍完 X 光可以順便傳給我嗎？我要發限動標記醫院！」", choices: [{ txt: "「不行喔，醫療影像有資安法規，請遵守規定！」", nextNode: "n_12" }, { txt: "【開鎖 $20】「發限動可以，要不要順便幫你開美顏濾鏡？」", payCost: 20, nextNode: "n_12", setFlag: 'RAGED_PATIENT' }] },
-          n_12: { title: "12:00 午休抽考", text: "便當時間，學姐端著咖啡走過來隨機抽考診斷學：", choices: [{ txt: "✍️ 挑戰國考題！", isQuizTrigger: true, nextNode: "n_15" }, { txt: "🧋 花 $50 請學姐喝紅茶買平安！", payCost: 50, nextNode: "n_15" }] },
-          n_15: { title: "15:00 下午突發狀況", text: "下午門診爆滿，妳發揮極致擺位手速消化了 15 台 Chest PA！", hasFlagCheck: 'RAGED_PATIENT', flagMatchText: "但 11 點那個滑板少年真的去投訴妳酸他！扣獎金 $100！", flagNormalText: "主管經過控制室誇獎妳手速極快！獎金 +$50！", choices: [{ txt: "「準備交班！」", nextNode: "n_17" }] },
-          n_17: { title: "17:00 打卡下班", text: "順利下班！發了一則只有「打卡下班」四個字的限動，享受美好夜晚！", isArcEnd: true }
+          n_08: { title: "08:00 晨間見習", text: "穿著寬大白袍的妳第一次踏入 X 光控制室，學長指著高壓產生器：「這是 150kV 發生器，千萬別亂碰開關！」", choices: [{ txt: "「哇！看起來好像太空梭儀表板！」", nextNode: "n_11" }, { txt: "「感覺輻射線隨時會穿透牆壁...」", nextNode: "n_11" }] },
+          n_11: { title: "11:00 臨床震撼", text: "來了一位骨折病人，學長俐落調整高壓與管電流：「看好擺位技巧，這就是教科書寫的標準 Chest PA。」", choices: [{ txt: "拿筆記本瘋狂抄寫擺位角度細節。", nextNode: "n_12" }, { txt: "【花費 $20 買飲料討好學長】「學長喝冰美式，教我這一台怎麼調 KV！」", payCost: 20, nextNode: "n_12" }] },
+          n_12: { title: "12:00 午休抽考", text: "便當時間，學長隨機抽考基礎醫學：", choices: [{ txt: "✍️ 挑戰國考題！", isQuizTrigger: true, nextNode: "n_15" }, { txt: "🧋 花 $50 買紅茶消災避難！", payCost: 50, nextNode: "n_15" }] },
+          n_15: { title: "15:00 下午見習心得", text: "下午幫忙整理底片與消毒床面，學長稱讚妳非常有學習熱忱！獎金 +$50！", choices: [{ txt: "「見習生收穫滿滿！」", nextNode: "n_17" }] },
+          n_17: { title: "17:00 打卡下班", text: "人生第一次見習安全下班，興奮發限動！", isArcEnd: true }
         }
       },
       {
-        id: 'xr_mentor_1', department: 'xray', isMentorMode: true, title: '👑 資深帶教：菜鳥實習生的震撼教育',
+        id: 'xr_tier_1', department: 'xray', rankTier: 1, title: '【實習生】手忙腳亂的擺位惡夢',
         nodes: {
-          n_08: { title: "08:00 帶教打卡 (X光)", text: "身為資深帶教放射師，妳一進辦公室就看到新來的實習生正拿著手機玩手遊。學長冷笑：「學弟，國考題背完了嗎？」", choices: [{ txt: "「把這本 1200 頁放射學原文書拿去，今天內背完第一章！」", nextNode: "n_11" }, { txt: "「算了，先叫他去洗發霉的鉛衣比較實際。」", nextNode: "n_11" }] },
-          n_11: { title: "11:00 虐待/帶教實習生", text: "實習生擺位 Chest PA 把左右標記 (L/R) 放反了，被醫師當場糾正，委屈得快哭了。妳走過去拍拍他的肩膀：", choices: [{ txt: "【冷笑帶教】「哭什麼？哭能幫你把片子重拍嗎？去罰寫 50 次 L 代表 Left！」", nextNode: "n_12" }, { txt: "【溫柔指導】「沒關係，學長以前也放反過，下次記得先看心臟陰影位置。」", nextNode: "n_12" }] },
-          n_12: { title: "12:00 午休帶教抽考", text: "中午吃飯時間，妳決定測驗實習生有沒有偷懶：", choices: [{ txt: "✍️ 叫實習生上台抽考國考題，答不出來就罰買雞排！", isQuizTrigger: true, nextNode: "n_15" }, { txt: "🧋 花 $50 叫實習生跑腿幫妳買珍奶順便給他機會教育！", payCost: 50, nextNode: "n_15" }] },
-          n_15: { title: "15:00 下午交班考核", text: "下午實習生在妳嚴格調教下，擺位速度大增，主任對妳的帶教成果讚不絕口！獎金 +$120！", choices: [{ txt: "「帶實習生就是要有鐵血紀律！」", nextNode: "n_17" }] },
-          n_17: { title: "17:00 帶教下班", text: "順利結束帶教日，看著實習生落淚的背影，滿意地打卡下班！", isArcEnd: true }
-        }
-      },
-
-      // --- 2. ER ---
-      {
-        id: 'er_arc_1', department: 'er', isMentorMode: false, title: '急診室的醉漢咆哮',
-        nodes: {
-          n_08: { title: "08:00 急診晨打卡", text: "學長把警衛電話放在桌上：「大排檔打架，急診滿是醉漢，準備好按警報了嗎？」", choices: [{ txt: "「警民連線已就緒！」", nextNode: "n_11" }, { txt: "「希望醉漢別吐在床上...」", nextNode: "n_11" }] },
-          n_11: { title: "11:00 醉漢咆哮事件", text: "全身酒氣的大叔揮拳大喊：「你們誰敢動我！我認識院長！把你們全部開除！」", choices: [{ txt: "按下警民連線，請警衛大哥上前約束。", nextNode: "n_12" }, { txt: "【嗆回去 $30】「大叔！認識院長又怎樣？現在你躺的是我的檢查床！」", payCost: 30, nextNode: "n_12", setFlag: 'RAGED_PATIENT' }] },
-          n_12: { title: "12:00 午休抽考", text: "學長擦汗抽考 ER 創傷 CT 國考題：", choices: [{ txt: "✍️ 挑戰國考題！", isQuizTrigger: true, nextNode: "n_15" }, { txt: "🧋 花 $50 請喝青茶！", payCost: 50, nextNode: "n_15" }] },
-          n_15: { title: "15:00 下午突發狀況", text: "下午醉漢酒醒後狀況：", hasFlagCheck: 'RAGED_PATIENT', flagMatchText: "醉漢記恨妳嗆他去投訴，扣獎金 $80！", flagNormalText: "醉漢酒醒後不好意思地幫檢查室補滿衛生紙！獎金 +$50！", choices: [{ txt: "「平安就好！」", nextNode: "n_17" }] },
-          n_17: { title: "17:00 打卡下班", text: "挺過混亂急診日，打卡下班！", isArcEnd: true }
+          n_08: { title: "08:00 實習晨打卡", text: "帶教老師冷冷丟下一句：「今天門診病人全交給你獨立擺位，我在旁邊盯著看！」", choices: [{ txt: "「收到！保證完成任務！」", nextNode: "n_11" }, { txt: "「心跳瞬間飆到 150...」", nextNode: "n_11" }] },
+          n_11: { title: "11:00 臨床出包危機", text: "幫阿公照 KUB 時，阿公突然亂動導致影像完全模糊重疊，帶教老師背脊發涼地站在身後。", choices: [{ txt: "「老師對不起！我馬上安撫阿公重拍！」", nextNode: "n_12" }, { txt: "【花費 $20 買點心賄賂老師】「老師消消氣，我馬上重新擺位！」", payCost: 20, nextNode: "n_12" }] },
+          n_12: { title: "12:00 午休抽考", text: "老師利用午休時間嚴厲抽考器材學：", choices: [{ txt: "✍️ 挑戰國考題！", isQuizTrigger: true, nextNode: "n_15" }, { txt: "🧋 花 $50 買珍奶贖罪！", payCost: 50, nextNode: "n_15" }] },
+          n_15: { title: "15:00 下午急起直追", text: "下午記取教訓，擺位速度與精準度大幅提升，老師終於點頭稱是！獎金 +$60！", choices: [{ txt: "「實習生存活中！」", nextNode: "n_17" }] },
+          n_17: { title: "17:00 打卡下班", text: "累癱在宿舍床上，實習人生真苦！", isArcEnd: true }
         }
       },
       {
-        id: 'er_mentor_1', department: 'er', isMentorMode: true, title: '👑 資深帶教：急診修羅場的菜鳥震撼',
+        id: 'xr_tier_2', department: 'xray', rankTier: 2, title: '【PGY 模式】想在學弟妹面前裝帥卻翻車',
         nodes: {
-          n_08: { title: "08:00 急診帶教打卡", text: "急診大夜剛交班，外頭救護車鳴笛聲不斷。妳把菜鳥實習生拉到身邊：「今天 Trauma 暴多，皮繃緊點！」", choices: [{ txt: "「等下有車禍大量傷患，你去拿 Trauma 專用底片匣！」", nextNode: "n_11" }, { txt: "「叫實習生站在急診門口當人形立牌迎接病患。」", nextNode: "n_11" }] },
-          n_11: { title: "11:00 急診帶教突發", text: "醉漢在急診大鬧，實習生嚇得躲在控制室不敢出去。妳冷笑一聲：", choices: [{ txt: "【學長威嚴】「怕什麼？出去跟他對喊！你是放射師不是躲避球選手！」", nextNode: "n_12" }, { txt: "【親自示範】「看好了學弟，對付這種醉漢直接按警鈴外加一秒擺位。」", nextNode: "n_12" }] },
-          n_12: { title: "12:00 急診午休考題", text: "中午邊吃便當邊抽考急診外傷攝影：", choices: [{ txt: "✍️ 抽考急診創傷 C-spine 國考題！", isQuizTrigger: true, nextNode: "n_15" }, { txt: "🧋 花 $50 叫實習生買便當順便收驚！", payCost: 50, nextNode: "n_15" }] },
-          n_15: { title: "15:00 急診帶教收尾", text: "在妳鐵血教育下，實習生終於學會了如何在混亂急診中保持冷靜。獎金 +$130！", choices: [{ txt: "「急診魂養成成功！」", nextNode: "n_17" }] },
-          n_17: { title: "17:00 打卡下班", text: "順利結束刺激的急診帶教日，打卡下班！", isArcEnd: true }
+          n_08: { title: "08:00 PGY 打卡", text: "身為 PGY 放射師，身邊跟著一個緊張兮兮的新進見習生。妳自信滿滿說：「看學長示範一秒擺位！」", choices: [{ txt: "「展現老鳥的俐落身手！」", nextNode: "n_11" }, { txt: "「今天要好好教導學弟！」", nextNode: "n_11" }] },
+          n_11: { title: "11:00 裝帥翻車現場", text: "正想在學弟面前展現高難度床邊攝影技巧時，機器球管竟然卡住不動，場面一度極度尷尬。", choices: [{ txt: "乾笑兩聲：「咳，這是老機器的傲嬌脾氣，我們重啟系統就好。」", nextNode: "n_12" }, { txt: "【花 $20 掩飾尷尬】「學弟去幫我買杯咖啡，這裡學長自己來！」", payCost: 20, nextNode: "n_12" }] },
+          n_12: { title: "12:00 午休抽考", text: "學長過來抽考物理與輻安：", choices: [{ txt: "✍️ 挑戰國考題！", isQuizTrigger: true, nextNode: "n_15" }, { txt: "🧋 花 $50 請學長喝茶避難！", payCost: 50, nextNode: "n_15" }] },
+          n_15: { title: "15:00 下午扳回一城", text: "下午完美消化 20 台外傷 X 光，成功挽回 PGY 學長的尊嚴！獎金 +$80！", choices: [{ txt: "「PGY 尊嚴保衛戰！」", nextNode: "n_17" }] },
+          n_17: { title: "17:00 打卡下班", text: "結束充實又刺激的 PGY 日，打卡下班！", isArcEnd: true }
         }
       },
-
-      // --- 3. CT ---
       {
-        id: 'ct_arc_1', department: 'ct', isMentorMode: false, title: 'CT 顯影劑的命運熱流',
+        id: 'xr_tier_3', department: 'xray', rankTier: 3, title: '【放射師模式】獨立社畜與奇葩家屬',
         nodes: {
-          n_08: { title: "08:00 CT 室打卡", text: "學長指著對比劑表：「今天 15 台增強掃描，打針看清血管，血管太細就準備換針！」", choices: [{ txt: "「手感爆棚沒問題！」", nextNode: "n_11" }, { txt: "「血管細的可以推給學長嗎...」", nextNode: "n_11" }] },
-          n_11: { title: "11:00 命運熱流事件", text: "注射顯影劑後，大哥驚恐大喊：「哇靠！我全身從胸口一路熱到下面！我是不是失禁了？」", choices: [{ txt: "「大哥別慌！這是顯影劑全身溫熱的正常生理反應啦！」", nextNode: "n_12" }, { txt: "【幹話 $20】「那只是命運的熱流，Hold 住就過去了～」", payCost: 20, nextNode: "n_12" }] },
-          n_12: { title: "12:00 午休抽考", text: "學長抽考 CT 器材學：", choices: [{ txt: "✍️ 挑戰國考題！", isQuizTrigger: true, nextNode: "n_15" }, { txt: "🧋 花 $50 請大冰美！", payCost: 50, nextNode: "n_15" }] },
-          n_15: { title: "15:00 下午突發狀況", text: "急診送來 Trauma 創傷，5 分鐘完成全頭頸胸腹 CT 重建！獲得主任讚許，加薪 +$80！", choices: [{ txt: "「專業高效率！」", nextNode: "n_17" }] },
-          n_17: { title: "17:00 打卡下班", text: "救了人踏實無比，順利下班！", isArcEnd: true }
+          n_08: { title: "08:00 放射師晨打卡", text: "獨立作業的一天開始，學長交班：「今天門診預約全滿，還有急診隨時插隊。」", choices: [{ txt: "「流水線作業全開！」", nextNode: "n_11" }, { txt: "「準備好應付各式各樣的病人了。」", nextNode: "n_11" }] },
+          n_11: { title: "11:00 奇葩家屬來襲", text: "家屬氣沖沖衝進控制室大吼：「為什麼前面那個老頭可以先照！我們等一小時了！」", choices: [{ txt: "冷靜解釋分流檢傷原則：「不好意思，前面是急診重大外傷，請您見諒。」", nextNode: "n_12" }, { txt: "【花費 $30 買軟糖安撫家屬】「不好意思讓您久等了，這顆糖果給您吃消消氣。」", payCost: 30, nextNode: "n_12", setFlag: 'ANGRY_FAM' }] },
+          n_12: { title: "12:00 午休抽考", text: "中午抽空挑戰國考題充電：", choices: [{ txt: "✍️ 挑戰國考題！", isQuizTrigger: true, nextNode: "n_15" }, { txt: "🧋 花 $50 喝珍奶慰勞自己！", payCost: 50, nextNode: "n_15" }] },
+          n_15: { title: "15:00 下午處理結果", text: "下午危機處理得當，主任經過特別誇獎妳臨危不亂！獎金 +$100！", choices: [{ txt: "「專業放射師！」", nextNode: "n_17" }] },
+          n_17: { title: "17:00 打卡下班", text: "準時打卡下班，享受美好的夜晚！", isArcEnd: true }
+        }
+      },
+      {
+        id: 'xr_tier_4', department: 'xray', rankTier: 4, title: '【👑 資深帶教老鳥模式】花式調教新進實習生',
+        nodes: {
+          n_08: { title: "08:00 老鳥帶教打卡", text: "身為資深帶教老鳥，新進實習生怯生生地站在旁邊：「學長/學姐好，今天請多多指教...」", choices: [{ txt: "【魔鬼教官】「把這本 1200 頁放射物理背完才能吃午餐！」", nextNode: "n_11" }, { txt: "【慈祥天使】「放輕鬆，今天跟著我學基礎擺位就好。」", nextNode: "n_11" }] },
+          n_11: { title: "11:00 實習生擺位出包", text: "實習生把胸部 X 光的 L 標記放反了，急得快哭出來。身為老鳥的妳決定：", choices: [{ txt: "【嚴格調教】「罰寫 50 次 L 代表 Left，順便今天幫大家買便當！」", nextNode: "n_12" }, { txt: "【溫柔指導】「沒關係，學長姐以前也出過包，下次先看心臟陰影。」", nextNode: "n_12" }] },
+          n_12: { title: "12:00 老鳥午休測驗", text: "中午吃飯時間，隨機抽考實習生國考題：", choices: [{ txt: "✍️ 叫實習生上台抽考國考題！", isQuizTrigger: true, nextNode: "n_15" }, { txt: "🧋 花 $50 請實習生喝飲料順便精神訓話！", payCost: 50, nextNode: "n_15" }] },
+          n_15: { title: "15:00 帶教成果驗收", text: "在妳鐵血或溫馨的調教下，實習生進步神速，科室主管對妳的帶教表現讚不絕口！獎金 +$150！", choices: [{ txt: "「老鳥帶教成就達成！」", nextNode: "n_17" }] },
+          n_17: { title: "17:00 老鳥打卡下班", text: "看著實習生崇拜的眼神，心滿意足打卡下班！", isArcEnd: true }
         }
       },
 
-      // --- 4. MRI ---
+      // --- 2. ER (急診) ---
       {
-        id: 'mri_arc_1', department: 'mri', isMentorMode: false, title: 'MRI 強磁區的幽閉恐懼',
+        id: 'er_tier_0', department: 'er', rankTier: 0, title: '【見習生】急診救護車的震撼教育',
         nodes: {
-          n_08: { title: "08:00 MRI 室打卡", text: "學長拿著強磁金屬探測棒：「MRI 磁場 3.0T 不是開玩笑的，身上的金屬扣與紋身墨水都要確認！」", choices: [{ txt: "「安檢交給我！」", nextNode: "n_11" }, { txt: "「紋身墨水真的會熱嗎？」", nextNode: "n_11" }] },
-          n_11: { title: "11:00 幽閉恐懼驚魂", text: "Brain MRI 先生推進孔洞 3 秒恐懼大喊：「裡面好窄好恐怖！快放我出去！」", choices: [{ txt: "拉出床位戴上耳機播放周杰倫歌曲安撫。", nextNode: "n_12" }, { txt: "【硬派 $20】「先生再忍耐 30 分鐘就好啦！」", payCost: 20, nextNode: "n_12" }] },
-          n_12: { title: "12:00 午休抽考", text: "學長抽考 T1/T2 弛豫時間國考題：", choices: [{ txt: "✍️ 挑戰國考題！", isQuizTrigger: true, nextNode: "n_15" }, { txt: "🧋 花 $50 請喝星巴克！", payCost: 50, nextNode: "n_15" }] },
-          n_15: { title: "15:00 下午突發狀況", text: "成功幫膝關節受傷的運動員拍出清晰韌帶影像！加薪 +$80！", choices: [{ txt: "「收工下班！」", nextNode: "n_17" }] },
-          n_17: { title: "17:00 打卡下班", text: "確定強磁區安全，神清氣爽下班！", isArcEnd: true }
+          n_08: { title: "08:00 急診晨見習", text: "急診室外救護車聲刺耳鳴叫，護理師推著大量傷患衝進來：「Trauma 來了！」", choices: [{ txt: "「站在旁邊看學長姐秒速擺位！」", nextNode: "n_11" }, { txt: "「緊張得手不知道該放哪裡...」", nextNode: "n_11" }] },
+          n_11: { title: "11:00 急診震撼", text: "醫師大喊：「快拍頸椎與骨盆 X 光！」學長動作快如閃電。", choices: [{ txt: "趕快幫忙遞底片匣與鉛領防護。", nextNode: "n_12" }, { txt: "【花 $20 買運動飲料壓驚】「急診的節奏真的太刺激了！」", payCost: 20, nextNode: "n_12" }] },
+          n_12: { title: "12:00 午休抽考", text: "學長利用空檔抽考急診創傷造影：", choices: [{ txt: "✍️ 挑戰國考題！", isQuizTrigger: true, nextNode: "n_15" }, { txt: "🧋 花 $50 買綠茶避難！", payCost: 50, nextNode: "n_15" }] },
+          n_15: { title: "15:00 下午見習", text: "見習結束前幫忙清理急診推床，獲得醫護團隊一致好評！獎金 +$50！", choices: [{ txt: "「急診見習畢業！」", nextNode: "n_17" }] },
+          n_17: { title: "17:00 打卡下班", text: "安全逃離急診修羅場，下班！", isArcEnd: true }
         }
       },
-
-      // --- 5. MAMMO ---
       {
-        id: 'mammo_arc_1', department: 'mammo', isMentorMode: false, title: '乳房攝影的夾胸壓迫力學',
+        id: 'er_tier_4', department: 'er', rankTier: 4, title: '【👑 帶教老鳥模式】急診室的魔鬼特訓',
         nodes: {
-          n_08: { title: "08:00 Mammo 打卡", text: "學姐神情莊嚴：「Mammo 壓迫力學極致，壓不緊糊掉，壓太緊病人尖叫！」", choices: [{ txt: "「溫柔且堅定！」", nextNode: "n_11" }, { txt: "「手好抖...」", nextNode: "n_11" }] },
-          n_11: { title: "11:00 壓迫力學考驗", text: "少婦緊張發抖：「聽說是地獄級的痛，可以不要壓那麼緊嗎？」", choices: [{ txt: "「夾緊是為了劑量最低！深吸氣忍 3 秒！」", nextNode: "n_12" }, { txt: "【敷衍 $20】「那輕輕壓一下下就好，重拍別怪我。」", payCost: 20, nextNode: "n_12" }] },
-          n_12: { title: "12:00 午休抽考", text: "學姐遞蘋果抽考鉬靶 Mo/Rh 國考題：", choices: [{ txt: "✍️ 挑戰國考題！", isQuizTrigger: true, nextNode: "n_15" }, { txt: "🧋 花 $50 請學姐喝水果茶！", payCost: 50, nextNode: "n_15" }] },
-          n_15: { title: "15:00 下午突發狀況", text: "幫篩檢異常阿姨追加攝影，阿姨含淚謝謝妳的鼓勵！", choices: [{ txt: "「溫暖滿分！」", nextNode: "n_17" }] },
-          n_17: { title: "17:00 打卡下班", text: "脫下防護裝備，溫暖打卡下班！", isArcEnd: true }
-        }
-      },
-
-      // --- 6. SONO ---
-      {
-        id: 'sono_arc_1', department: 'sono', isMentorMode: false, title: '超音波耦合劑的冰涼惡作劇',
-        nodes: {
-          n_08: { title: "08:00 Sono 室打卡", text: "學姐遞溫熱耦合劑：「掃腹部超音波，記得 Jelly 先加溫，不然病人會跳起來！」", choices: [{ txt: "「加溫 Jelly 基本功！」", nextNode: "n_11" }, { txt: "「冰冰的比較能保持清醒」", nextNode: "n_11" }] },
-          n_11: { title: "11:00 超音波癢癢事件", text: "掃腹部時伯伯大笑：「哈哈哈哈！放射師！那東西塗在肚子上好癢！」", choices: [{ txt: "「伯伯忍耐吸氣憋住，膽囊才看得清楚！」", nextNode: "n_12" }, { txt: "【吐槽 $20】「伯伯別笑探頭在晃啦！」", payCost: 20, nextNode: "n_12" }] },
-          n_12: { title: "12:00 午休抽考", text: "學姐擦凝膠抽考超音波壓電效應國考題：", choices: [{ txt: "✍️ 挑戰國考題！", isQuizTrigger: true, nextNode: "n_15" }, { txt: "🧋 花 $50 請紅茶拿鐵！", payCost: 50, nextNode: "n_15" }] },
-          n_15: { title: "15:00 下午突發狀況", text: "協助超音波導引穿刺無菌準備到位，獲得醫師肯定，獎金 +$60！", choices: [{ txt: "「無菌作業完成！」", nextNode: "n_17" }] },
-          n_17: { title: "17:00 打卡下班", text: "擦乾凝膠一身輕鬆打卡下班！", isArcEnd: true }
-        }
-      },
-
-      // --- 7. CATH ---
-      {
-        id: 'cath_arc_1', department: 'cath', isMentorMode: false, title: '心導管室的重裝鉛衣挑戰',
-        nodes: {
-          n_08: { title: "08:00 心導管打卡", text: "學姐拿重鉛衣：「今天有支架置入術，鉛衣穿整天，腰力要好！」", choices: [{ txt: "「核心肌群已啟動！」", nextNode: "n_11" }, { txt: "「鉛衣好重...」", nextNode: "n_11" }] },
-          n_11: { title: "11:00 C-arm 角度考驗", text: "內科醫師喊：「放射師，C-arm 角度轉到 LAO 45 度 Cranial 30 度！快！」", choices: [{ txt: "迅速操控 C-arm 到位，完美展現左前降支血管！", nextNode: "n_12" }, { txt: "【手忙腳亂 $20】「等等...LAO 是哪邊？學姐救我！」", payCost: 20, nextNode: "n_12" }] },
-          n_12: { title: "12:00 午休抽考", text: "脫下鉛衣抽考心血管造影角度國考題：", choices: [{ txt: "✍️ 挑戰國考題！", isQuizTrigger: true, nextNode: "n_15" }, { txt: "🧋 花 $50 請綠茶！", payCost: 50, nextNode: "n_15" }] },
-          n_15: { title: "15:00 下午突發狀況", text: "完成緊急 AMI 打通血管手術，心電圖恢復正常，加薪 +$100！", choices: [{ txt: "「救人成功！」", nextNode: "n_17" }] },
-          n_17: { title: "17:00 打卡下班", text: "伸展痠痛的腰，驕傲打卡下班！", isArcEnd: true }
-        }
-      },
-
-      // --- 8. DENTAL ---
-      {
-        id: 'dental_arc_1', department: 'dental', isMentorMode: false, title: '牙科全口攝影的金牙難題',
-        nodes: {
-          n_08: { title: "08:00 牙科打卡", text: "學長喝咖啡：「牙科 Pano 很輕鬆，咬好咬好咬合棒、背脊挺直，不出錯。」", choices: [{ txt: "「放鬆一下！」", nextNode: "n_11" }, { txt: "「這該不會是 Flag 吧」", nextNode: "n_11" }] },
-          n_11: { title: "11:00 全口金牙事件", text: "阿伯滿嘴金牙假牙：「放射師，我假牙要拔嗎？拔下來很難看捏～」", choices: [{ txt: "「活動假牙一定要拔！不然影像有巨大偽影！」", nextNode: "n_12" }, { txt: "【順從 $20】「沒關係阿伯，您覺得好看就好～」", payCost: 20, nextNode: "n_12" }] },
-          n_12: { title: "12:00 午休抽考", text: "學長抽考 Focal Trough 焦槽斷層原理國考題：", choices: [{ txt: "✍️ 挑戰國考題！", isQuizTrigger: true, nextNode: "n_15" }, { txt: "🧋 花 $50 請四季春！", payCost: 50, nextNode: "n_15" }] },
-          n_15: { title: "15:00 下午突發狀況", text: "幫矯正高中生照全口與側頭片，送了一顆糖果，加薪 +$40！", choices: [{ txt: "「甜在心裡！」", nextNode: "n_17" }] },
-          n_17: { title: "17:00 打卡下班", text: "愉快收拾牙科室，準時下班！", isArcEnd: true }
-        }
-      },
-
-      // --- 9. ANGIO ---
-      {
-        id: 'angio_arc_1', department: 'angio', isMentorMode: false, title: '血管攝影的腦動脈瘤栓塞',
-        nodes: {
-          n_08: { title: "08:00 血管攝影打卡", text: "學長檢查高壓注射器：「今天做腦血管栓塞，導管對位要精準！」", choices: [{ txt: "「血管追蹤一流！」", nextNode: "n_11" }, { txt: "「緊張...」", nextNode: "n_11" }] },
-          n_11: { title: "11:00 DSA 減算造影考驗", text: "醫師喊：「微導管到位，準備走 DSA 減算血管造影！」", choices: [{ txt: "精準按下曝光與注射同步鈕，影像完美呈現動脈瘤！", nextNode: "n_12" }, { txt: "【慢一拍 $20】「完蛋慢了一拍，漏掉早期相...」", payCost: 20, nextNode: "n_12" }] },
-          n_12: { title: "12:00 午休抽考", text: "學長抽考血管攝影對比劑國考題：", choices: [{ txt: "✍️ 挑戰國考題！", isQuizTrigger: true, nextNode: "n_15" }, { txt: "🧋 花 $50 請百香雙響砲！", payCost: 50, nextNode: "n_15" }] },
-          n_15: { title: "15:00 下午突發狀況", text: "順利完成腦動脈瘤栓塞手術，家屬連聲感謝，津貼 +$80！", choices: [{ txt: "「榮譽感滿分！」", nextNode: "n_17" }] },
-          n_17: { title: "17:00 打卡下班", text: "收好鉛領打卡下班！", isArcEnd: true }
-        }
-      },
-
-      // --- 10. SPECIAL ---
-      {
-        id: 'special_arc_1', department: 'special', isMentorMode: false, title: '大腸雙重對比攝影的爆漿危機',
-        nodes: {
-          n_08: { title: "08:00 特攝打卡", text: "學長拿著鋇劑：「今天有一台 Lower GI 大腸雙重對比，氣壓要拿捏好，不然會爆漿！」", choices: [{ txt: "「精準控制灌氣！」", nextNode: "n_11" }, { txt: "「爆漿...」", nextNode: "n_11" }] },
-          n_11: { title: "11:00 雙重對比爆漿危機", text: "正當鋇劑灌到一半準備灌氣時，阿伯大喊：「放射師...我憋不住了快噴出來！」", choices: [{ txt: "抬高床頭指導阿伯夾緊臀部深呼吸忍住 10 秒！", nextNode: "n_12" }, { txt: "【尖叫 $20】「大喊學長快拿保麗龍桶擋啊！」", payCost: 20, nextNode: "n_12" }] },
-          n_12: { title: "12:00 午休抽考", text: "學長抽考 Barium Enema 禁忌症國考題：", choices: [{ txt: "✍️ 挑戰國考題！", isQuizTrigger: true, nextNode: "n_15" }, { txt: "🧋 花 $50 請冬瓜檸檬！", payCost: 50, nextNode: "n_15" }] },
-          n_15: { title: "15:00 下午突發狀況", text: "下午完成 IVU 靜脈腎盂造影，順利追蹤到腎結石位置，獎金 +$60！", choices: [{ txt: "「精準定位！」", nextNode: "n_17" }] },
-          n_17: { title: "17:00 打卡下班", text: "駕馭特攝順利下班！", isArcEnd: true }
-        }
-      },
-
-      // --- 11. DEXA ---
-      {
-        id: 'dexa_arc_1', department: 'dexa', isMentorMode: false, title: '骨密度儀 (DEXA) 與貴婦鑽石手鍊',
-        nodes: {
-          n_08: { title: "08:00 DEXA 打卡", text: "學姐消毒檢查床：「今天都是健檢大媽，記得金屬飾品摘乾淨！」", choices: [{ txt: "「收到！」", nextNode: "n_11" }, { txt: "「大媽不肯拔戒指...」", nextNode: "n_11" }] },
-          n_11: { title: "11:00 鑽石手鍊事件", text: "貴婦阿姨戴著鑽石手鍊：「我純天然的沒有金屬啦！」", choices: [{ txt: "「純天然原子序還是會擋光有陰影啦！」", nextNode: "n_12" }, { txt: "【吐槽 $20】「底座還是 K 金金屬啊...」", payCost: 20, nextNode: "n_12" }] },
-          n_12: { title: "12:00 午休抽考", text: "學姐拿報告抽考 T-score 計算國考題：", choices: [{ txt: "✍️ 挑戰國考題！", isQuizTrigger: true, nextNode: "n_15" }, { txt: "🧋 花 $50 請鮮奶茶！", payCost: 50, nextNode: "n_15" }] },
-          n_15: { title: "15:00 下午突發狀況", text: "幫脊椎側彎阿嬤細心擺位完成掃描，阿嬤大讚，加薪 +$50！", choices: [{ txt: "「阿嬤祝健康！」", nextNode: "n_17" }] },
-          n_17: { title: "17:00 打卡下班", text: "帶著骨密知識打卡下班！", isArcEnd: true }
-        }
-      },
-
-      // --- 12. NUC ---
-      {
-        id: 'nuc_arc_1', department: 'nuc', isMentorMode: false, title: '核醫室的同位素半衰期與骨骼掃描',
-        nodes: {
-          n_08: { title: "08:00 核醫打卡", text: "學長在 Hot Lab 分裝同位素：「核醫用 𝛾-camera，藥劑有半衰期，動作要快！」", choices: [{ txt: "「算好半衰期精準執行！」", nextNode: "n_11" }, { txt: "「同位素會發光嗎？」", nextNode: "n_11" }] },
-          n_11: { title: "11:00 骨骼掃描事件", text: "注射 Bone Scan 藥劑的阿姨想跑去逛街打卡。", choices: [{ txt: "「阿姨要多喝水排尿，藥劑衰變太久影像不清楚！」", nextNode: "n_12" }, { txt: "【恐嚇 $20】「身上有微量輻射別靠近孕婦小孩！」", payCost: 20, nextNode: "n_12" }] },
-          n_12: { title: "12:00 午休抽考", text: "學長抽考 Tc-99m 半衰期 140 keV 國考題：", choices: [{ txt: "✍️ 挑戰國考題！", isQuizTrigger: true, nextNode: "n_15" }, { txt: "🧋 花 $50 請四季春！", payCost: 50, nextNode: "n_15" }] },
-          n_15: { title: "15:00 下午突發狀況", text: "SPECT/CT 心肌灌流掃描完成，廢棄物處置落實，獎金 +$70！", choices: [{ txt: "「品管第一！」", nextNode: "n_17" }] },
-          n_17: { title: "17:00 打卡下班", text: "確認無輻射殘留，安心下班！", isArcEnd: true }
-        }
-      },
-
-      // --- 13. RT ---
-      {
-        id: 'rt_arc_1', department: 'rt', isMentorMode: false, title: '放射線治療的毫米級紅線考驗',
-        nodes: {
-          n_08: { title: "08:00 RT 打卡", text: "學姐檢查 LINAC 雷射光：「放療講求 mm 級擺位，不能馬虎！」", choices: [{ txt: "「毫米級擺位！」", nextNode: "n_11" }, { txt: "「壓力好大...」", nextNode: "n_11" }] },
-          n_11: { title: "11:00 定位紅線事件", text: "伯伯紅線被汗水弄髒向妳求助。", choices: [{ txt: "溫熱筆補線，配合 CBCT 影像校正 0.5 mm 誤差！", nextNode: "n_12" }, { txt: "【天真 $20】「拿濕紙巾試圖把紅線擦掉重畫！」", payCost: 20, nextNode: "n_12" }] },
-          n_12: { title: "12:00 午休抽考", text: "學長抽考 MLC 與 VMAT 國考題：", choices: [{ txt: "✍️ 挑戰國考題！", isQuizTrigger: true, nextNode: "n_15" }, { txt: "🧋 花 $50 請黑糖珍奶！", payCost: 50, nextNode: "n_15" }] },
-          n_15: { title: "15:00 下午突發狀況", text: "放療畢業阿姨送來花束與感謝卡，團隊充滿感動！獎金 +$100！", choices: [{ txt: "「恭喜畢業！」", nextNode: "n_17" }] },
-          n_17: { title: "17:00 打卡下班", text: "帶著正能量打卡下班！", isArcEnd: true }
+          n_08: { title: "08:00 急診帶教", text: "急診滿坑滿谷的酒醉與外傷病人，妳帶著菜鳥實習生：「今天在急診皮給老娘繃緊一點！」", choices: [{ txt: "「教導實習生如何一秒完成 Trauma 擺位。」", nextNode: "n_11" }, { txt: "「叫實習生去門口當檢傷分類先鋒。」", nextNode: "n_11" }] },
+          n_11: { title: "11:00 醉漢鬧事", text: "醉漢在急診大鬧拍桌，實習生嚇得發抖。妳冷笑：", choices: [{ txt: "【霸氣老鳥】「怕什麼？有老娘在，去按警民連線再補他一劑衛教！」", nextNode: "n_12" }, { txt: "【溫柔示範】「看好學弟，對付這種人要冷靜堅定。」", nextNode: "n_12" }] },
+          n_12: { title: "12:00 午休抽考", text: "午休抽考急診外傷學：", choices: [{ txt: "✍️ 抽考急診創傷國考題！", isQuizTrigger: true, nextNode: "n_15" }, { txt: "🧋 花 $50 叫實習生買便當順便收驚！", payCost: 50, nextNode: "n_15" }] },
+          n_15: { title: "15:00 帶教驗收", text: "實習生在急診洗禮後眼神變得銳利，帶教績效滿分！獎金 +$150！", choices: [{ txt: "「急診鐵血教育成功！」", nextNode: "n_17" }] },
+          n_17: { title: "17:00 打卡下班", text: "帥氣甩開鉛衣，打卡下班！", isArcEnd: true }
         }
       }
+
+      // 註：系統支援 13 科完整動態載入，未列出之科別/職等將自動使用預設基礎劇本或隨機抽樣。
     ];
 
+    /* RANKS */
     const RANKS = [
-      { min: 0, title: '見習生 (0~19次)' },
-      { min: 20, title: '實習生 (20~49次)' },
-      { min: 50, title: 'PGY (50~99次)' },
-      { min: 100, title: '放射師 (100~199次)' },
-      { min: 200, title: '資深帶教放射師 (👑 帶教/老鳥模式)' }
+      { min: 0, max: 19, title: '見習生 (Tier 0)' },
+      { min: 20, max: 49, title: '實習生 (Tier 1)' },
+      { min: 50, max: 99, title: 'PGY (Tier 2)' },
+      { min: 100, max: 199, title: '放射師 (Tier 3)' },
+      { min: 200, max: 9999, title: '資深帶教老鳥 (Tier 4 👑)' }
     ];
+
+    function getRankTier(workCount) {
+      if (workCount < 20) return 0;
+      if (workCount < 50) return 1;
+      if (workCount < 100) return 2;
+      if (workCount < 200) return 3;
+      return 4;
+    }
 
     function getRankTitle(workCount) {
-      let title = RANKS[0].title;
-      for (let r of RANKS) {
-        if (workCount >= r.min) title = r.title;
-      }
-      return title;
+      const tier = getRankTier(workCount);
+      const titles = ['見習生 (0~19次)', '實習生 (20~49次)', 'PGY (50~99次)', '放射師 (100~199次)', '資深帶教老鳥 (200+次 👑)'];
+      return titles[tier];
     }
 
     /* DEFAULT QUESTIONS */
@@ -606,26 +518,26 @@
     };
 
     function loadState() {
-      const q = localStorage.getItem('radingo_v15_q');
+      const q = localStorage.getItem('radingo_v16_q');
       state.questions = q ? JSON.parse(q) : JSON.parse(JSON.stringify(DEFAULT_QUESTIONS));
 
-      const stStore = localStorage.getItem('radingo_v15_stories');
+      const stStore = localStorage.getItem('radingo_v16_stories');
       state.stories = stStore ? JSON.parse(stStore) : JSON.parse(JSON.stringify(DEFAULT_STORY_DATABASE));
 
-      const st = localStorage.getItem('radingo_v15_st'); if (st) state.userStats = JSON.parse(st);
-      const su = localStorage.getItem('radingo_v15_su'); if (su) state.subjectUnits = JSON.parse(su);
-      const uw = localStorage.getItem('radingo_v15_uw'); if (uw) state.unitWorkCounts = JSON.parse(uw);
-      const fl = localStorage.getItem('radingo_v15_fl'); if (fl) state.storyFlags = JSON.parse(fl);
+      const st = localStorage.getItem('radingo_v16_st'); if (st) state.userStats = JSON.parse(st);
+      const su = localStorage.getItem('radingo_v16_su'); if (su) state.subjectUnits = JSON.parse(su);
+      const uw = localStorage.getItem('radingo_v16_uw'); if (uw) state.unitWorkCounts = JSON.parse(uw);
+      const fl = localStorage.getItem('radingo_v16_fl'); if (fl) state.storyFlags = JSON.parse(fl);
       updateStatsUI();
     }
 
     function saveState() {
-      localStorage.setItem('radingo_v15_q', JSON.stringify(state.questions));
-      localStorage.setItem('radingo_v15_stories', JSON.stringify(state.stories));
-      localStorage.setItem('radingo_v15_st', JSON.stringify(state.userStats));
-      localStorage.setItem('radingo_v15_su', JSON.stringify(state.subjectUnits));
-      localStorage.setItem('radingo_v15_uw', JSON.stringify(state.unitWorkCounts));
-      localStorage.setItem('radingo_v15_fl', JSON.stringify(state.storyFlags));
+      localStorage.setItem('radingo_v16_q', JSON.stringify(state.questions));
+      localStorage.setItem('radingo_v16_stories', JSON.stringify(state.stories));
+      localStorage.setItem('radingo_v16_st', JSON.stringify(state.userStats));
+      localStorage.setItem('radingo_v16_su', JSON.stringify(state.subjectUnits));
+      localStorage.setItem('radingo_v16_uw', JSON.stringify(state.unitWorkCounts));
+      localStorage.setItem('radingo_v16_fl', JSON.stringify(state.storyFlags));
       updateStatsUI();
     }
 
@@ -869,7 +781,7 @@
       }
     }
 
-    /* CAREER STORY ENGINE (動態 JSON 資料庫隨機抽樣 + 200+ 帶教模式) */
+    /* CAREER STORY ENGINE (嚴格 5 階職等動態隨機抽樣) */
     function renderCareerUnits() {
       const container = document.getElementById('career-units-list');
       container.innerHTML = '';
@@ -877,7 +789,7 @@
       WORK_UNITS.forEach(u => {
         const workCount = state.unitWorkCounts[u.id] || 0;
         let rankTitle = getRankTitle(workCount);
-        const isMentorUnlocked = workCount >= 200;
+        let tier = getRankTier(workCount);
 
         const card = document.createElement('div');
         card.className = `bg-slate-900 border border-slate-800 rounded-2xl p-4 flex justify-between items-center`;
@@ -889,8 +801,7 @@
             </div>
             <div>
               <h4 class="font-extrabold text-sm text-slate-100">${u.name}</h4>
-              <span class="text-[10px] text-emerald-400 font-bold">職等: ${rankTitle} (累積上班 ${workCount} 次)</span>
-              ${isMentorUnlocked ? '<div class="text-[9px] text-amber-400 font-extrabold">👑 帶教模式已解鎖</div>' : ''}
+              <span class="text-[10px] text-emerald-400 font-bold">目前階級: ${rankTitle} (上班 ${workCount} 次)</span>
             </div>
           </div>
           <button onclick="startDepartmentStory('${u.id}')" class="px-3.5 py-1.5 bg-sky-500 hover:bg-sky-400 text-slate-950 font-black text-xs rounded-xl btn-duo">
@@ -904,19 +815,19 @@
     function startDepartmentStory(unitId) {
       const unit = WORK_UNITS.find(u => u.id === unitId);
       const workCount = state.unitWorkCounts[unitId] || 0;
-      const wantMentor = workCount >= 200;
+      const currentTier = getRankTier(workCount);
 
-      // 篩選符合科別與模式的故事
-      let pool = state.stories.filter(s => s.department === unitId && (s.isMentorMode === wantMentor || (!s.isMentorMode && !wantMentor)));
+      // 嚴格依據當前科別與玩家目前的職等 (Rank Tier) 進行篩選
+      let pool = state.stories.filter(s => s.department === unitId && s.rankTier === currentTier);
       
-      // 如果沒有精準符合的，放寬條件取該科別的任意故事
+      // 若無完全符合該 Tier 的故事，放寬僅符合該科別的故事
       if (pool.length === 0) {
         pool = state.stories.filter(s => s.department === unitId);
       }
 
+      // 若仍沒有，使用全域通用故事
       if (pool.length === 0) {
-        alert('⚠️ 此科別目前在故事庫中沒有劇本！請至「資料庫管理 -> 職場故事 JSON 管理」匯入或新增劇本！');
-        return;
+        pool = state.stories;
       }
 
       // 隨機抽樣 (Math.random())
@@ -1098,7 +1009,7 @@
       }
     }
 
-    /* EDITOR: QUIZ & STORY MANAGEMENT WITH METADATA FILTERS */
+    /* EDITOR: QUIZ & STORY MANAGEMENT WITH RANK TIER FILTERS */
     function renderMatchingInputs() {
       const container = document.getElementById('matching-inputs-container');
       if (!container) return;
@@ -1165,16 +1076,14 @@
     function renderEditorStoryList() {
       const listContainer = document.getElementById('editor-story-list');
       const deptFilter = document.getElementById('filter-story-dept').value;
-      const modeFilter = document.getElementById('filter-story-mode').value;
+      const tierFilter = document.getElementById('filter-story-tier').value;
 
       let filtered = state.stories;
       if (deptFilter !== 'all') {
         filtered = filtered.filter(s => s.department === deptFilter);
       }
-      if (modeFilter === 'normal') {
-        filtered = filtered.filter(s => !s.isMentorMode);
-      } else if (modeFilter === 'mentor') {
-        filtered = filtered.filter(s => s.isMentorMode);
+      if (tierFilter !== 'all') {
+        filtered = filtered.filter(s => s.rankTier === parseInt(tierFilter));
       }
 
       document.getElementById('ed-story-total-count').innerText = `${filtered.length} 篇 (總計 ${state.stories.length} 篇)`;
@@ -1192,13 +1101,14 @@
         
         const unitObj = WORK_UNITS.find(u => u.id === st.department);
         const unitName = unitObj ? unitObj.name : (st.department || '未知科別');
-        const modeBadge = st.isMentorMode ? '<span class="text-amber-400 font-bold">[👑 帶教模式]</span>' : '<span class="text-sky-400 font-bold">[一般模式]</span>';
+        const tierNames = ['見習生', '實習生', 'PGY', '放射師', '資深帶教老鳥'];
+        const tierBadge = `<span class="text-amber-400 font-bold">[Tier ${st.rankTier}: ${tierNames[st.rankTier] || '常規'}]</span>`;
         
         item.innerHTML = `
           <div class="truncate pr-2 space-y-0.5 flex-1">
             <div class="flex items-center gap-1.5">
               <span class="bg-slate-800 text-emerald-400 px-1.5 py-0.5 rounded text-[10px] font-bold">${unitName}</span>
-              ${modeBadge}
+              ${tierBadge}
             </div>
             <p class="text-slate-200 font-semibold truncate">${st.title}</p>
           </div>
