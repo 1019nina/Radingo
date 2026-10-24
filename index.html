@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Radingo - 放射師國考與職場物語 (終極架構優化版)</title>
+  <title>Radingo - 放射師國考與職場物語 (VN 視覺小說終極版)</title>
   <script src="https://cdn.tailwindcss.com"></script>
   <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
@@ -16,7 +16,6 @@
     .btn-blue { background-color: #3b82f6; box-shadow: 0 4px 0 #1d4ed8; color: #ffffff; }
     
     .card-option { border: 2px solid #334155; background: #1e293b; transition: all 0.15s; }
-    .card-option:hover:not(.disabled) { border-color: #3b82f6; transform: translateY(-2px); }
     .card-option.selected { border-color: #3b82f6; background: #1e3a8a; }
     .card-option.correct { border-color: #22c55e; background: #14532d; color: #86efac; }
     .card-option.wrong { border-color: #ef4444; background: #7f1d1d; color: #fca5a5; }
@@ -25,8 +24,8 @@
     .matching-card.selected { border-color: #a855f7; background: #3b0764; }
     .matching-card.matched { border-color: #22c55e; background: #064e3b; opacity: 0.5; pointer-events: none; }
 
-    @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
-    .vn-animate { animation: fadeIn 0.25s ease-out forwards; }
+    @keyframes fadeIn { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; transform: translateY(0); } }
+    .vn-animate { animation: fadeIn 0.2s ease-out forwards; }
 
     ::-webkit-scrollbar { width: 6px; }
     ::-webkit-scrollbar-track { background: #0f172a; }
@@ -40,7 +39,7 @@
     <div class="max-w-md mx-auto flex justify-between items-center">
       <div class="flex items-center space-x-2">
         <span class="text-2xl font-black text-emerald-400">Radingo</span>
-        <span class="bg-emerald-950 text-emerald-400 text-[10px] px-2 py-0.5 rounded-full font-bold border border-emerald-800">5大職等 RPG 版</span>
+        <span class="bg-emerald-950 text-emerald-400 text-[10px] px-2 py-0.5 rounded-full font-bold border border-emerald-800">VN 視覺小說版</span>
       </div>
 
       <div class="flex items-center space-x-3 font-extrabold text-sm">
@@ -123,8 +122,8 @@
     <!-- VIEW 2: CAREER STORY MAP -->
     <div id="view-career" class="hidden space-y-4">
       <div class="bg-slate-900 border border-slate-800 rounded-2xl p-4 text-center space-y-1">
-        <span class="text-xs text-emerald-400 font-extrabold bg-emerald-950 px-2.5 py-0.5 rounded-full border border-emerald-800">🏥 5大職等動態故事 JSON 庫 (隨機抽樣)</span>
-        <h2 class="text-base font-black text-white mt-1">選擇指定科別，系統自動依當前職等隨機抽樣劇本！</h2>
+        <span class="text-xs text-emerald-400 font-extrabold bg-emerald-950 px-2.5 py-0.5 rounded-full border border-emerald-800">🏥 5大職等 VN 故事 JSON 庫 (隨機抽樣)</span>
+        <h2 class="text-base font-black text-white mt-1">選擇指定科別，系統自動依當前職等隨機抽樣視覺小說劇本！</h2>
         <p class="text-[11px] text-slate-400 mt-1">
           晉升制度：0~19(見習生) ➔ 20~49(實習生) ➔ 50~99(PGY) ➔ 100~199(放射師) ➔ 200+(資深帶教老鳥)
         </p>
@@ -147,7 +146,7 @@
 
   </main>
 
-  <!-- VN STORY OVERLAY -->
+  <!-- VN STORY OVERLAY (視覺小說引擎介面) -->
   <div id="vn-modal" class="hidden fixed inset-0 bg-black/90 backdrop-blur-md z-50 flex flex-col justify-end p-4">
     <div class="max-w-md w-full mx-auto space-y-3 vn-animate pb-6">
       
@@ -158,8 +157,8 @@
             <i class="fa-solid fa-user-doctor"></i>
           </div>
           <div>
-            <span id="vn-char-title" class="text-[10px] text-emerald-400 font-extrabold bg-emerald-950 px-2 py-0.5 rounded border border-emerald-800">08:00 晨間打卡</span>
-            <h3 id="vn-char-name" class="text-base font-black text-white mt-0.5">現場控制室</h3>
+            <span id="vn-speaker-title" class="text-[10px] text-emerald-400 font-extrabold bg-emerald-950 px-2 py-0.5 rounded border border-emerald-800">旁白</span>
+            <h3 id="vn-story-title" class="text-base font-black text-white mt-0.5">職場物語</h3>
           </div>
         </div>
         <button onclick="closeVNStory()" class="text-slate-400 hover:text-white px-2 py-1 text-xs bg-slate-800 rounded-lg border border-slate-700">
@@ -167,19 +166,22 @@
         </button>
       </div>
 
-      <!-- Dialogue Box -->
-      <div class="bg-slate-900/95 border-2 border-slate-700 rounded-2xl p-5 shadow-2xl space-y-4 relative overflow-hidden">
+      <!-- Dialogue Box (點擊可推進對話) -->
+      <div onclick="handleVNDialogueClick()" class="bg-slate-900/95 border-2 border-slate-700 rounded-2xl p-5 shadow-2xl space-y-4 relative overflow-hidden cursor-pointer hover:border-sky-500 transition-colors">
         <div class="absolute -right-6 -bottom-6 text-slate-800 text-8xl pointer-events-none">
           <i class="fa-solid fa-quote-right"></i>
         </div>
 
-        <div id="vn-content-area" class="space-y-3 relative z-10">
+        <div id="vn-content-area" class="space-y-2 relative z-10 min-h-[90px]">
+          <div id="vn-speaker-name" class="text-xs font-bold text-sky-400">系統</div>
           <p id="vn-dialogue-text" class="text-sm text-slate-100 font-medium leading-relaxed">
             劇本讀取中...
           </p>
         </div>
 
-        <div id="vn-choices-area" class="space-y-2 pt-2 relative z-10"></div>
+        <div class="text-[10px] text-slate-400 text-right animate-pulse">▼ 點擊對話框繼續</div>
+
+        <div id="vn-choices-area" class="space-y-2 pt-2 relative z-10" onclick="event.stopPropagation()"></div>
       </div>
     </div>
   </div>
@@ -202,18 +204,18 @@
     </div>
   </footer>
 
-  <!-- MODAL: DUAL EDITOR (QUIZ DB & STORY DB WITH RANK TIER FILTERS) -->
+  <!-- MODAL: DUAL EDITOR (QUIZ DB & VN STORY JSON DB WITH RANK TIER FILTERS) -->
   <div id="modal-editor" class="hidden fixed inset-0 bg-black/80 backdrop-blur-sm z-50 flex items-center justify-center p-4">
     <div class="bg-slate-900 border border-slate-800 rounded-2xl w-full max-w-md max-h-[85vh] flex flex-col overflow-hidden">
       <div class="p-4 border-b border-slate-800 flex justify-between items-center bg-slate-800/50">
-        <h3 class="font-black text-sm text-white">🛠️ 雙效資料庫與 5 職等管理員</h3>
+        <h3 class="font-black text-sm text-white">🛠️ 雙效資料庫與 VN 故事 JSON 管理員</h3>
         <button onclick="closeModal('modal-editor')" class="text-slate-400 hover:text-white"><i class="fa-solid fa-xmark text-lg"></i></button>
       </div>
 
       <!-- Editor Tabs -->
       <div class="flex border-b border-slate-800 bg-slate-800/30 p-1.5 gap-2 text-xs font-bold">
         <button id="ed-tab-btn-quiz" onclick="switchEditorTab('quiz')" class="flex-1 py-2 bg-emerald-500 text-slate-950 rounded-lg">🎯 國考題庫管理</button>
-        <button id="ed-tab-btn-story" onclick="switchEditorTab('story')" class="flex-1 py-2 bg-slate-800 text-slate-300 rounded-lg">📖 職場故事 JSON 管理</button>
+        <button id="ed-tab-btn-story" onclick="switchEditorTab('story')" class="flex-1 py-2 bg-slate-800 text-slate-300 rounded-lg">📖 職場 VN 故事 JSON</button>
       </div>
 
       <div class="p-4 overflow-y-auto space-y-4 text-xs flex-1">
@@ -303,11 +305,11 @@
           </div>
         </div>
 
-        <!-- SUB-VIEW 2: STORY EDITOR WITH RANK TIER FILTERS -->
+        <!-- SUB-VIEW 2: VN STORY EDITOR WITH RANK TIER & DEPT FILTERS -->
         <div id="ed-subview-story" class="hidden space-y-4">
           <div class="bg-slate-800 p-3 rounded-xl space-y-2 border border-slate-700">
-            <span class="font-bold text-sky-400">📖 職場故事 JSON 檔案管理</span>
-            <p class="text-[11px] text-slate-400">每篇故事包含 `department`（13科）與 `rankTier`（0~4職等）。</p>
+            <span class="font-bold text-sky-400">📖 職場 VN 故事 JSON 檔案管理</span>
+            <p class="text-[11px] text-slate-400">支援多步驟 `steps`、分支 `choice`（含 `resultSteps`）與國考題聯動。</p>
             <div class="grid grid-cols-2 gap-2 pt-1">
               <button onclick="exportStoryJSON()" class="py-2 bg-slate-700 hover:bg-slate-600 rounded-lg font-bold">匯出故事庫 JSON</button>
               <label class="py-2 bg-sky-600 hover:bg-sky-500 rounded-lg font-bold text-center cursor-pointer">
@@ -355,4 +357,880 @@
           <div class="bg-slate-800 p-3.5 rounded-xl border border-slate-700 space-y-2.5">
             <div class="flex justify-between items-center">
               <span class="font-bold text-sky-400 text-sm">📚 篩選結果故事清單</span>
-              <span id="ed-story-total-count" class="text-emerald-4
+              <span id="ed-story-total-count" class="text-emerald-400 font-bold text-xs">0 篇</span>
+            </div>
+            <div id="editor-story-list" class="space-y-2 max-h-60 overflow-y-auto pr-1"></div>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </div>
+
+  <!-- SCRIPT -->
+  <script>
+    const SUBJECTS = {
+      basic: { name: '基礎醫學', icon: 'fa-brain', color: 'from-pink-600 to-rose-700' },
+      physics: { name: '醫學物理與輻射安全', icon: 'fa-atom', color: 'from-blue-600 to-indigo-700' },
+      equip: { name: '放射線器材學', icon: 'fa-microchip', color: 'from-amber-600 to-orange-700' },
+      diag: { name: '放射線診斷原理與技術學', icon: 'fa-x-ray', color: 'from-emerald-600 to-teal-700' },
+      therapy: { name: '放射線治療原理與技術學', icon: 'fa-crosshairs', color: 'from-purple-600 to-violet-700' },
+      nuc: { name: '核子醫學診療原理與技術學', icon: 'fa-radiation', color: 'from-cyan-600 to-sky-700' }
+    };
+
+    const WORK_UNITS = [
+      { id: 'xray', name: '一般 X 光', reqSubject: 'diag', icon: 'fa-x-ray' },
+      { id: 'er', name: '急診 (CT/X-ray)', reqSubject: 'diag', icon: 'fa-truck-medical' },
+      { id: 'ct', name: 'CT 電腦斷層', reqSubject: 'equip', icon: 'fa-circle-notch' },
+      { id: 'mri', name: 'MRI 磁振造影', reqSubject: 'equip', icon: 'fa-magnet' },
+      { id: 'mammo', name: 'Mammo 乳房攝影', reqSubject: 'basic', icon: 'fa-female' },
+      { id: 'sono', name: 'Sono 超音波', reqSubject: 'diag', icon: 'fa-wave-square' },
+      { id: 'cath', name: '心導管室', reqSubject: 'basic', icon: 'fa-heart-pulse' },
+      { id: 'dental', name: '牙科攝影', reqSubject: 'basic', icon: 'fa-tooth' },
+      { id: 'angio', name: 'Angio 血管攝影', reqSubject: 'basic', icon: 'fa-disease' },
+      { id: 'special', name: 'Special 特殊攝影', reqSubject: 'basic', icon: 'fa-flask-vial' },
+      { id: 'dexa', name: 'DEXA 骨質密度', reqSubject: 'basic', icon: 'fa-bone' },
+      { id: 'nuc', name: '核子醫學', reqSubject: 'nuc', icon: 'fa-atom' },
+      { id: 'rt', name: 'RT 放射線治療', reqSubject: 'therapy', icon: 'fa-crosshairs' }
+    ];
+
+    /* 預設多步驟 Visual Novel 劇本庫 (支援 steps 陣列、choice 分支、quiz 國考題、flagCheck 客訴) */
+    const DEFAULT_STORY_DATABASE = [
+      {
+        id: 'xr_tier_0', department: 'xray', rankTier: 0, title: '初入 X 光控制室的震驚',
+        steps: [
+          { speaker: "學姐", text: "走進 X 光控制室，學姐看著新聞搖頭抱怨：「現在的小年輕騎腳踏車摔斷手，送到醫院第一件事不是哭，是叫同伴拿手機拍照打卡發限動！」" },
+          { speaker: "主角", text: "「真的假的！現在的年輕人太誇張了吧...」" },
+          {
+            type: "choice",
+            text: "此時，一位滑板少年推進來骨折的手肘，旁支朋友舉起手機喊著要發限動標記醫院。",
+            choices: [
+              {
+                txt: "「不行喔，醫療影像有資安法規，請遵守規定！」",
+                resultSteps: [
+                  { speaker: "滑板少年", text: "「切，開個玩笑嘛，跩什麼跩...」" },
+                  { speaker: "主角", text: "妳嚴肅地堅持規定，順利完成擺位。" }
+                ]
+              },
+              {
+                txt: "【花費 $20】「發限動可以，要不要順便幫你開美顏濾鏡？」",
+                payCost: 20,
+                setFlag: "RAGED_PATIENT",
+                resultSteps: [
+                  { speaker: "滑板少年", text: "「哇！這醫院服務太貼心了吧！發限動囉！」" },
+                  { speaker: "主角", text: "妳順利幫他拍完了 X 光片。" }
+                ]
+              }
+            ]
+          },
+          { speaker: "學姐", text: "「好啦，上午門診告一段落，準備迎接 12 點的午休抽考吧！」" },
+          { type: "quiz", text: "12:00 午休時間到了，學姐端著咖啡走過來隨機抽考診斷學：" },
+          {
+            type: "flagCheck",
+            flag: "RAGED_PATIENT",
+            matchText: "下午那個滑板少年真的上網投訴妳態度輕浮！扣除獎金 $80！",
+            normalText: "下午主管經過控制室誇獎妳服務態度良好！獲得獎金 +$50！"
+          },
+          { speaker: "旁白", text: "一整天的忙碌終於結束，順利打卡下班！" }
+        ]
+      },
+      {
+        id: 'xr_tier_4', department: 'xray', rankTier: 4, title: '👑 資深帶教老鳥：菜鳥實習生的震撼教育',
+        steps: [
+          { speaker: "老鳥 (妳)", text: "身為資深帶教放射師，妳一進辦公室就看到新來的實習生正拿著手機滑手遊。" },
+          { speaker: "新進實習生", text: "「學長/學姐早...今天好像病人不多耶？」" },
+          {
+            type: "choice",
+            text: "妳冷笑一聲，決定給他一個難忘的震撼教育：",
+            choices: [
+              {
+                txt: "「把這本 1200 頁放射學原文書拿去，今天內背完第一章！」",
+                resultSteps: [
+                  { speaker: "新進實習生", text: "「啊？！1200頁...學姐我頭好痛...」" },
+                  { speaker: "老鳥 (妳)", text: "「頭痛代表你在思考，背不完不准吃便當！」" }
+                ]
+              },
+              {
+                txt: "【花費 $20】「先去幫學姐買杯大杯冰美式，順便把發霉的鉛衣洗乾淨。」",
+                payCost: 20,
+                setFlag: "BULLY_INTERN",
+                resultSteps: [
+                  { speaker: "新進實習生", text: "「遵命！我馬上跑腿！」" },
+                  { speaker: "老鳥 (妳)", text: "「很好，這才是優秀實習生該有的態度。」" }
+                ]
+              }
+            ]
+          },
+          { speaker: "老鳥 (妳)", text: "「中午了，考驗你基本功的時候到了。」" },
+          { type: "quiz", text: "中午吃飯時間，妳決定測驗實習生有沒有偷懶背國考題：" },
+          {
+            type: "flagCheck",
+            flag: "BULLY_INTERN",
+            matchText: "實習生因為被妳使喚跑腿一整天，淚灑控制室寫了報告！扣除津貼 $80！",
+            normalText: "實習生在妳的鐵血訓練下進步神速，主任大力稱讚妳帶教有方！獎金 +$120！"
+          },
+          { speaker: "旁白", text: "順利結束帶教日，看著實習生敬畏的眼神，滿意地打卡下班！" }
+        ]
+      }
+    ];
+
+    /* RANKS */
+    function getRankTier(workCount) {
+      if (workCount < 20) return 0;
+      if (workCount < 50) return 1;
+      if (workCount < 100) return 2;
+      if (workCount < 200) return 3;
+      return 4;
+    }
+
+    function getRankTitle(workCount) {
+      const tier = getRankTier(workCount);
+      const titles = ['見習生 (0~19次)', '實習生 (20~49次)', 'PGY (50~99次)', '放射師 (100~199次)', '資深帶教老鳥 (200+次 👑)'];
+      return titles[tier];
+    }
+
+    /* DEFAULT QUESTIONS */
+    const DEFAULT_QUESTIONS = [
+      { id: 'q1', subject: 'basic', type: 'choice', question: '下列何者為人體中放射線感受性最高的細胞？', options: ['神經細胞', '肌肉細胞', '淋巴球與造血細胞', '骨細胞'], correct: 2, explanation: '根據柏格能-溫克定律 (Law of Bergonie and Tribondeau)，分裂越快、分化越差的細胞敏感度越高。' },
+      { id: 'q2', subject: 'physics', type: 'choice', question: '在加馬攝影機中，光電倍增管 (PMT) 的主要功能為：', options: ['將閃爍晶體產生的光子轉換並放大為電子訊號', '過濾散射射線', '產生高壓 X 光', '儲存數位影像'], correct: 0, explanation: 'PMT 將閃爍光子轉換成光電子並進行級聯放大。' },
+      { id: 'q3', subject: 'equip', type: 'choice', question: 'X 光管球中，rotating anode (旋轉陽極) 的主要目的是：', options: ['增加 X 光輸出強度', '分散熱量以避免局部熔化', '縮小實際焦斑尺寸', '增加電子加速能量'], correct: 1, explanation: '旋轉陽極透過旋轉擴大電子撞擊面積，有效分散熱量。' },
+      { id: 'q4', subject: 'diag', type: 'choice', question: '胸部 X 光攝影 (Chest PA) 的標準攝影距離 (SID) 通常為：', options: ['100 公分', '180 公分 (72英吋)', '50 公分', '300 公分'], correct: 1, explanation: '180公分可減少心臟影像放大率，使心胸比更準確。' },
+      { id: 'q5', subject: 'therapy', type: 'choice', question: '直線加速器中，常用於扁平 X 光射束的裝置為：', options: ['Flattening filter (均勻濾光器)', 'Klystron', 'Bending magnet', 'Ion chamber'], correct: 0, explanation: 'Flattening filter 用於將前發散高強度的 X 光射束均勻化。' },
+      { id: 'q6', subject: 'nuc', type: 'choice', question: '核子醫學中最常用的放射性同位素 Tc-99m 的半衰期約為：', options: ['6 小時', '8 天', '60 天', '30 年'], correct: 0, explanation: 'Tc-99m 半衰期約為 6 小時，對病人劑量低且能量適中 (140 keV)。' }
+    ];
+
+    /* STATE MANAGEMENT */
+    let state = {
+      questions: [],
+      stories: [],
+      userStats: { money: 200, bonusMultiplier: 1.0 },
+      subjectUnits: { basic: 0, physics: 0, equip: 0, diag: 0, therapy: 0, nuc: 0 },
+      unitWorkCounts: {},
+      storyFlags: {},
+      activeQuiz: null,
+      matchingState: { selectedLeft: null, matchedCount: 0 },
+      vnActive: null
+    };
+
+    function loadState() {
+      const q = localStorage.getItem('radingo_v17_q');
+      state.questions = q ? JSON.parse(q) : JSON.parse(JSON.stringify(DEFAULT_QUESTIONS));
+
+      const stStore = localStorage.getItem('radingo_v17_stories');
+      state.stories = stStore ? JSON.parse(stStore) : JSON.parse(JSON.stringify(DEFAULT_STORY_DATABASE));
+
+      const st = localStorage.getItem('radingo_v17_st'); if (st) state.userStats = JSON.parse(st);
+      const su = localStorage.getItem('radingo_v17_su'); if (su) state.subjectUnits = JSON.parse(su);
+      const uw = localStorage.getItem('radingo_v17_uw'); if (uw) state.unitWorkCounts = JSON.parse(uw);
+      const fl = localStorage.getItem('radingo_v17_fl'); if (fl) state.storyFlags = JSON.parse(fl);
+      updateStatsUI();
+    }
+
+    function saveState() {
+      localStorage.setItem('radingo_v17_q', JSON.stringify(state.questions));
+      localStorage.setItem('radingo_v17_stories', JSON.stringify(state.stories));
+      localStorage.setItem('radingo_v17_st', JSON.stringify(state.userStats));
+      localStorage.setItem('radingo_v17_su', JSON.stringify(state.subjectUnits));
+      localStorage.setItem('radingo_v17_uw', JSON.stringify(state.unitWorkCounts));
+      localStorage.setItem('radingo_v17_fl', JSON.stringify(state.storyFlags));
+      updateStatsUI();
+    }
+
+    function updateStatsUI() {
+      document.getElementById('stat-money').innerText = state.userStats.money;
+    }
+
+    function switchTab(tab) {
+      ['quiz', 'career', 'shop'].forEach(t => document.getElementById(`view-${t}`).classList.add('hidden'));
+      document.getElementById(`view-${tab}`).classList.remove('hidden');
+
+      if (tab === 'quiz') renderQuizMap();
+      if (tab === 'career') renderCareerUnits();
+      if (tab === 'shop') renderShop();
+    }
+
+    /* EDITOR TABS TOGGLE */
+    function switchEditorTab(tab) {
+      const btnQuiz = document.getElementById('ed-tab-btn-quiz');
+      const btnStory = document.getElementById('ed-tab-btn-story');
+      const subQuiz = document.getElementById('ed-subview-quiz');
+      const subStory = document.getElementById('ed-subview-story');
+
+      if (tab === 'quiz') {
+        btnQuiz.className = "flex-1 py-2 bg-emerald-500 text-slate-950 rounded-lg font-bold";
+        btnStory.className = "flex-1 py-2 bg-slate-800 text-slate-300 rounded-lg font-bold";
+        subQuiz.classList.remove('hidden');
+        subStory.classList.add('hidden');
+        renderEditorQuestionList();
+      } else {
+        btnStory.className = "flex-1 py-2 bg-sky-500 text-slate-950 rounded-lg font-bold";
+        btnQuiz.className = "flex-1 py-2 bg-slate-800 text-slate-300 rounded-lg font-bold";
+        subStory.classList.remove('hidden');
+        subQuiz.classList.add('hidden');
+        renderEditorStoryList();
+      }
+    }
+
+    /* QUIZ ENGINE */
+    function renderQuizMap() {
+      const container = document.getElementById('subject-node-container');
+      container.innerHTML = '';
+
+      Object.keys(SUBJECTS).forEach(key => {
+        const sub = SUBJECTS[key];
+        const unitsDone = state.subjectUnits[key] || 0;
+        const qCount = state.questions.filter(q => q.subject === key).length;
+
+        const card = document.createElement('div');
+        card.className = "bg-slate-900 border-2 border-slate-800 rounded-2xl p-4 space-y-3";
+        card.innerHTML = `
+          <div class="flex items-center justify-between">
+            <div class="flex items-center space-x-3">
+              <div class="w-10 h-10 rounded-xl bg-gradient-to-tr ${sub.color} flex items-center justify-center text-white text-lg">
+                <i class="fa-solid ${sub.icon}"></i>
+              </div>
+              <div>
+                <h3 class="font-extrabold text-sm text-slate-100">${sub.name}</h3>
+                <span class="text-[11px] text-slate-400">已完成 <b class="text-emerald-400">${unitsDone}</b> 單元 (題庫: ${qCount} 題)</span>
+              </div>
+            </div>
+            <button onclick="startUnitSession('${key}')" class="px-3.5 py-1.5 bg-emerald-500 hover:bg-emerald-400 text-slate-950 font-black text-xs rounded-xl btn-duo">
+              開始刷單元
+            </button>
+          </div>
+        `;
+        container.appendChild(card);
+      });
+    }
+
+    function startUnitSession(subKey) {
+      const subQuestions = state.questions.filter(q => q.subject === subKey);
+      if (subQuestions.length === 0) {
+        alert('⚠️ 這個科目目前沒有題目！請至右下角「資料庫管理」新增題目或匯入 JSON！');
+        return;
+      }
+
+      const shuffled = shuffle([...subQuestions]).slice(0, 5);
+      state.activeQuiz = { subject: subKey, questions: shuffled, idx: 0, selectedOpt: null, userTFAnswer: null, isSubmitted: false };
+      document.getElementById('quiz-overlay').classList.remove('hidden');
+      loadQuizQuestion();
+    }
+
+    function exitQuizSession() {
+      document.getElementById('quiz-overlay').classList.add('hidden');
+      renderQuizMap();
+    }
+
+    function loadQuizQuestion() {
+      const q = state.activeQuiz.questions[state.activeQuiz.idx];
+      const total = state.activeQuiz.questions.length;
+
+      state.activeQuiz.selectedOpt = null;
+      state.activeQuiz.userTFAnswer = null;
+      state.activeQuiz.isSubmitted = false;
+
+      document.getElementById('quiz-step-counter').innerText = `${state.activeQuiz.idx + 1}/${total}`;
+      document.getElementById('quiz-progress-bar').style.width = `${(state.activeQuiz.idx / total) * 100}%`;
+      document.getElementById('q-text').innerText = q.question;
+
+      const typeBadge = document.getElementById('q-type-badge');
+      const typeMap = { choice: '選擇題', matching: '觀念配對題', fill: '填空選擇題', tf: '是非題 (True/False)' };
+      typeBadge.innerText = typeMap[q.type] || '選擇題';
+
+      const imgBox = document.getElementById('q-img-container');
+      const imgEl = document.getElementById('q-img');
+      if (q.imgUrl) { imgEl.src = q.imgUrl; imgBox.classList.remove('hidden'); } else { imgBox.classList.add('hidden'); }
+
+      const zone = document.getElementById('q-interactive-zone');
+      zone.innerHTML = '';
+
+      if (q.type === 'choice' || q.type === 'fill') {
+        q.options.forEach((optStr, i) => {
+          const btn = document.createElement('button');
+          btn.className = "card-option w-full p-3.5 rounded-xl text-left font-bold text-xs flex justify-between items-center";
+          btn.onclick = () => {
+            if (state.activeQuiz.isSubmitted) return;
+            document.querySelectorAll('.card-option').forEach(c => c.classList.remove('selected'));
+            btn.classList.add('selected');
+            state.activeQuiz.selectedOpt = i;
+          };
+          btn.innerHTML = `<span>${optStr}</span>`; zone.appendChild(btn);
+        });
+      } else if (q.type === 'tf') {
+        ['true', 'false'].forEach(val => {
+          const btn = document.createElement('button');
+          btn.className = "card-option w-full p-4 rounded-xl text-center font-black text-sm";
+          btn.onclick = () => {
+            if (state.activeQuiz.isSubmitted) return;
+            document.querySelectorAll('.card-option').forEach(c => c.classList.remove('selected'));
+            btn.classList.add('selected');
+            state.activeQuiz.userTFAnswer = (val === 'true');
+          };
+          btn.innerText = val === 'true' ? '⭕ 正確 (True)' : '❌ 錯誤 (False)';
+          zone.appendChild(btn);
+        });
+      } else if (q.type === 'matching') {
+        state.matchingState = { selectedLeft: null, matchedCount: 0 };
+        const grid = document.createElement('div'); grid.className = "grid grid-cols-2 gap-2";
+        const leftCol = document.createElement('div'); leftCol.className = "space-y-2";
+        const rightCol = document.createElement('div'); rightCol.className = "space-y-2";
+
+        const leftItems = shuffle(q.pairs.map((p, idx) => ({ txt: p.left, id: idx })));
+        const rightItems = shuffle(q.pairs.map((p, idx) => ({ txt: p.right, id: idx })));
+
+        leftItems.forEach(item => {
+          const lBtn = document.createElement('div'); lBtn.className = "matching-card p-2.5 rounded-xl text-xs font-bold text-center";
+          lBtn.innerText = item.txt; lBtn.onclick = () => selectMatchingLeft(item.id, lBtn); leftCol.appendChild(lBtn);
+        });
+
+        rightItems.forEach(item => {
+          const rBtn = document.createElement('div'); rBtn.className = "matching-card p-2.5 rounded-xl text-xs font-bold text-center";
+          rBtn.innerText = item.txt; rBtn.onclick = () => selectMatchingRight(item.id, rBtn, q.pairs.length); rightCol.appendChild(rBtn);
+        });
+
+        grid.appendChild(leftCol); grid.appendChild(rightCol); zone.appendChild(grid);
+      }
+
+      const panel = document.getElementById('feedback-panel');
+      panel.classList.add('hidden'); panel.className = "hidden p-3 rounded-xl border mb-3 space-y-2";
+      
+      const submitBtn = document.getElementById('btn-submit-answer');
+      submitBtn.innerText = "檢查答案";
+      submitBtn.onclick = handleAnswerAction;
+    }
+
+    function selectMatchingLeft(id, element) {
+      if (state.activeQuiz.isSubmitted) return;
+      document.querySelectorAll('#q-interactive-zone .matching-card').forEach(c => c.classList.remove('selected'));
+      element.classList.add('selected'); state.matchingState.selectedLeft = id;
+    }
+
+    function selectMatchingRight(id, element, totalPairs) {
+      if (state.activeQuiz.isSubmitted) return;
+      if (state.matchingState.selectedLeft === null) { alert('請先點選左欄項目！'); return; }
+      if (state.matchingState.selectedLeft === id) {
+        element.classList.add('matched');
+        document.querySelector('#q-interactive-zone .matching-card.selected').classList.add('matched');
+        state.matchingState.matchedCount++; state.matchingState.selectedLeft = null;
+        if (state.matchingState.matchedCount === totalPairs) state.activeQuiz.selectedOpt = 0;
+      } else {
+        alert('配對不正確喔！再試試看！');
+        document.querySelectorAll('#q-interactive-zone .matching-card').forEach(c => c.classList.remove('selected'));
+        state.matchingState.selectedLeft = null;
+      }
+    }
+
+    function handleAnswerAction() {
+      if (!state.activeQuiz.isSubmitted) {
+        submitCurrentAnswer();
+      } else {
+        advanceToNextQuestion();
+      }
+    }
+
+    function submitCurrentAnswer() {
+      const q = state.activeQuiz.questions[state.activeQuiz.idx];
+      let isCorrect = false;
+
+      if (q.type === 'choice' || q.type === 'fill') {
+        if (state.activeQuiz.selectedOpt === null) { alert('請先選擇一個答案！'); return; }
+        isCorrect = state.activeQuiz.selectedOpt === q.correct;
+      } else if (q.type === 'tf') {
+        if (state.activeQuiz.userTFAnswer === null) { alert('請選擇 O 或 X！'); return; }
+        isCorrect = state.activeQuiz.userTFAnswer === q.tfCorrect;
+      } else if (q.type === 'matching') {
+        if (state.matchingState.matchedCount < q.pairs.length) { alert('請先完成所有項目配對！'); return; }
+        isCorrect = true;
+      }
+
+      state.activeQuiz.isSubmitted = true;
+      const panel = document.getElementById('feedback-panel'); panel.classList.remove('hidden');
+
+      if (isCorrect) {
+        const earnMoney = Math.round(80 * state.userStats.bonusMultiplier);
+        state.userStats.money += earnMoney; saveState();
+        panel.className = "p-3 rounded-xl border bg-emerald-950/90 border-emerald-800 text-emerald-300 mb-3 space-y-1";
+        document.getElementById('feedback-icon').innerHTML = '✅';
+        document.getElementById('feedback-title').innerText = `答對了！(+$${earnMoney} 獎金)`;
+      } else {
+        panel.className = "p-3 rounded-xl border bg-rose-950/90 border-rose-800 text-rose-300 mb-3 space-y-1";
+        document.getElementById('feedback-icon').innerHTML = '❌';
+        document.getElementById('feedback-title').innerText = '答錯了！再接再勵！';
+      }
+
+      document.getElementById('feedback-exp').innerText = q.explanation || '多刷幾次就記住了！';
+      const submitBtn = document.getElementById('btn-submit-answer');
+      submitBtn.innerText = "確定 / 下一題 ➔";
+    }
+
+    function advanceToNextQuestion() {
+      state.activeQuiz.idx++;
+      if (state.activeQuiz.idx < state.activeQuiz.questions.length) {
+        loadQuizQuestion();
+      } else {
+        state.subjectUnits[state.activeQuiz.subject] = (state.subjectUnits[state.activeQuiz.subject] || 0) + 1;
+        saveState();
+        confetti({ particleCount: 80, spread: 60 });
+        alert('🎉 成功完成一個單元闖關！單元進度 +1！');
+        exitQuizSession();
+      }
+    }
+
+    /* CAREER STORY ENGINE (Visual Novel Multi-Step Queue with Rank Tiers & Math.random sampling) */
+    function renderCareerUnits() {
+      const container = document.getElementById('career-units-list');
+      container.innerHTML = '';
+
+      WORK_UNITS.forEach(u => {
+        const workCount = state.unitWorkCounts[u.id] || 0;
+        let tier = getRankTier(workCount);
+        let rankTitle = getRankTitle(workCount);
+
+        const card = document.createElement('div');
+        card.className = `bg-slate-900 border border-slate-800 rounded-2xl p-4 flex justify-between items-center`;
+        
+        card.innerHTML = `
+          <div class="flex items-center space-x-3">
+            <div class="w-10 h-10 rounded-xl bg-slate-800 flex items-center justify-center text-sky-400 text-lg">
+              <i class="fa-solid ${u.icon}"></i>
+            </div>
+            <div>
+              <h4 class="font-extrabold text-sm text-slate-100">${u.name}</h4>
+              <span class="text-[10px] text-emerald-400 font-bold">目前階級: ${rankTitle} (上班 ${workCount} 次)</span>
+            </div>
+          </div>
+          <button onclick="startDepartmentStory('${u.id}')" class="px-3.5 py-1.5 bg-sky-500 hover:bg-sky-400 text-slate-950 font-black text-xs rounded-xl btn-duo">
+            開始上班
+          </button>
+        `;
+        container.appendChild(card);
+      });
+    }
+
+    function startDepartmentStory(unitId) {
+      const unit = WORK_UNITS.find(u => u.id === unitId);
+      const workCount = state.unitWorkCounts[unitId] || 0;
+      const currentTier = getRankTier(workCount);
+
+      // 嚴格依據科別與當前職等篩選故事
+      let pool = state.stories.filter(s => s.department === unitId && s.rankTier === currentTier);
+      if (pool.length === 0) pool = state.stories.filter(s => s.department === unitId);
+      if (pool.length === 0) pool = state.stories;
+
+      // 隨機抽樣 (Math.random)
+      const randomStory = pool[Math.floor(Math.random() * pool.length)];
+
+      state.vnActive = {
+        unitId: unitId,
+        unitName: unit.name,
+        reqSubject: unit.reqSubject,
+        storyTitle: randomStory.title || unit.name,
+        execQueue: JSON.parse(JSON.stringify(randomStory.steps || [])),
+        queueIndex: 0,
+        earnedPay: 0,
+        tempFlags: {}
+      };
+
+      document.getElementById('vn-modal').classList.remove('hidden');
+      renderVNCurrentStep();
+    }
+
+    function renderVNCurrentStep() {
+      const active = state.vnActive;
+      const choicesEl = document.getElementById('vn-choices-area');
+      choicesEl.innerHTML = '';
+
+      if (!active || active.queueIndex >= active.execQueue.length) {
+        finishShiftAndSettle();
+        return;
+      }
+
+      const step = active.execQueue[active.queueIndex];
+      document.getElementById('vn-story-title').innerText = active.storyTitle;
+
+      if (step.type === 'choice') {
+        document.getElementById('vn-speaker-name').innerText = "抉擇時刻";
+        document.getElementById('vn-dialogue-text').innerText = step.text || "請做出您的職場抉擇：";
+        
+        step.choices.forEach(c => {
+          const btn = document.createElement('button');
+          if (c.payCost) {
+            btn.className = "w-full p-2.5 bg-amber-600/90 hover:bg-amber-500 rounded-xl text-left text-xs text-slate-950 font-black border border-amber-400";
+          } else {
+            btn.className = "w-full p-2.5 bg-slate-800 hover:bg-slate-700 rounded-xl text-left text-xs text-slate-200 border border-slate-700 font-bold";
+          }
+          btn.innerText = c.txt;
+          btn.onclick = (e) => {
+            e.stopPropagation();
+            if (c.payCost) {
+              if (state.userStats.money < c.payCost) { alert('金錢不足！無法選擇此項！'); return; }
+              state.userStats.money -= c.payCost;
+              saveState();
+            }
+            if (c.setFlag) {
+              active.tempFlags[c.setFlag] = true;
+              state.storyFlags[c.setFlag] = true;
+              saveState();
+            }
+            // 插入 resultSteps 到 execQueue 的下一位
+            if (c.resultSteps && c.resultSteps.length > 0) {
+              active.execQueue.splice(active.queueIndex + 1, 0, ...c.resultSteps);
+            }
+            active.queueIndex++;
+            renderVNCurrentStep();
+          };
+          choicesEl.appendChild(btn);
+        });
+
+      } else if (step.type === 'quiz') {
+        document.getElementById('vn-speaker-name').innerText = "午休抽考";
+        document.getElementById('vn-dialogue-text').innerText = step.text || "午休國考題時間！";
+        triggerVNQuizModal(step);
+
+      } else if (step.type === 'flagCheck') {
+        const hasF = state.storyFlags[step.flag] || active.tempFlags[step.flag];
+        document.getElementById('vn-speaker-name').innerText = "職場因果結算";
+        if (hasF) {
+          document.getElementById('vn-dialogue-text').innerHTML = `<span class="text-rose-400 font-bold">${step.matchText}</span>`;
+          active.earnedPay -= 80;
+        } else {
+          document.getElementById('vn-dialogue-text').innerHTML = `<span class="text-emerald-400 font-bold">${step.normalText}</span>`;
+          active.earnedPay += 50;
+        }
+
+      } else {
+        // 標準對話步 (speaker / text)
+        document.getElementById('vn-speaker-name').innerText = step.speaker || "旁白";
+        document.getElementById('vn-dialogue-text').innerText = step.text || "";
+      }
+    }
+
+    function handleVNDialogueClick() {
+      const active = state.vnActive;
+      if (!active) return;
+      const step = active.execQueue[active.queueIndex];
+      // 如果當前步驟是 choice 或 quiz，不能透過點擊對話框推進，需透過選項或彈窗
+      if (step && (step.type === 'choice' || step.type === 'quiz')) return;
+
+      active.queueIndex++;
+      renderVNCurrentStep();
+    }
+
+    function triggerVNQuizModal(stepObj) {
+      const active = state.vnActive;
+      const choicesEl = document.getElementById('vn-choices-area');
+      choicesEl.innerHTML = '';
+
+      const subjectQuestions = state.questions.filter(q => q.subject === active.reqSubject);
+      if (subjectQuestions.length === 0) {
+        document.getElementById('vn-dialogue-text').innerHTML = `<span class="text-amber-400 font-bold">當前科目題庫為 0 題！這次自動算你過關。</span>`;
+        const btn = document.createElement('button');
+        btn.className = "w-full p-2.5 bg-emerald-500 text-slate-950 font-black rounded-xl text-xs";
+        btn.innerText = "繼續下午班 ➔";
+        btn.onclick = (e) => { e.stopPropagation(); active.queueIndex++; renderVNCurrentStep(); };
+        choicesEl.appendChild(btn);
+        return;
+      }
+
+      const q = subjectQuestions[Math.floor(Math.random() * subjectQuestions.length)];
+      document.getElementById('vn-dialogue-text').innerHTML = `<span class="text-amber-400 font-bold">⚡【國考題隨機考】</span><br><b>${q.question}</b>`;
+
+      if (q.type === 'choice' || q.type === 'fill') {
+        q.options.forEach((opt, i) => {
+          const btn = document.createElement('button');
+          btn.className = "w-full p-2 bg-slate-800 hover:bg-slate-700 rounded-xl text-left text-xs text-slate-200 border border-slate-700 font-semibold";
+          btn.innerText = opt;
+          btn.onclick = (e) => {
+            e.stopPropagation();
+            if (i === q.correct) {
+              alert('✅ 答對了！獎金 +$100！'); active.earnedPay += 100;
+            } else {
+              alert('❌ 答錯了！扣款 $30！'); active.earnedPay -= 30;
+            }
+            active.queueIndex++; renderVNCurrentStep();
+          };
+          choicesEl.appendChild(btn);
+        });
+      } else if (q.type === 'tf') {
+        ['true', 'false'].forEach(val => {
+          const btn = document.createElement('button');
+          btn.className = "w-full p-2 bg-slate-800 hover:bg-slate-700 rounded-xl text-center text-xs text-slate-200 border border-slate-700 font-semibold";
+          btn.innerText = (val === 'true') ? '⭕ 正確' : '❌ 錯誤';
+          btn.onclick = (e) => {
+            e.stopPropagation();
+            if ((val === 'true') === q.tfCorrect) {
+              alert('✅ 答對了！獎金 +$100！'); active.earnedPay += 100;
+            } else {
+              alert('❌ 答錯了！扣款 $30！'); active.earnedPay -= 30;
+            }
+            active.queueIndex++; renderVNCurrentStep();
+          };
+          choicesEl.appendChild(btn);
+        });
+      } else {
+        const btn = document.createElement('button');
+        btn.className = "w-full p-2 bg-emerald-500 text-slate-950 font-black rounded-xl text-xs";
+        btn.innerText = "完成挑戰 ➔";
+        btn.onclick = (e) => { e.stopPropagation(); active.queueIndex++; renderVNCurrentStep(); };
+        choicesEl.appendChild(btn);
+      }
+    }
+
+    function finishShiftAndSettle() {
+      const active = state.vnActive;
+      let finalPay = 100 + active.earnedPay;
+
+      alert(`🎉 今日順利完成 ${active.unitName} 打卡下班！獲得津貼 $${finalPay}！`);
+
+      const unitId = active.unitId;
+      state.unitWorkCounts[unitId] = (state.unitWorkCounts[unitId] || 0) + 1;
+      state.userStats.money += finalPay;
+      saveState();
+
+      closeVNStory();
+      renderCareerUnits();
+    }
+
+    function closeVNStory() { document.getElementById('vn-modal').classList.add('hidden'); }
+
+    /* SHOP SYSTEM */
+    function renderShop() {
+      const container = document.getElementById('shop-items-container');
+      container.innerHTML = `
+        <div class="bg-slate-900 border border-slate-800 p-4 rounded-2xl flex justify-between items-center">
+          <div>
+            <h4 class="font-extrabold text-sm text-slate-100">☕ 專注大杯冰美式 (刷題與打卡收入 +50%)</h4>
+            <p class="text-xs text-slate-400">目前倍率：${state.userStats.bonusMultiplier}x</p>
+          </div>
+          <button onclick="buyUpgrade('multiplier')" class="px-3.5 py-2 bg-amber-500 text-slate-950 font-black text-xs rounded-xl">
+            $500 升級
+          </button>
+        </div>
+      `;
+    }
+
+    function buyUpgrade(type) {
+      if (type === 'multiplier') {
+        if (state.userStats.money < 500) { alert('金錢不足！請多去刷題或上班！'); return; }
+        state.userStats.money -= 500;
+        state.userStats.bonusMultiplier += 0.5;
+        saveState();
+        alert('🎉 升級成功！金幣收益倍率增加！');
+        renderShop();
+      }
+    }
+
+    /* EDITOR: QUIZ & VN STORY MANAGEMENT WITH RANK TIER & DEPT FILTERS */
+    function renderMatchingInputs() {
+      const container = document.getElementById('matching-inputs-container');
+      if (!container) return;
+      container.innerHTML = '';
+      for (let i = 0; i < 6; i++) {
+        const row = document.createElement('div');
+        row.className = "grid grid-cols-2 gap-2";
+        row.innerHTML = `
+          <input type="text" id="m-left-${i}" placeholder="組${i+1} 左欄" class="bg-slate-900 border border-slate-700 rounded-lg p-1.5 text-xs">
+          <input type="text" id="m-right-${i}" placeholder="組${i+1} 右欄對應" class="bg-slate-900 border border-slate-700 rounded-lg p-1.5 text-xs">
+        `;
+        container.appendChild(row);
+      }
+    }
+
+    function toggleEditorTypeFields() {
+      const type = document.getElementById('ed-type').value;
+      document.getElementById('group-options').classList.add('hidden');
+      document.getElementById('group-matching').classList.add('hidden');
+      document.getElementById('group-tf').classList.add('hidden');
+
+      if (type === 'choice' || type === 'fill') document.getElementById('group-options').classList.remove('hidden');
+      if (type === 'matching') {
+        document.getElementById('group-matching').classList.remove('hidden');
+        renderMatchingInputs();
+      }
+      if (type === 'tf') document.getElementById('group-tf').classList.remove('hidden');
+    }
+
+    function renderEditorQuestionList() {
+      const listContainer = document.getElementById('editor-question-list');
+      document.getElementById('ed-total-count').innerText = `${state.questions.length} 題`;
+      if (!listContainer) return;
+
+      if (state.questions.length === 0) {
+        listContainer.innerHTML = '<p class="text-slate-500 text-center py-3 text-xs">目前還沒有題目！請在上方建立或匯入 JSON！</p>';
+        return;
+      }
+
+      listContainer.innerHTML = '';
+      state.questions.forEach((q) => {
+        const item = document.createElement('div');
+        item.className = "bg-slate-900 border border-slate-800 p-2.5 rounded-lg flex justify-between items-center text-xs";
+        
+        const subName = SUBJECTS[q.subject] ? SUBJECTS[q.subject].name : q.subject;
+        const typeMap = { choice: '選擇題', matching: '配對題', fill: '填空題', tf: '是非題' };
+        
+        item.innerHTML = `
+          <div class="truncate pr-2 space-y-0.5 flex-1">
+            <div class="flex items-center gap-1.5">
+              <span class="bg-slate-800 text-emerald-400 px-1.5 py-0.5 rounded text-[10px] font-bold">${subName}</span>
+              <span class="text-slate-400 text-[10px]">${typeMap[q.type] || q.type}</span>
+            </div>
+            <p class="text-slate-200 font-semibold truncate">${q.question}</p>
+          </div>
+          <button onclick="deleteQuestion('${q.id}')" class="px-2 py-1 bg-rose-950 hover:bg-rose-900 text-rose-400 border border-rose-800 rounded font-bold text-[10px] shrink-0">
+            <i class="fa-solid fa-trash"></i> 刪除
+          </button>
+        `;
+        listContainer.appendChild(item);
+      });
+    }
+
+    function renderEditorStoryList() {
+      const listContainer = document.getElementById('editor-story-list');
+      const deptFilter = document.getElementById('filter-story-dept').value;
+      const tierFilter = document.getElementById('filter-story-tier').value;
+
+      let filtered = state.stories;
+      if (deptFilter !== 'all') {
+        filtered = filtered.filter(s => s.department === deptFilter);
+      }
+      if (tierFilter !== 'all') {
+        filtered = filtered.filter(s => s.rankTier === parseInt(tierFilter));
+      }
+
+      document.getElementById('ed-story-total-count').innerText = `${filtered.length} 篇 (總計 ${state.stories.length} 篇)`;
+      if (!listContainer) return;
+
+      if (filtered.length === 0) {
+        listContainer.innerHTML = '<p class="text-slate-500 text-center py-3 text-xs">沒有符合篩選條件的職場故事！</p>';
+        return;
+      }
+
+      listContainer.innerHTML = '';
+      filtered.forEach((st) => {
+        const item = document.createElement('div');
+        item.className = "bg-slate-900 border border-slate-800 p-2.5 rounded-lg flex justify-between items-center text-xs";
+        
+        const unitObj = WORK_UNITS.find(u => u.id === st.department);
+        const unitName = unitObj ? unitObj.name : (st.department || '未知科別');
+        const tierNames = ['見習生', '實習生', 'PGY', '放射師', '資深帶教老鳥'];
+        const tierBadge = `<span class="text-amber-400 font-bold">[Tier ${st.rankTier}: ${tierNames[st.rankTier] || '常規'}]</span>`;
+        
+        item.innerHTML = `
+          <div class="truncate pr-2 space-y-0.5 flex-1">
+            <div class="flex items-center gap-1.5">
+              <span class="bg-slate-800 text-emerald-400 px-1.5 py-0.5 rounded text-[10px] font-bold">${unitName}</span>
+              ${tierBadge}
+            </div>
+            <p class="text-slate-200 font-semibold truncate">${st.title}</p>
+          </div>
+          <button onclick="deleteStory('${st.id}')" class="px-2 py-1 bg-rose-950 hover:bg-rose-900 text-rose-400 border border-rose-800 rounded font-bold text-[10px] shrink-0">
+            <i class="fa-solid fa-trash"></i> 刪除
+          </button>
+        `;
+        listContainer.appendChild(item);
+      });
+    }
+
+    function deleteQuestion(id) {
+      if (confirm('確定要刪除這道題目嗎？')) {
+        state.questions = state.questions.filter(q => q.id !== id);
+        saveState(); renderEditorQuestionList(); renderQuizMap();
+      }
+    }
+
+    function deleteStory(id) {
+      if (confirm('確定要刪除這篇職場故事劇本嗎？')) {
+        state.stories = state.stories.filter(s => s.id !== id);
+        saveState(); renderEditorStoryList();
+      }
+    }
+
+    function saveQuestionToDB() {
+      const sub = document.getElementById('ed-subject').value;
+      const type = document.getElementById('ed-type').value;
+      const qText = document.getElementById('ed-text').value.trim();
+      const imgUrl = document.getElementById('ed-img').value.trim();
+      const exp = document.getElementById('ed-exp').value.trim();
+
+      if (!qText) { alert('請填寫題目敘述！'); return; }
+
+      let qObj = { id: 'q_' + Date.now(), subject: sub, type: type, question: qText, imgUrl: imgUrl, explanation: exp };
+
+      if (type === 'choice' || type === 'fill') {
+        const o0 = document.getElementById('ed-opt-0').value.trim();
+        const o1 = document.getElementById('ed-opt-1').value.trim();
+        const o2 = document.getElementById('ed-opt-2').value.trim();
+        const o3 = document.getElementById('ed-opt-3').value.trim();
+        qObj.options = [o0, o1, o2, o3].filter(o => o !== '');
+        qObj.correct = parseInt(document.getElementById('ed-correct-idx').value) || 0;
+      } else if (type === 'tf') {
+        qObj.tfCorrect = document.getElementById('ed-tf-correct').value === 'true';
+      } else if (type === 'matching') {
+        let pairs = [];
+        for (let i = 0; i < 6; i++) {
+          const l = document.getElementById(`m-left-${i}`).value.trim();
+          const r = document.getElementById(`m-right-${i}`).value.trim();
+          if (l && r) pairs.push({ left: l, right: r });
+        }
+        if (pairs.length === 0) { alert('請至少填寫 1 組對應答案！'); return; }
+        qObj.pairs = pairs;
+      }
+
+      state.questions.unshift(qObj); saveState();
+      alert('✅ 題目成功儲存至本地庫！');
+      document.getElementById('ed-text').value = '';
+      renderEditorQuestionList(); renderQuizMap();
+    }
+
+    function exportQuizJSON() {
+      const dataStr = "data:text/json;charset=utf-8," + encodeURIComponent(JSON.stringify(state.questions, null, 2));
+      const dl = document.createElement('a'); dl.setAttribute("href", dataStr); dl.setAttribute("download", "radingo_questions.json"); dl.click();
+    }
+
+    function importQuizJSON(e) {
+      const file = e.target.files[0]; if (!file) return;
+      const r = new FileReader();
+      r.onload = function(evt) {
+        try {
+          state.questions = JSON.parse(evt.target.result); saveState();
+          alert(`🎉 成功匯入 ${state.questions.length} 題題庫！`);
+          renderEditorQuestionList(); renderQuizMap();
+        } catch (err) { alert('匯入失敗：JSON 格式錯誤！'); }
+      };
+      r.readAsText(file);
+    }
+
+    function exportStoryJSON() {
+      const dataStr = "data:text/json;charset=utf-8," + encodeURIComponent(JSON.stringify(state.stories, null, 2));
+      const dl = document.createElement('a'); dl.setAttribute("href", dataStr); dl.setAttribute("download", "radingo_stories.json"); dl.click();
+    }
+
+    function importStoryJSON(e) {
+      const file = e.target.files[0]; if (!file) return;
+      const r = new FileReader();
+      r.onload = function(evt) {
+        try {
+          const imported = JSON.parse(evt.target.result);
+          if (!Array.isArray(imported)) { alert('匯入失敗：JSON 格式必須為陣列！'); return; }
+          state.stories = imported;
+          saveState();
+          alert(`🎉 成功匯入 ${state.stories.length} 篇 VN 職場故事劇本！`);
+          renderEditorStoryList();
+        } catch (err) { alert('匯入失敗：JSON 格式錯誤！'); }
+      };
+      r.readAsText(file);
+    }
+
+    function openModal(id) { 
+      document.getElementById(id).classList.remove('hidden'); 
+      if (id === 'modal-editor') {
+        switchEditorTab('quiz');
+      }
+    }
+    function closeModal(id) { document.getElementById(id).classList.add('hidden'); }
+    function shuffle(arr) { return arr.sort(() => Math.random() - 0.5); }
+
+    window.onload = function() { loadState(); renderQuizMap(); renderMatchingInputs(); };
+  </script>
+</body>
+</html>
