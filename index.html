@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Radingo - 放射師國考與職場物語 (RPG 深度大升級版)</title>
+  <title>Radingo - 放射師國考與職場物語 (發言人介面升級版)</title>
   <script src="https://cdn.tailwindcss.com"></script>
   <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
@@ -152,7 +152,7 @@
   <div id="vn-modal" class="hidden fixed inset-0 bg-black/90 backdrop-blur-md z-50 flex flex-col justify-end p-4">
     <div class="max-w-md w-full mx-auto space-y-3 vn-animate pb-6">
       
-      <!-- Character Header with Dynamic Avatar -->
+      <!-- Character Header with Dynamic Avatar & Green Tag -->
       <div class="flex items-end justify-between px-2">
         <div class="flex items-center space-x-3">
           <div id="vn-char-avatar" class="w-14 h-14 rounded-2xl bg-gradient-to-tr from-sky-600 to-indigo-700 border-2 border-sky-400 flex items-center justify-center text-white text-2xl shadow-lg">
@@ -473,7 +473,7 @@
       {
         id: 'xr_tier_4', department: 'xray', rankTier: 4, title: '👑 資深帶教老鳥：菜鳥實習生的震撼教育',
         steps: [
-          { speaker: "{name} (老鳥)", text: "身為資深帶教放射師，{pronoun}一進辦公室就看到新來的實習生正拿著手機滑手遊。" },
+          { speaker: "{name}", text: "身為資深帶教放射師，{pronoun}一進辦公室就看到新來的實習生正拿著手機滑手遊。" },
           { speaker: "新進實習生", text: "「學長/學姊早...今天好像病人不多耶？」" },
           {
             type: "choice",
@@ -483,7 +483,7 @@
                 txt: "「把這本 1200 頁放射學原文書拿去，今天內背完第一章！」",
                 resultSteps: [
                   { speaker: "新進實習生", text: "「啊？！1200頁...學長/學姊我頭好痛...」" },
-                  { speaker: "{name} (老鳥)", text: "「頭痛代表你在思考，背不完不准吃便當！」" }
+                  { speaker: "{name}", text: "「頭痛代表你在思考，背不完不准吃便當！」" }
                 ]
               },
               {
@@ -492,12 +492,12 @@
                 setFlag: "BULLY_INTERN",
                 resultSteps: [
                   { speaker: "新進實習生", text: "「遵命！我馬上跑腿！」" },
-                  { speaker: "{name} (老鳥)", text: "「很好，這才是優秀{junior}該有的態度。」" }
+                  { speaker: "{name}", text: "「很好，這才是優秀{junior}該有的態度。」" }
                 ]
               }
             ]
           },
-          { speaker: "{name} (老鳥)", text: "「中午了，考驗你基本功的時候到了。」" },
+          { speaker: "{name}", text: "「中午了，考驗你基本功的時候到了。」" },
           { type: "quiz", text: "中午吃飯時間，{pronoun}決定測驗實習生有沒有偷懶背國考題：" },
           {
             type: "flagCheck",
@@ -549,33 +549,32 @@
     };
 
     function loadState() {
-      const q = localStorage.getItem('radingo_v18_q');
+      const q = localStorage.getItem('radingo_v19_q');
       state.questions = q ? JSON.parse(q) : JSON.parse(JSON.stringify(DEFAULT_QUESTIONS));
 
-      const stStore = localStorage.getItem('radingo_v18_stories');
+      const stStore = localStorage.getItem('radingo_v19_stories');
       state.stories = stStore ? JSON.parse(stStore) : JSON.parse(JSON.stringify(DEFAULT_STORY_DATABASE));
 
-      const st = localStorage.getItem('radingo_v18_st'); 
+      const st = localStorage.getItem('radingo_v19_st'); 
       if (st) {
         state.userStats = JSON.parse(st);
       } else {
-        // 預設初次啟動彈出創角視窗
         setTimeout(() => openModal('modal-profile'), 500);
       }
 
-      const su = localStorage.getItem('radingo_v18_su'); if (su) state.subjectUnits = JSON.parse(su);
-      const uw = localStorage.getItem('radingo_v18_uw'); if (uw) state.unitWorkCounts = JSON.parse(uw);
-      const fl = localStorage.getItem('radingo_v18_fl'); if (fl) state.storyFlags = JSON.parse(fl);
+      const su = localStorage.getItem('radingo_v19_su'); if (su) state.subjectUnits = JSON.parse(su);
+      const uw = localStorage.getItem('radingo_v19_uw'); if (uw) state.unitWorkCounts = JSON.parse(uw);
+      const fl = localStorage.getItem('radingo_v19_fl'); if (fl) state.storyFlags = JSON.parse(fl);
       updateStatsUI();
     }
 
     function saveState() {
-      localStorage.setItem('radingo_v18_q', JSON.stringify(state.questions));
-      localStorage.setItem('radingo_v18_stories', JSON.stringify(state.stories));
-      localStorage.setItem('radingo_v18_st', JSON.stringify(state.userStats));
-      localStorage.setItem('radingo_v18_su', JSON.stringify(state.subjectUnits));
-      localStorage.setItem('radingo_v18_uw', JSON.stringify(state.unitWorkCounts));
-      localStorage.setItem('radingo_v18_fl', JSON.stringify(state.storyFlags));
+      localStorage.setItem('radingo_v19_q', JSON.stringify(state.questions));
+      localStorage.setItem('radingo_v19_stories', JSON.stringify(state.stories));
+      localStorage.setItem('radingo_v19_st', JSON.stringify(state.userStats));
+      localStorage.setItem('radingo_v19_su', JSON.stringify(state.subjectUnits));
+      localStorage.setItem('radingo_v19_uw', JSON.stringify(state.unitWorkCounts));
+      localStorage.setItem('radingo_v19_fl', JSON.stringify(state.storyFlags));
       updateStatsUI();
     }
 
@@ -891,7 +890,6 @@
         return;
       }
 
-      // 隨機抽樣 (Math.random)
       const randomStory = pool[Math.floor(Math.random() * pool.length)];
 
       state.vnActive = {
@@ -922,6 +920,64 @@
         .replace(/\{junior\}/g, junior);
     }
 
+    /* 【發言人與頭像分類引擎】 */
+    function getSpeakerCategory(speakerName, playerName) {
+      // 1. 若為玩家自己說話
+      if (speakerName === playerName || speakerName.includes(playerName) || speakerName.includes("主角") || speakerName.includes("{name}")) {
+        return {
+          title: playerName, // 綠色標籤直接顯示真實名字，絕對不出現「主角」
+          bg: 'from-emerald-600 to-teal-700',
+          border: 'border-emerald-400',
+          icon: state.userStats.gender === 'female' ? 'fa-user-graduate' : 'fa-user-nurse'
+        };
+      }
+      // 2. 若為旁白或系統
+      if (speakerName === "旁白" || speakerName === "系統") {
+        return {
+          title: speakerName,
+          bg: 'from-slate-700 to-slate-800',
+          border: 'border-slate-500',
+          icon: 'fa-bullhorn'
+        };
+      }
+      // 3. 若為病人分類
+      const patientKeywords = ['病人', '少年', '阿伯', '阿姨', '醉漢', '家屬', '少婦', '伯伯', '患者'];
+      const isPatient = patientKeywords.some(kw => speakerName.includes(kw));
+      if (isPatient) {
+        return {
+          title: speakerName, // 綠色標籤顯示 NPC 身分與職稱
+          bg: 'from-rose-600 to-red-700',
+          border: 'border-rose-400',
+          icon: 'fa-user-injured' // 病人專屬頭像 (🤒 / 受傷圖標)
+        };
+      }
+      // 4. 若為主管道具/院長
+      if (speakerName.includes('主管') || speakerName.includes('主任') || speakerName.includes('院長')) {
+        return {
+          title: speakerName,
+          bg: 'from-purple-600 to-indigo-700',
+          border: 'border-purple-400',
+          icon: 'fa-user-tie' // 主管領帶圖標 (👔)
+        };
+      }
+      // 5. 若為工程師
+      if (speakerName.includes('工程師') || speakerName.includes('維修')) {
+        return {
+          title: speakerName,
+          bg: 'from-amber-600 to-yellow-700',
+          border: 'border-amber-400',
+          icon: 'fa-screwdriver-wrench' // 工程師工具圖標 (🔧)
+        };
+      }
+      // 6. 預設非病人 NPC (學姐、醫師、護理師、老鳥等)
+      return {
+        title: speakerName, // 綠色標籤直接顯示 NPC 身分與職稱 (例如：「學姐」、「醫師」)
+        bg: 'from-sky-600 to-blue-700',
+        border: 'border-sky-400',
+        icon: 'fa-user-doctor' // 醫護/學姐圖標 (🧑‍⚕️)
+      };
+    }
+
     function renderVNCurrentStep() {
       const active = state.vnActive;
       const choicesEl = document.getElementById('vn-choices-area');
@@ -936,27 +992,26 @@
       document.getElementById('vn-story-title').innerText = active.storyTitle;
 
       let speakerRaw = step.speaker || "旁白";
-      const speakerName = formatVNText(speakerRaw);
-      document.getElementById('vn-speaker-name').innerText = speakerName;
-      document.getElementById('vn-speaker-title').innerText = speakerName.includes("老鳥") || speakerName === state.userStats.name ? "主角" : "NPC / 旁白";
+      const formattedSpeaker = formatVNText(speakerRaw);
+      const playerName = state.userStats.name || "實習生A";
 
-      // 【動態頭像系統】根據發言人動態切換頭像與 Icon
+      // 取得智慧分類結果（處理綠色標籤與頭像）
+      const speakerInfo = getSpeakerCategory(formattedSpeaker, playerName);
+
+      // 【Bug 修正點】：綠色標籤（#vn-speaker-title）嚴格顯示真實名字或正確的 NPC 身分/職稱
+      document.getElementById('vn-speaker-title').innerText = speakerInfo.title;
+      document.getElementById('vn-speaker-name').innerText = speakerInfo.title;
+
+      // 【動態頭像與樣式切換】
       const avatarContainer = document.getElementById('vn-char-avatar');
-      const avatarIcon = document.getElementById('vn-avatar-icon');
+      avatarContainer.className = `w-14 h-14 rounded-2xl bg-gradient-to-tr ${speakerInfo.bg} border-2 ${speakerInfo.border} flex items-center justify-center text-white text-2xl shadow-lg`;
       
-      if (speakerName === state.userStats.name || speakerName.includes(state.userStats.name) || speakerName.includes("主角")) {
-        avatarContainer.className = "w-14 h-14 rounded-2xl bg-gradient-to-tr from-emerald-600 to-teal-700 border-2 border-emerald-400 flex items-center justify-center text-white text-2xl shadow-lg";
-        avatarIcon.className = state.userStats.gender === 'female' ? "fa-solid fa-user-graduate" : "fa-solid fa-user-nurse";
-      } else if (speakerName.includes("學姐") || speakerName.includes("老鳥")) {
-        avatarContainer.className = "w-14 h-14 rounded-2xl bg-gradient-to-tr from-amber-600 to-orange-700 border-2 border-amber-400 flex items-center justify-center text-white text-2xl shadow-lg";
-        avatarIcon.className = "fa-solid fa-user-doctor";
-      } else {
-        avatarContainer.className = "w-14 h-14 rounded-2xl bg-gradient-to-tr from-sky-600 to-indigo-700 border-2 border-sky-400 flex items-center justify-center text-white text-2xl shadow-lg";
-        avatarIcon.className = "fa-solid fa-user-injured";
-      }
+      const avatarIcon = document.getElementById('vn-avatar-icon');
+      avatarIcon.className = `fa-solid ${speakerInfo.icon}`;
 
       if (step.type === 'choice') {
-        document.getElementById('vn-speaker-name').innerText = "抉擇時刻";
+        document.getElementById('vn-speaker-title').innerText = "抉擇時刻";
+        document.getElementById('vn-speaker-name').innerText = "請選擇";
         document.getElementById('vn-dialogue-text').innerText = formatVNText(step.text || "請做出您的職場抉擇：");
         
         step.choices.forEach(c => {
@@ -989,13 +1044,15 @@
         });
 
       } else if (step.type === 'quiz') {
-        document.getElementById('vn-speaker-name').innerText = "午休抽考";
+        document.getElementById('vn-speaker-title').innerText = "午休抽考";
+        document.getElementById('vn-speaker-name').innerText = "國考考題";
         document.getElementById('vn-dialogue-text').innerText = formatVNText(step.text || "午休國考題時間！");
         triggerVNQuizModal(step);
 
       } else if (step.type === 'flagCheck') {
         const hasF = state.storyFlags[step.flag] || active.tempFlags[step.flag];
-        document.getElementById('vn-speaker-name').innerText = "職場因果結算";
+        document.getElementById('vn-speaker-title').innerText = "因果結算";
+        document.getElementById('vn-speaker-name').innerText = "事件結算";
         if (hasF) {
           document.getElementById('vn-dialogue-text').innerHTML = `<span class="text-rose-400 font-bold">${formatVNText(step.matchText)}</span>`;
           active.earnedPay -= 80;
