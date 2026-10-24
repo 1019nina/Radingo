@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Radingo - 放射師國考與職場物語 (VN 視覺小說終極版)</title>
+  <title>Radingo - 放射師國考與職場物語 (RPG 深度大升級版)</title>
   <script src="https://cdn.tailwindcss.com"></script>
   <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
@@ -34,12 +34,14 @@
 </head>
 <body class="min-h-screen flex flex-col justify-between">
 
-  <!-- TOP HEADER (僅保留金錢功能) -->
+  <!-- TOP HEADER (金錢與身分設定按鈕) -->
   <header class="sticky top-0 z-40 bg-slate-900/90 backdrop-blur border-b border-slate-800 px-4 py-3">
     <div class="max-w-md mx-auto flex justify-between items-center">
       <div class="flex items-center space-x-2">
         <span class="text-2xl font-black text-emerald-400">Radingo</span>
-        <span class="bg-emerald-950 text-emerald-400 text-[10px] px-2 py-0.5 rounded-full font-bold border border-emerald-800">VN 視覺小說版</span>
+        <button onclick="openModal('modal-profile')" class="bg-slate-800 hover:bg-slate-700 text-sky-300 text-[10px] px-2.5 py-1 rounded-full font-bold border border-slate-700 flex items-center gap-1.5 transition-colors">
+          <i class="fa-solid fa-user-gear"></i> <span id="header-char-label">實習生A (男)</span>
+        </button>
       </div>
 
       <div class="flex items-center space-x-3 font-extrabold text-sm">
@@ -122,8 +124,8 @@
     <!-- VIEW 2: CAREER STORY MAP -->
     <div id="view-career" class="hidden space-y-4">
       <div class="bg-slate-900 border border-slate-800 rounded-2xl p-4 text-center space-y-1">
-        <span class="text-xs text-emerald-400 font-extrabold bg-emerald-950 px-2.5 py-0.5 rounded-full border border-emerald-800">🏥 5大職等 VN 故事 JSON 庫 (隨機抽樣)</span>
-        <h2 class="text-base font-black text-white mt-1">選擇指定科別，系統自動依當前職等隨機抽樣視覺小說劇本！</h2>
+        <span class="text-xs text-emerald-400 font-extrabold bg-emerald-950 px-2.5 py-0.5 rounded-full border border-emerald-800">🏥 5大職等 RPG 故事區 (嚴格職等過濾)</span>
+        <h2 class="text-base font-black text-white mt-1">選擇指定科別，系統自動依當前累積職等嚴格抽樣劇本！</h2>
         <p class="text-[11px] text-slate-400 mt-1">
           晉升制度：0~19(見習生) ➔ 20~49(實習生) ➔ 50~99(PGY) ➔ 100~199(放射師) ➔ 200+(資深帶教老鳥)
         </p>
@@ -146,15 +148,15 @@
 
   </main>
 
-  <!-- VN STORY OVERLAY (視覺小說引擎介面) -->
+  <!-- VN STORY OVERLAY (智慧說話者與動態頭像系統) -->
   <div id="vn-modal" class="hidden fixed inset-0 bg-black/90 backdrop-blur-md z-50 flex flex-col justify-end p-4">
     <div class="max-w-md w-full mx-auto space-y-3 vn-animate pb-6">
       
-      <!-- Character Header -->
+      <!-- Character Header with Dynamic Avatar -->
       <div class="flex items-end justify-between px-2">
         <div class="flex items-center space-x-3">
           <div id="vn-char-avatar" class="w-14 h-14 rounded-2xl bg-gradient-to-tr from-sky-600 to-indigo-700 border-2 border-sky-400 flex items-center justify-center text-white text-2xl shadow-lg">
-            <i class="fa-solid fa-user-doctor"></i>
+            <i id="vn-avatar-icon" class="fa-solid fa-user-doctor"></i>
           </div>
           <div>
             <span id="vn-speaker-title" class="text-[10px] text-emerald-400 font-extrabold bg-emerald-950 px-2 py-0.5 rounded border border-emerald-800">旁白</span>
@@ -166,7 +168,7 @@
         </button>
       </div>
 
-      <!-- Dialogue Box (點擊可推進對話) -->
+      <!-- Dialogue Box -->
       <div onclick="handleVNDialogueClick()" class="bg-slate-900/95 border-2 border-slate-700 rounded-2xl p-5 shadow-2xl space-y-4 relative overflow-hidden cursor-pointer hover:border-sky-500 transition-colors">
         <div class="absolute -right-6 -bottom-6 text-slate-800 text-8xl pointer-events-none">
           <i class="fa-solid fa-quote-right"></i>
@@ -204,11 +206,45 @@
     </div>
   </footer>
 
-  <!-- MODAL: DUAL EDITOR (QUIZ DB & VN STORY JSON DB WITH RANK TIER FILTERS) -->
+  <!-- MODAL 1: CHARACTER PROFILE (創角與身分設定系統) -->
+  <div id="modal-profile" class="hidden fixed inset-0 bg-black/80 backdrop-blur-sm z-50 flex items-center justify-center p-4">
+    <div class="bg-slate-900 border border-slate-800 rounded-2xl w-full max-w-sm p-5 space-y-4 shadow-2xl">
+      <div class="flex justify-between items-center border-b border-slate-800 pb-3">
+        <h3 class="font-black text-sm text-white flex items-center gap-2">
+          <i class="fa-solid fa-id-card text-emerald-400"></i> 創角與身分設定
+        </h3>
+        <button onclick="closeModal('modal-profile')" class="text-slate-400 hover:text-white"><i class="fa-solid fa-xmark text-lg"></i></button>
+      </div>
+
+      <div class="space-y-3 text-xs">
+        <div>
+          <label class="text-slate-400 block mb-1 font-bold">角色名字</label>
+          <input type="text" id="input-char-name" value="實習生A" class="w-full bg-slate-800 border border-slate-700 rounded-lg p-2.5 text-slate-100 font-bold">
+        </div>
+        <div>
+          <label class="text-slate-400 block mb-1 font-bold">性別代詞設定</label>
+          <div class="grid grid-cols-2 gap-2">
+            <button type="button" id="btn-gender-male" onclick="setGenderSelection('male')" class="p-2.5 rounded-lg border font-bold text-center transition-all bg-sky-600 border-sky-500 text-white">
+              👨 男性 (你 / 學弟)
+            </button>
+            <button type="button" id="btn-gender-female" onclick="setGenderSelection('female')" class="p-2.5 rounded-lg border font-bold text-center transition-all bg-slate-800 border-slate-700 text-slate-300">
+              👩 女性 (妳 / 學妹)
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <button onclick="saveCharacterProfile()" class="w-full py-3 bg-emerald-500 hover:bg-emerald-400 text-slate-950 font-black rounded-xl text-xs btn-du0">
+        儲存身分設定
+      </button>
+    </div>
+  </div>
+
+  <!-- MODAL 2: DUAL EDITOR (QUIZ & VN STORY DB) -->
   <div id="modal-editor" class="hidden fixed inset-0 bg-black/80 backdrop-blur-sm z-50 flex items-center justify-center p-4">
     <div class="bg-slate-900 border border-slate-800 rounded-2xl w-full max-w-md max-h-[85vh] flex flex-col overflow-hidden">
       <div class="p-4 border-b border-slate-800 flex justify-between items-center bg-slate-800/50">
-        <h3 class="font-black text-sm text-white">🛠️ 雙效資料庫與 VN 故事 JSON 管理員</h3>
+        <h3 class="font-black text-sm text-white">🛠️ 雙效資料庫與 VN 故事管理員</h3>
         <button onclick="closeModal('modal-editor')" class="text-slate-400 hover:text-white"><i class="fa-solid fa-xmark text-lg"></i></button>
       </div>
 
@@ -309,7 +345,7 @@
         <div id="ed-subview-story" class="hidden space-y-4">
           <div class="bg-slate-800 p-3 rounded-xl space-y-2 border border-slate-700">
             <span class="font-bold text-sky-400">📖 職場 VN 故事 JSON 檔案管理</span>
-            <p class="text-[11px] text-slate-400">支援多步驟 `steps`、分支 `choice`（含 `resultSteps`）與國考題聯動。</p>
+            <p class="text-[11px] text-slate-400">支援多步驟 `steps`、分支 `choice`（含 `resultSteps`）與 5 大職等過濾。</p>
             <div class="grid grid-cols-2 gap-2 pt-1">
               <button onclick="exportStoryJSON()" class="py-2 bg-slate-700 hover:bg-slate-600 rounded-lg font-bold">匯出故事庫 JSON</button>
               <label class="py-2 bg-sky-600 hover:bg-sky-500 rounded-lg font-bold text-center cursor-pointer">
@@ -394,13 +430,13 @@
       { id: 'rt', name: 'RT 放射線治療', reqSubject: 'therapy', icon: 'fa-crosshairs' }
     ];
 
-    /* 預設多步驟 Visual Novel 劇本庫 (支援 steps 陣列、choice 分支、quiz 國考題、flagCheck 客訴) */
+    /* 預設多步驟 VN 劇本庫 (支援 {name}, {pronoun}, {junior} 智慧代詞) */
     const DEFAULT_STORY_DATABASE = [
       {
         id: 'xr_tier_0', department: 'xray', rankTier: 0, title: '初入 X 光控制室的震驚',
         steps: [
           { speaker: "學姐", text: "走進 X 光控制室，學姐看著新聞搖頭抱怨：「現在的小年輕騎腳踏車摔斷手，送到醫院第一件事不是哭，是叫同伴拿手機拍照打卡發限動！」" },
-          { speaker: "主角", text: "「真的假的！現在的年輕人太誇張了吧...」" },
+          { speaker: "{name}", text: "「真的假的！{pronoun}覺得現在的年輕人太誇張了吧...」" },
           {
             type: "choice",
             text: "此時，一位滑板少年推進來骨折的手肘，旁支朋友舉起手機喊著要發限動標記醫院。",
@@ -409,7 +445,7 @@
                 txt: "「不行喔，醫療影像有資安法規，請遵守規定！」",
                 resultSteps: [
                   { speaker: "滑板少年", text: "「切，開個玩笑嘛，跩什麼跩...」" },
-                  { speaker: "主角", text: "妳嚴肅地堅持規定，順利完成擺位。" }
+                  { speaker: "{name}", text: "{pronoun}嚴肅地堅持規定，順利完成擺位。" }
                 ]
               },
               {
@@ -418,7 +454,7 @@
                 setFlag: "RAGED_PATIENT",
                 resultSteps: [
                   { speaker: "滑板少年", text: "「哇！這醫院服務太貼心了吧！發限動囉！」" },
-                  { speaker: "主角", text: "妳順利幫他拍完了 X 光片。" }
+                  { speaker: "{name}", text: "{pronoun}順利幫他拍完了 X 光片。" }
                 ]
               }
             ]
@@ -428,48 +464,48 @@
           {
             type: "flagCheck",
             flag: "RAGED_PATIENT",
-            matchText: "下午那個滑板少年真的上網投訴妳態度輕浮！扣除獎金 $80！",
-            normalText: "下午主管經過控制室誇獎妳服務態度良好！獲得獎金 +$50！"
+            matchText: "下午那個滑板少年真的上網投訴{pronoun}態度輕浮！扣除獎金 $80！",
+            normalText: "下午主管經過控制室誇獎{pronoun}服務態度良好！獲得獎金 +$50！"
           },
-          { speaker: "旁白", text: "一整天的忙碌終於結束，順利打卡下班！" }
+          { speaker: "旁白", text: "一整天的忙碌終於結束，{name}順利打卡下班！" }
         ]
       },
       {
         id: 'xr_tier_4', department: 'xray', rankTier: 4, title: '👑 資深帶教老鳥：菜鳥實習生的震撼教育',
         steps: [
-          { speaker: "老鳥 (妳)", text: "身為資深帶教放射師，妳一進辦公室就看到新來的實習生正拿著手機滑手遊。" },
-          { speaker: "新進實習生", text: "「學長/學姐早...今天好像病人不多耶？」" },
+          { speaker: "{name} (老鳥)", text: "身為資深帶教放射師，{pronoun}一進辦公室就看到新來的實習生正拿著手機滑手遊。" },
+          { speaker: "新進實習生", text: "「學長/學姊早...今天好像病人不多耶？」" },
           {
             type: "choice",
-            text: "妳冷笑一聲，決定給他一個難忘的震撼教育：",
+            text: "{pronoun}冷笑一聲，決定給{junior}一個難忘的震撼教育：",
             choices: [
               {
                 txt: "「把這本 1200 頁放射學原文書拿去，今天內背完第一章！」",
                 resultSteps: [
-                  { speaker: "新進實習生", text: "「啊？！1200頁...學姐我頭好痛...」" },
-                  { speaker: "老鳥 (妳)", text: "「頭痛代表你在思考，背不完不准吃便當！」" }
+                  { speaker: "新進實習生", text: "「啊？！1200頁...學長/學姊我頭好痛...」" },
+                  { speaker: "{name} (老鳥)", text: "「頭痛代表你在思考，背不完不准吃便當！」" }
                 ]
               },
               {
-                txt: "【花費 $20】「先去幫學姐買杯大杯冰美式，順便把發霉的鉛衣洗乾淨。」",
+                txt: "【花費 $20】「先去幫{pronoun}買杯大杯冰美式，順便把發霉的鉛衣洗乾淨。」",
                 payCost: 20,
                 setFlag: "BULLY_INTERN",
                 resultSteps: [
                   { speaker: "新進實習生", text: "「遵命！我馬上跑腿！」" },
-                  { speaker: "老鳥 (妳)", text: "「很好，這才是優秀實習生該有的態度。」" }
+                  { speaker: "{name} (老鳥)", text: "「很好，這才是優秀{junior}該有的態度。」" }
                 ]
               }
             ]
           },
-          { speaker: "老鳥 (妳)", text: "「中午了，考驗你基本功的時候到了。」" },
-          { type: "quiz", text: "中午吃飯時間，妳決定測驗實習生有沒有偷懶背國考題：" },
+          { speaker: "{name} (老鳥)", text: "「中午了，考驗你基本功的時候到了。」" },
+          { type: "quiz", text: "中午吃飯時間，{pronoun}決定測驗實習生有沒有偷懶背國考題：" },
           {
             type: "flagCheck",
             flag: "BULLY_INTERN",
-            matchText: "實習生因為被妳使喚跑腿一整天，淚灑控制室寫了報告！扣除津貼 $80！",
-            normalText: "實習生在妳的鐵血訓練下進步神速，主任大力稱讚妳帶教有方！獎金 +$120！"
+            matchText: "實習生因為被{pronoun}使喚跑腿一整天，淚灑控制室寫了報告！扣除津貼 $80！",
+            normalText: "實習生在{pronoun}的鐵血訓練下進步神速，主任大力稱讚帶教有方！獎金 +$120！"
           },
-          { speaker: "旁白", text: "順利結束帶教日，看著實習生敬畏的眼神，滿意地打卡下班！" }
+          { speaker: "旁白", text: "順利結束帶教日，看著實習生敬畏的眼神，{name}滿意地打卡下班！" }
         ]
       }
     ];
@@ -503,7 +539,7 @@
     let state = {
       questions: [],
       stories: [],
-      userStats: { money: 200, bonusMultiplier: 1.0 },
+      userStats: { money: 200, bonusMultiplier: 1.0, name: '實習生A', gender: 'male', initialized: false },
       subjectUnits: { basic: 0, physics: 0, equip: 0, diag: 0, therapy: 0, nuc: 0 },
       unitWorkCounts: {},
       storyFlags: {},
@@ -513,31 +549,66 @@
     };
 
     function loadState() {
-      const q = localStorage.getItem('radingo_v17_q');
+      const q = localStorage.getItem('radingo_v18_q');
       state.questions = q ? JSON.parse(q) : JSON.parse(JSON.stringify(DEFAULT_QUESTIONS));
 
-      const stStore = localStorage.getItem('radingo_v17_stories');
+      const stStore = localStorage.getItem('radingo_v18_stories');
       state.stories = stStore ? JSON.parse(stStore) : JSON.parse(JSON.stringify(DEFAULT_STORY_DATABASE));
 
-      const st = localStorage.getItem('radingo_v17_st'); if (st) state.userStats = JSON.parse(st);
-      const su = localStorage.getItem('radingo_v17_su'); if (su) state.subjectUnits = JSON.parse(su);
-      const uw = localStorage.getItem('radingo_v17_uw'); if (uw) state.unitWorkCounts = JSON.parse(uw);
-      const fl = localStorage.getItem('radingo_v17_fl'); if (fl) state.storyFlags = JSON.parse(fl);
+      const st = localStorage.getItem('radingo_v18_st'); 
+      if (st) {
+        state.userStats = JSON.parse(st);
+      } else {
+        // 預設初次啟動彈出創角視窗
+        setTimeout(() => openModal('modal-profile'), 500);
+      }
+
+      const su = localStorage.getItem('radingo_v18_su'); if (su) state.subjectUnits = JSON.parse(su);
+      const uw = localStorage.getItem('radingo_v18_uw'); if (uw) state.unitWorkCounts = JSON.parse(uw);
+      const fl = localStorage.getItem('radingo_v18_fl'); if (fl) state.storyFlags = JSON.parse(fl);
       updateStatsUI();
     }
 
     function saveState() {
-      localStorage.setItem('radingo_v17_q', JSON.stringify(state.questions));
-      localStorage.setItem('radingo_v17_stories', JSON.stringify(state.stories));
-      localStorage.setItem('radingo_v17_st', JSON.stringify(state.userStats));
-      localStorage.setItem('radingo_v17_su', JSON.stringify(state.subjectUnits));
-      localStorage.setItem('radingo_v17_uw', JSON.stringify(state.unitWorkCounts));
-      localStorage.setItem('radingo_v17_fl', JSON.stringify(state.storyFlags));
+      localStorage.setItem('radingo_v18_q', JSON.stringify(state.questions));
+      localStorage.setItem('radingo_v18_stories', JSON.stringify(state.stories));
+      localStorage.setItem('radingo_v18_st', JSON.stringify(state.userStats));
+      localStorage.setItem('radingo_v18_su', JSON.stringify(state.subjectUnits));
+      localStorage.setItem('radingo_v18_uw', JSON.stringify(state.unitWorkCounts));
+      localStorage.setItem('radingo_v18_fl', JSON.stringify(state.storyFlags));
       updateStatsUI();
     }
 
     function updateStatsUI() {
       document.getElementById('stat-money').innerText = state.userStats.money;
+      const genderStr = state.userStats.gender === 'female' ? '女' : '男';
+      document.getElementById('header-char-label').innerText = `${state.userStats.name} (${genderStr})`;
+    }
+
+    /* CHARACTER PROFILE SETUP */
+    let tempGender = 'male';
+    function setGenderSelection(g) {
+      tempGender = g;
+      const bMale = document.getElementById('btn-gender-male');
+      const bFemale = document.getElementById('btn-gender-female');
+      if (g === 'male') {
+        bMale.className = "p-2.5 rounded-lg border font-bold text-center transition-all bg-sky-600 border-sky-500 text-white";
+        bFemale.className = "p-2.5 rounded-lg border font-bold text-center transition-all bg-slate-800 border-slate-700 text-slate-300";
+      } else {
+        bFemale.className = "p-2.5 rounded-lg border font-bold text-center transition-all bg-pink-600 border-pink-500 text-white";
+        bMale.className = "p-2.5 rounded-lg border font-bold text-center transition-all bg-slate-800 border-slate-700 text-slate-300";
+      }
+    }
+
+    function saveCharacterProfile() {
+      const nameInput = document.getElementById('input-char-name').value.trim();
+      if (!nameInput) { alert('請輸入有效的角色名字！'); return; }
+      state.userStats.name = nameInput;
+      state.userStats.gender = tempGender;
+      state.userStats.initialized = true;
+      saveState();
+      closeModal('modal-profile');
+      alert(`🎉 身分設定成功！歡迎開始職場物語，${state.userStats.name}！`);
     }
 
     function switchTab(tab) {
@@ -776,7 +847,7 @@
       }
     }
 
-    /* CAREER STORY ENGINE (Visual Novel Multi-Step Queue with Rank Tiers & Math.random sampling) */
+    /* CAREER STORY ENGINE (嚴格職等過濾與智慧發言人/頭像系統) */
     function renderCareerUnits() {
       const container = document.getElementById('career-units-list');
       container.innerHTML = '';
@@ -812,10 +883,13 @@
       const workCount = state.unitWorkCounts[unitId] || 0;
       const currentTier = getRankTier(workCount);
 
-      // 嚴格依據科別與當前職等篩選故事
+      // 【嚴格職等過濾】必須嚴格符合當前科別與玩家目前的職等 (rankTier)
       let pool = state.stories.filter(s => s.department === unitId && s.rankTier === currentTier);
-      if (pool.length === 0) pool = state.stories.filter(s => s.department === unitId);
-      if (pool.length === 0) pool = state.stories;
+      
+      if (pool.length === 0) {
+        alert(`⚠️ 【職等過濾提示】目前科別「${unit.name}」在您的當前職等（Tier ${currentTier}: ${getRankTitle(workCount)}）尚無專屬劇本！請至右下角「資料庫管理 ➔ 職場 VN 故事 JSON」匯入或新增符合此職等的故事。`);
+        return;
+      }
 
       // 隨機抽樣 (Math.random)
       const randomStory = pool[Math.floor(Math.random() * pool.length)];
@@ -835,6 +909,19 @@
       renderVNCurrentStep();
     }
 
+    function formatVNText(text) {
+      if (!text) return "";
+      const p = state.userStats;
+      const name = p.name || "實習生A";
+      const pronoun = p.gender === 'female' ? '妳' : '你';
+      const junior = p.gender === 'female' ? '學妹' : '學弟';
+
+      return text
+        .replace(/\{name\}/g, name)
+        .replace(/\{pronoun\}/g, pronoun)
+        .replace(/\{junior\}/g, junior);
+    }
+
     function renderVNCurrentStep() {
       const active = state.vnActive;
       const choicesEl = document.getElementById('vn-choices-area');
@@ -848,9 +935,29 @@
       const step = active.execQueue[active.queueIndex];
       document.getElementById('vn-story-title').innerText = active.storyTitle;
 
+      let speakerRaw = step.speaker || "旁白";
+      const speakerName = formatVNText(speakerRaw);
+      document.getElementById('vn-speaker-name').innerText = speakerName;
+      document.getElementById('vn-speaker-title').innerText = speakerName.includes("老鳥") || speakerName === state.userStats.name ? "主角" : "NPC / 旁白";
+
+      // 【動態頭像系統】根據發言人動態切換頭像與 Icon
+      const avatarContainer = document.getElementById('vn-char-avatar');
+      const avatarIcon = document.getElementById('vn-avatar-icon');
+      
+      if (speakerName === state.userStats.name || speakerName.includes(state.userStats.name) || speakerName.includes("主角")) {
+        avatarContainer.className = "w-14 h-14 rounded-2xl bg-gradient-to-tr from-emerald-600 to-teal-700 border-2 border-emerald-400 flex items-center justify-center text-white text-2xl shadow-lg";
+        avatarIcon.className = state.userStats.gender === 'female' ? "fa-solid fa-user-graduate" : "fa-solid fa-user-nurse";
+      } else if (speakerName.includes("學姐") || speakerName.includes("老鳥")) {
+        avatarContainer.className = "w-14 h-14 rounded-2xl bg-gradient-to-tr from-amber-600 to-orange-700 border-2 border-amber-400 flex items-center justify-center text-white text-2xl shadow-lg";
+        avatarIcon.className = "fa-solid fa-user-doctor";
+      } else {
+        avatarContainer.className = "w-14 h-14 rounded-2xl bg-gradient-to-tr from-sky-600 to-indigo-700 border-2 border-sky-400 flex items-center justify-center text-white text-2xl shadow-lg";
+        avatarIcon.className = "fa-solid fa-user-injured";
+      }
+
       if (step.type === 'choice') {
         document.getElementById('vn-speaker-name').innerText = "抉擇時刻";
-        document.getElementById('vn-dialogue-text').innerText = step.text || "請做出您的職場抉擇：";
+        document.getElementById('vn-dialogue-text').innerText = formatVNText(step.text || "請做出您的職場抉擇：");
         
         step.choices.forEach(c => {
           const btn = document.createElement('button');
@@ -859,7 +966,7 @@
           } else {
             btn.className = "w-full p-2.5 bg-slate-800 hover:bg-slate-700 rounded-xl text-left text-xs text-slate-200 border border-slate-700 font-bold";
           }
-          btn.innerText = c.txt;
+          btn.innerText = formatVNText(c.txt);
           btn.onclick = (e) => {
             e.stopPropagation();
             if (c.payCost) {
@@ -872,7 +979,6 @@
               state.storyFlags[c.setFlag] = true;
               saveState();
             }
-            // 插入 resultSteps 到 execQueue 的下一位
             if (c.resultSteps && c.resultSteps.length > 0) {
               active.execQueue.splice(active.queueIndex + 1, 0, ...c.resultSteps);
             }
@@ -884,24 +990,22 @@
 
       } else if (step.type === 'quiz') {
         document.getElementById('vn-speaker-name').innerText = "午休抽考";
-        document.getElementById('vn-dialogue-text').innerText = step.text || "午休國考題時間！";
+        document.getElementById('vn-dialogue-text').innerText = formatVNText(step.text || "午休國考題時間！");
         triggerVNQuizModal(step);
 
       } else if (step.type === 'flagCheck') {
         const hasF = state.storyFlags[step.flag] || active.tempFlags[step.flag];
         document.getElementById('vn-speaker-name').innerText = "職場因果結算";
         if (hasF) {
-          document.getElementById('vn-dialogue-text').innerHTML = `<span class="text-rose-400 font-bold">${step.matchText}</span>`;
+          document.getElementById('vn-dialogue-text').innerHTML = `<span class="text-rose-400 font-bold">${formatVNText(step.matchText)}</span>`;
           active.earnedPay -= 80;
         } else {
-          document.getElementById('vn-dialogue-text').innerHTML = `<span class="text-emerald-400 font-bold">${step.normalText}</span>`;
+          document.getElementById('vn-dialogue-text').innerHTML = `<span class="text-emerald-400 font-bold">${formatVNText(step.normalText)}</span>`;
           active.earnedPay += 50;
         }
 
       } else {
-        // 標準對話步 (speaker / text)
-        document.getElementById('vn-speaker-name').innerText = step.speaker || "旁白";
-        document.getElementById('vn-dialogue-text').innerText = step.text || "";
+        document.getElementById('vn-dialogue-text').innerText = formatVNText(step.text || "");
       }
     }
 
@@ -909,7 +1013,6 @@
       const active = state.vnActive;
       if (!active) return;
       const step = active.execQueue[active.queueIndex];
-      // 如果當前步驟是 choice 或 quiz，不能透過點擊對話框推進，需透過選項或彈窗
       if (step && (step.type === 'choice' || step.type === 'quiz')) return;
 
       active.queueIndex++;
@@ -1225,6 +1328,9 @@
       document.getElementById(id).classList.remove('hidden'); 
       if (id === 'modal-editor') {
         switchEditorTab('quiz');
+      } else if (id === 'modal-profile') {
+        document.getElementById('input-char-name').value = state.userStats.name || '實習生A';
+        setGenderSelection(state.userStats.gender || 'male');
       }
     }
     function closeModal(id) { document.getElementById(id).classList.add('hidden'); }
