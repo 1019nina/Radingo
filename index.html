@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Radingo - 放射師國考與視覺小說職場物語 (終極升級版)</title>
+  <title>Radingo - 放射師國考與職場物語 (終極架構優化版)</title>
   <script src="https://cdn.tailwindcss.com"></script>
   <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
@@ -40,7 +40,7 @@
     <div class="max-w-md mx-auto flex justify-between items-center">
       <div class="flex items-center space-x-2">
         <span class="text-2xl font-black text-emerald-400">Radingo</span>
-        <span class="bg-emerald-950 text-emerald-400 text-[10px] px-2 py-0.5 rounded-full font-bold border border-emerald-800">視覺小說 RPG 版</span>
+        <span class="bg-emerald-950 text-emerald-400 text-[10px] px-2 py-0.5 rounded-full font-bold border border-emerald-800">5大職等 RPG 版</span>
       </div>
 
       <div class="flex items-center space-x-3 font-extrabold text-sm">
@@ -123,8 +123,8 @@
     <!-- VIEW 2: CAREER STORY MAP -->
     <div id="view-career" class="hidden space-y-4">
       <div class="bg-slate-900 border border-slate-800 rounded-2xl p-4 text-center space-y-1">
-        <span class="text-xs text-emerald-400 font-extrabold bg-emerald-950 px-2.5 py-0.5 rounded-full border border-emerald-800">🏥 5大職等視覺小說 (Steps + Choice + Merge)</span>
-        <h2 class="text-base font-black text-white mt-1">選擇指定科別，自動依當前職等隨機抽樣劇本！</h2>
+        <span class="text-xs text-emerald-400 font-extrabold bg-emerald-950 px-2.5 py-0.5 rounded-full border border-emerald-800">🏥 5大職等動態故事 JSON 庫 (隨機抽樣)</span>
+        <h2 class="text-base font-black text-white mt-1">選擇指定科別，系統自動依當前職等隨機抽樣劇本！</h2>
         <p class="text-[11px] text-slate-400 mt-1">
           晉升制度：0~19(見習生) ➔ 20~49(實習生) ➔ 50~99(PGY) ➔ 100~199(放射師) ➔ 200+(資深帶教老鳥)
         </p>
@@ -147,7 +147,7 @@
 
   </main>
 
-  <!-- VN STORY OVERLAY (Visual Novel Multi-Step Dialogue Engine) -->
+  <!-- VN STORY OVERLAY -->
   <div id="vn-modal" class="hidden fixed inset-0 bg-black/90 backdrop-blur-md z-50 flex flex-col justify-end p-4">
     <div class="max-w-md w-full mx-auto space-y-3 vn-animate pb-6">
       
@@ -158,8 +158,8 @@
             <i class="fa-solid fa-user-doctor"></i>
           </div>
           <div>
-            <span id="vn-speaker-name" class="text-[10px] text-emerald-400 font-extrabold bg-emerald-950 px-2 py-0.5 rounded border border-emerald-800">職場學長姐</span>
-            <h3 id="vn-unit-title-display" class="text-base font-black text-white mt-0.5">控制室現場</h3>
+            <span id="vn-char-title" class="text-[10px] text-emerald-400 font-extrabold bg-emerald-950 px-2 py-0.5 rounded border border-emerald-800">08:00 晨間打卡</span>
+            <h3 id="vn-char-name" class="text-base font-black text-white mt-0.5">現場控制室</h3>
           </div>
         </div>
         <button onclick="closeVNStory()" class="text-slate-400 hover:text-white px-2 py-1 text-xs bg-slate-800 rounded-lg border border-slate-700">
@@ -167,25 +167,19 @@
         </button>
       </div>
 
-      <!-- Dialogue Box (Clickable to advance steps) -->
-      <div id="vn-dialogue-box" onclick="handleVNClickArea()" class="bg-slate-900/95 border-2 border-slate-700 rounded-2xl p-5 shadow-2xl space-y-4 relative overflow-hidden cursor-pointer hover:border-sky-500 transition-colors">
+      <!-- Dialogue Box -->
+      <div class="bg-slate-900/95 border-2 border-slate-700 rounded-2xl p-5 shadow-2xl space-y-4 relative overflow-hidden">
         <div class="absolute -right-6 -bottom-6 text-slate-800 text-8xl pointer-events-none">
           <i class="fa-solid fa-quote-right"></i>
         </div>
 
-        <div id="vn-content-area" class="space-y-3 relative z-10 min-h-[90px] flex flex-col justify-between">
+        <div id="vn-content-area" class="space-y-3 relative z-10">
           <p id="vn-dialogue-text" class="text-sm text-slate-100 font-medium leading-relaxed">
-            劇本載入中...
+            劇本讀取中...
           </p>
-          <div class="flex justify-end pt-2">
-            <span id="vn-progress-indicator" class="text-[11px] text-sky-400 font-extrabold animate-pulse">
-              點擊對話框繼續 ➔
-            </span>
-          </div>
         </div>
 
-        <!-- Choices Area (Shown when phase === 'choice') -->
-        <div id="vn-choices-area" class="space-y-2 pt-2 relative z-10" onclick="event.stopPropagation()"></div>
+        <div id="vn-choices-area" class="space-y-2 pt-2 relative z-10"></div>
       </div>
     </div>
   </div>
@@ -312,8 +306,8 @@
         <!-- SUB-VIEW 2: STORY EDITOR WITH RANK TIER FILTERS -->
         <div id="ed-subview-story" class="hidden space-y-4">
           <div class="bg-slate-800 p-3 rounded-xl space-y-2 border border-slate-700">
-            <span class="font-bold text-sky-400">📖 視覺小說故事 JSON 檔案管理</span>
-            <p class="text-[11px] text-slate-400">故事支援 `steps`、`choices` 與 `mergeSteps` 結構，對應 `department` 與 `rankTier`。</p>
+            <span class="font-bold text-sky-400">📖 職場故事 JSON 檔案管理</span>
+            <p class="text-[11px] text-slate-400">每篇故事包含 `department`（13科）與 `rankTier`（0~4職等）。</p>
             <div class="grid grid-cols-2 gap-2 pt-1">
               <button onclick="exportStoryJSON()" class="py-2 bg-slate-700 hover:bg-slate-600 rounded-lg font-bold">匯出故事庫 JSON</button>
               <label class="py-2 bg-sky-600 hover:bg-sky-500 rounded-lg font-bold text-center cursor-pointer">
@@ -349,4 +343,16 @@
                 <select id="filter-story-tier" onchange="renderEditorStoryList()" class="w-full bg-slate-900 border border-slate-700 rounded-lg p-2 text-slate-200 text-xs">
                   <option value="all">全部職等</option>
                   <option value="0">0: 見習生 (0~19次)</option>
-                  <option value="1">1: 實習生 (20~49次)<
+                  <option value="1">1: 實習生 (20~49次)</option>
+                  <option value="2">2: PGY (50~99次)</option>
+                  <option value="3">3: 放射師 (100~199次)</option>
+                  <option value="4">4: 資深帶教老鳥 (200+次)</option>
+                </select>
+              </div>
+            </div>
+          </div>
+
+          <div class="bg-slate-800 p-3.5 rounded-xl border border-slate-700 space-y-2.5">
+            <div class="flex justify-between items-center">
+              <span class="font-bold text-sky-400 text-sm">📚 篩選結果故事清單</span>
+              <span id="ed-story-total-count" class="text-emerald-4
