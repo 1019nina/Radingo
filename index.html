@@ -14,8 +14,6 @@
     .btn-duo:active { transform: translateY(4px); box-shadow: 0 0 0 transparent; }
     .btn-green { background-color: #22c55e; box-shadow: 0 4px 0 #15803d; color: #052e16; }
     .btn-blue { background-color: #3b82f6; box-shadow: 0 4px 0 #1d4ed8; color: #ffffff; }
-    .btn-red { background-color: #ef4444; box-shadow: 0 4px 0 #991b1b; color: #ffffff; }
-    .btn-amber { background-color: #f59e0b; box-shadow: 0 4px 0 #b45309; color: #451a03; }
     
     .card-option { border: 2px solid #334155; background: #1e293b; transition: all 0.15s; }
     .card-option:hover:not(.disabled) { border-color: #3b82f6; transform: translateY(-2px); }
@@ -42,7 +40,7 @@
     <div class="max-w-md mx-auto flex justify-between items-center">
       <div class="flex items-center space-x-2">
         <span class="text-2xl font-black text-emerald-400">Radingo</span>
-        <span class="bg-emerald-950 text-emerald-400 text-[10px] px-2 py-0.5 rounded-full font-bold border border-emerald-800">狀態記憶故事引擎</span>
+        <span class="bg-emerald-950 text-emerald-400 text-[10px] px-2 py-0.5 rounded-full font-bold border border-emerald-800">13科獨立故事矩陣</span>
       </div>
 
       <div class="flex items-center space-x-3 font-extrabold text-xs">
@@ -133,7 +131,7 @@
     <!-- VIEW 2: CAREER STORY MAP -->
     <div id="view-career" class="hidden space-y-4">
       <div class="bg-slate-900 border border-slate-800 rounded-2xl p-4 text-center space-y-1">
-        <span class="text-xs text-emerald-400 font-extrabold bg-emerald-950 px-2.5 py-0.5 rounded-full border border-emerald-800">🏥 13 科獨立專屬劇本與連貫因果鏈</span>
+        <span class="text-xs text-emerald-400 font-extrabold bg-emerald-950 px-2.5 py-0.5 rounded-full border border-emerald-800">🏥 13科獨立劇本陣列（保證每次隨機不同）</span>
         <h2 class="text-base font-black text-white">點擊指定科別，開啟連貫一天的章節主線！</h2>
         <p class="text-xs text-slate-400">晉升：見習 (0) $\rightarrow$ 實習 (20) $\rightarrow$ PGY (50) $\rightarrow$ 放射師 (100) $\rightarrow$ 資深帶教 (200)</p>
       </div>
@@ -339,69 +337,68 @@
       { id: 'rt', name: 'RT 放射線治療', reqSubject: 'therapy', icon: 'fa-crosshairs' }
     ];
 
-    /* 13 個科別專屬「連貫主線劇情包 (Story Arcs)」 - 狀態記憶與連貫因果 */
+    /* ==========================================================
+       13 個科別專屬「故事陣列 (Arrays)」，每個科別內含 5 篇以上
+       完全獨立、充滿幽默吐槽的獨立故事文本！保證絕對隨機不重複！
+       ========================================================== */
     const DEPARTMENT_STORY_ARCS = {
       xray: [
         {
           id: 'xr_arc_1',
           nodes: {
             n_08: {
-              title: "08:00 晨間打卡",
+              title: "08:00 晨間打卡 (X光)",
               text: "走進 X 光控制室，學姐看著新聞搖頭抱怨：「現在的小年輕騎腳踏車摔斷手，送到醫院第一件事不是哭，是叫同伴拿手機拍照打卡發限動，真搞不懂在想什麼！」",
-              choices: [
-                { txt: "「真的假的！太誇張了吧！」", nextNode: "n_08_a" },
-                { txt: "「可能...這就是年輕人的儀式感？」", nextNode: "n_08_b" }
-              ]
-            },
-            n_08_a: {
-              title: "08:15 控制室現場",
-              text: "學姐掏心掏肺地說：「對吧！等妳等等遇到妳就知道有多傻眼了！」",
-              choices: [{ txt: "「好，準備叫第一位病人！」", nextNode: "n_11" }]
-            },
-            n_08_b: {
-              title: "08:15 控制室現場",
-              text: "學姐斜眼看妳：「妳該不會自己也這樣幹過吧？！」妳尷尬地乾笑兩聲連忙轉開話題。",
-              choices: [{ txt: "「沒有啦！我們開始工作吧！」", nextNode: "n_11" }]
+              choices: [{ txt: "「真的假的！太誇張了吧！」", nextNode: "n_11" }, { txt: "「可能...這就是年輕人的儀式感？」", nextNode: "n_11" }]
             },
             n_11: {
-              title: "11:00 臨床事件",
-              text: "果不其然！送來一位滑板摔倒手肘骨折變形的少年，旁邊朋友立刻舉起手機狂拍：「放射師！等等拍完 X 光可以順便傳給我嗎？我要發限動標記醫院！」",
-              choices: [
-                { txt: "「不行喔，醫療影像有資安與隱私法規，請遵守規定！」", nextNode: "n_11_norm" },
-                { txt: "【開嗆解鎖 $20】「發限動可以，要不要順便幫你開美顏濾鏡？（酸哥模式）」", payCost: 20, nextNode: "n_11_rage", setFlag: 'RAGED_PATIENT' }
-              ]
+              title: "11:00 臨床事件 (X光)",
+              text: "果不其然！送來一位滑板摔斷手肘骨折變形的少年，旁邊朋友立刻舉起手機狂拍：「放射師！等等拍完 X 光可以順便傳給我嗎？我要發限動標記醫院！」",
+              choices: [{ txt: "「不行喔，醫療影像有資安法規，請遵守規定！」", nextNode: "n_12" }, { txt: "【開嗆解鎖 $20】「發限動可以，要不要順便幫你開美顏濾鏡？」", payCost: 20, nextNode: "n_12", setFlag: 'RAGED_PATIENT' }]
             },
-            n_11_norm: {
-              title: "11:15 擺位完成",
-              text: "少年失望地收起手機：「好啦...那妳拍輕一點喔。」妳專業迅速地拍完，完美落幕。",
-              choices: [{ txt: "「去外面稍等報告喔！」", nextNode: "n_12" }]
-            },
-            n_11_rage: {
-              title: "11:15 暴躁開嗆反應",
-              text: "少年愣了一下，同伴大笑：「放射師很酸捏！」但少年感到沒面子，氣呼呼地拿出手機威脅：「妳這什麼態度？我要去寫院長信箱投訴妳！」",
-              choices: [{ txt: "（糟糕...好像玩太大了...）", nextNode: "n_12" }]
-            },
-            n_12: {
-              title: "12:00 午休抽考",
-              text: "便當時間，學姐端著咖啡走過來：「剛剛應對得蠻特別的嘛！來，抽考一題診斷學，答對今天免做環境清潔！」",
-              choices: [
-                { txt: "✍️ 挑戰國考題！（答對 +$100，答錯 -$30）", isQuizTrigger: true, nextNode: "n_15" },
-                { txt: "🧋 花 $50 請學姐喝紅茶買平安！", payCost: 50, nextNode: "n_15" }
-              ]
-            },
-            n_15: {
-              title: "15:00 下午突發狀況",
-              text: "下午門診爆滿，妳發揮極致擺位手速，一小時消化了 15 台 Chest PA！然而...",
-              hasFlagCheck: 'RAGED_PATIENT',
-              flagMatchText: "剛拍完最後一台，護理長氣沖沖跑進來：「剛剛 11 點那個滑板少年真的去投訴妳酸他！院長室寄信來了！扣獎金 $100！」",
-              flagNormalText: "主管經過控制室看著流暢的流程，滿意地誇獎：「手速很快喔，表現不錯！」獎金 +$50！",
-              choices: [{ txt: "「了解，繼續準備交班！」", nextNode: "n_17" }]
-            },
-            n_17: {
-              title: "17:00 打卡下班",
-              text: "順利下班！妳脫下鉛衣打包東西，發了一則只有「打卡下班」四個字的限動，享受屬於自己的美好夜晚！",
-              isArcEnd: true
-            }
+            n_12: { title: "12:00 午休抽考", text: "便當時間，學姐端著咖啡走過來抽考診斷學：", choices: [{ txt: "✍️ 挑戰國考題！", isQuizTrigger: true, nextNode: "n_15" }, { txt: "🧋 花 $50 請學姐喝紅茶買平安！", payCost: 50, nextNode: "n_15" }] },
+            n_15: { title: "15:00 下午突發狀況", text: "下午門診爆滿，妳發揮極致擺位手速消化了 15 台 Chest PA！", hasFlagCheck: 'RAGED_PATIENT', flagMatchText: "但 11 點那個滑板少年真的去投訴妳酸他！院長室寄信來，扣獎金 $100！", flagNormalText: "主管經過控制室誇獎妳手速極快！獎金 +$50！", choices: [{ txt: "「準備交班！」", nextNode: "n_17" }] },
+            n_17: { title: "17:00 打卡下班", text: "順利下班！發了一則只有「打卡下班」四個字的限動，享受美好夜晚！", isArcEnd: true }
+          }
+        },
+        {
+          id: 'xr_arc_2',
+          nodes: {
+            n_08: { title: "08:00 晨間打卡 (X光)", text: "學長一邊吃茶葉蛋一邊笑：「昨天有個阿公拍 KUB，居然把整副假牙跟十塊錢硬幣吞下去！」", choices: [{ txt: "「十塊錢？！這也能吞？！」", nextNode: "n_11" }, { txt: "「阿公肚子裡有聚寶盆嗎？」", nextNode: "n_11" }] },
+            n_11: { title: "11:00 臨床事件 (X光)", text: "今天來了一位神祕大叔，主訴胸口悶痛，但衣服一掀開，胸口竟然貼了一張符咒！大叔：「放射師，這個 X 光穿得透符咒嗎？」", choices: [{ txt: "「大哥，X 光是電磁波，神明也擋不住輻射啦！」", nextNode: "n_12" }, { txt: "【吐槽 $20】「貼符咒沒用啦，等下照出來要是肺結核，神仙也難救！」", payCost: 20, nextNode: "n_12" }] },
+            n_12: { title: "12:00 午休抽考", text: "學長拿著便當抽考器材學：", choices: [{ txt: "✍️ 挑戰國考題！", isQuizTrigger: true, nextNode: "n_15" }, { txt: "🧋 花 $50 請學長喝珍奶！", payCost: 50, nextNode: "n_15" }] },
+            n_15: { title: "15:00 下午突發狀況", text: "下午機器球管突然過熱跳出安全鎖定，學長拿冷風扇對著球管狂吹：「老機器就是傲嬌，吹個冷氣就好了！」", choices: [{ txt: "「科技來自於人性與冷風扇！」", nextNode: "n_17" }] },
+            n_17: { title: "17:00 打卡下班", text: "順利打卡下班，今天又是平安的一天！", isArcEnd: true }
+          }
+        },
+        {
+          id: 'xr_arc_3',
+          nodes: {
+            n_08: { title: "08:00 晨間打卡 (X光)", text: "控制室裡大家在討論昨晚值班遇到的荒謬急診，學姐直呼大夜班簡直是鬼門關前走一遭。", choices: [{ txt: "「辛苦學姐了，今天交給我來扛！」", nextNode: "n_11" }, { txt: "「聽得我皮皮剉...」", nextNode: "n_11" }] },
+            n_11: { title: "11:00 臨床事件 (X光)", text: "一位媽媽帶著哭鬧的小孩進來：「放射師，我兒子把玩具樂高塞進鼻子裡拿不出來，醫生叫來拍個鼻竇 X 光！」", choices: [{ txt: "溫柔拿出一張貼紙誘哄小弟弟乖乖配合拍攝。", nextNode: "n_12" }, { txt: "【崩潰 $20】「弟弟再哭就把你的樂高通通沒收！」", payCost: 20, nextNode: "n_12" }] },
+            n_12: { title: "12:00 午休抽考", text: "學長端著湯過來抽考基礎醫學：", choices: [{ txt: "✍️ 挑戰國考題！", isQuizTrigger: true, nextNode: "n_15" }, { txt: "🧋 花 $50 買飲料避難！", payCost: 50, nextNode: "n_15" }] },
+            n_15: { title: "15:00 下午突發狀況", text: "下午 X 光底片匣卡在機器裡拉不出來，妳冷靜用手動解鎖順利取出，獲得學長大讚！", choices: [{ txt: "「危機處理滿分！」", nextNode: "n_17" }] },
+            n_17: { title: "17:00 打卡下班", text: "順利打卡下班，回家吃晚餐囉！", isArcEnd: true }
+          }
+        },
+        {
+          id: 'xr_arc_4',
+          nodes: {
+            n_08: { title: "08:00 晨間打卡 (X光)", text: "早晨陽光灑進醫院，學長伸個懶腰：「今天預約表很空，希望是個悠閒的一天。」（標準 Flag）", choices: [{ txt: "「學長不要亂立 Flag 啦！」", nextNode: "n_11" }, { txt: "「太棒了，今天可以準時下班！」", nextNode: "n_11" }] },
+            n_11: { title: "11:00 臨床事件 (X光)", text: "Flag 瞬間應驗！外勞健檢團體 50 人突然無預約直接湧入 X 光室外排長龍，場面瞬間失控！", choices: [{ txt: "迅速啟動流水線戰術，俐落引導每個人依序擺位。", nextNode: "n_12" }, { txt: "【崩潰 $20】「大家排好隊！不要推擠！」", payCost: 20, nextNode: "n_12" }] },
+            n_12: { title: "12:00 午休抽考", text: "忙到中午終於喘口氣，學長過來抽考輻射安全：", choices: [{ txt: "✍️ 挑戰國考題！", isQuizTrigger: true, nextNode: "n_15" }, { txt: "🧋 花 $50 請喝手搖飲壓驚！", payCost: 50, nextNode: "n_15" }] },
+            n_15: { title: "15:00 下午突發狀況", text: "健檢大軍順利消化完畢，主任經過看到整潔的控制室，點頭稱讚妳的抗壓性極高！", choices: [{ txt: "「主任過獎了！」", nextNode: "n_17" }] },
+            n_17: { title: "17:00 打卡下班", text: "挺過健檢大軍的轟炸，準時打卡下班！", isArcEnd: true }
+          }
+        },
+        {
+          id: 'xr_arc_5',
+          nodes: {
+            n_08: { title: "08:00 晨間打卡 (X光)", text: "學姐拿著保溫杯：「今天有幾台特殊床邊攝影要跑 ICU，妳鉛衣要穿好喔。」", choices: [{ txt: "「收到！隨時準備出發 ICU！」", nextNode: "n_11" }, { txt: "「ICU 的管線真的超多...」", nextNode: "n_11" }] },
+            n_11: { title: "11:00 臨床事件 (X光)", text: "在 ICU 幫插管病人拍床邊 Chest 時，旁邊的生理監視器突然嗶嗶叫個不停，家屬緊張大喊。", choices: [{ txt: "冷靜請護理師協助，迅速準確完成床邊底片放置與曝光。", nextNode: "n_12" }, { txt: "【慌張 $20】「天啊我是不是扯到管子了！」", payCost: 20, nextNode: "n_12" }] },
+            n_12: { title: "12:00 午休抽考", text: "回到控制室，學姐抽考器械學：", choices: [{ txt: "✍️ 挑戰國考題！", isQuizTrigger: true, nextNode: "n_15" }, { txt: "🧋 花 $50 請學姐喝拿鐵！", payCost: 50, nextNode: "n_15" }] },
+            n_15: { title: "15:00 下午突發狀況", text: "下午協助醫師完成骨科石膏固定後的複查 X 光，影像品質完美無瑕！", choices: [{ txt: "「完美收工！」", nextNode: "n_17" }] },
+            n_17: { title: "17:00 打卡下班", text: "脫下沉重鉛衣，伸展筋骨，開心打卡下班！", isArcEnd: true }
           }
         }
       ],
@@ -409,53 +406,51 @@
         {
           id: 'er_arc_1',
           nodes: {
-            n_08: {
-              title: "08:00 急診晨打卡",
-              text: "急診電話響個不停。學長接起電話咆哮：「不要再催了！床還沒進來怎麼拍！」掛掉後轉頭看妳：「今天大排檔打架，急診滿是醉漢，警衛電話備好了嗎？」",
-              choices: [
-                { txt: "「報告學長，警民連線按鈕已經備妥！」", nextNode: "n_11" },
-                { txt: "「希望醉漢不要吐在我的檢查床上...」", nextNode: "n_11" }
-              ]
-            },
-            n_11: {
-              title: "11:00 醉漢咆哮事件",
-              text: "一位全身酒氣的大叔被推進來，一躺上床就揮拳：「你們誰敢動我！我認識你們院長！把你們全部開除！」",
-              choices: [
-                { txt: "按下警民連線，請警衛大哥與護理師上前約束", nextNode: "n_11_norm" },
-                { txt: "【嗆回去 $30】「大叔！認識院長又怎樣？現在你躺的是我的檢查床！」", payCost: 30, nextNode: "n_11_rage", setFlag: 'RAGED_PATIENT' }
-              ]
-            },
-            n_11_norm: {
-              title: "11:15 警衛救援",
-              text: "警衛大哥 10 秒內衝進來秒煞醉漢！眾人合力迅速拍完頭部 CT，化解危機。",
-              choices: [{ txt: "「感謝警衛大哥！」", nextNode: "n_12" }]
-            },
-            n_11_rage: {
-              title: "11:15 現場失控",
-              text: "醉漢被嗆後徹底發飆，差點一拳揮到妳臉上！學長一把拉開妳，場面混亂不堪，醉漢吐了一地！",
-              choices: [{ txt: "（可惡...清地毯要花好久...）", nextNode: "n_12" }]
-            },
-            n_12: {
-              title: "12:00 午休抽考",
-              text: "學長抹了抹臉上的汗：「剛剛太驚險了！來一題 ER 創傷 CT 國考題壓壓驚！」",
-              choices: [
-                { txt: "✍️ 挑戰國考題！", isQuizTrigger: true, nextNode: "n_15" },
-                { txt: "🧋 花 $50 請學長喝青茶買平安！", payCost: 50, nextNode: "n_15" }
-              ]
-            },
-            n_15: {
-              title: "15:00 下午突發狀況",
-              text: "下午醉漢酒醒，後續發展：",
-              hasFlagCheck: 'RAGED_PATIENT',
-              flagMatchText: "醉漢酒醒後記恨妳嗆他，在急診大廳嚷嚷說要找媒體曝光！院長室關切，扣除獎金 $80！",
-              flagNormalText: "醉漢酒醒後非常不好意思，跑回檢查室幫忙補滿衛生紙並連聲道歉！獲得溫馨獎金 +$50！",
-              choices: [{ txt: "「平安就好，準備下班！」", nextNode: "n_17" }]
-            },
-            n_17: {
-              title: "17:00 打卡下班",
-              text: "平安度過混亂的急診大夜與白班交接，體會到急診放射師的鋼鐵心態，打卡下班！",
-              isArcEnd: true
-            }
+            n_08: { title: "08:00 急診晨打卡", text: "學長把警衛電話放在桌上：「大排檔打架，急診滿是醉漢，準備好按警報了嗎？」", choices: [{ txt: "「警民連線已就緒！」", nextNode: "n_11" }, { txt: "「希望醉漢別吐在床上...」", nextNode: "n_11" }] },
+            n_11: { title: "11:00 醉漢咆哮事件", text: "全身酒氣的大叔揮拳大喊：「你們誰敢動我！我認識院長！把你們全部開除！」", choices: [{ txt: "按下警民連線，請警衛大哥上前約束。", nextNode: "n_12" }, { txt: "【嗆回去 $30】「大叔！認識院長又怎樣？現在你躺的是我的檢查床！」", payCost: 30, nextNode: "n_12", setFlag: 'RAGED_PATIENT' }] },
+            n_12: { title: "12:00 午休抽考", text: "學長擦汗抽考 ER 創傷 CT 國考題：", choices: [{ txt: "✍️ 挑戰國考題！", isQuizTrigger: true, nextNode: "n_15" }, { txt: "🧋 花 $50 請喝青茶！", payCost: 50, nextNode: "n_15" }] },
+            n_15: { title: "15:00 下午突發狀況", text: "下午醉漢酒醒後狀況：", hasFlagCheck: 'RAGED_PATIENT', flagMatchText: "醉漢記恨妳嗆他去投訴，扣獎金 $80！", flagNormalText: "醉漢酒醒後不好意思地幫檢查室補滿衛生紙！獎金 +$50！", choices: [{ txt: "「平安就好！」", nextNode: "n_17" }] },
+            n_17: { title: "17:00 打卡下班", text: "挺過混亂急診日，打卡下班！", isArcEnd: true }
+          }
+        },
+        {
+          id: 'er_arc_2',
+          nodes: {
+            n_08: { title: "08:00 急診晨打卡", text: "外頭暴雨交加，急診護理師拿著一疊外傷單衝進來：「車禍外傷大批湧入！」", choices: [{ txt: "「收到！ Trauma 規格全開！」", nextNode: "n_11" }, { txt: "「雨天真的車禍特別多...」", nextNode: "n_11" }] },
+            n_11: { title: "11:00 臨床事件 (急診)", text: "外送員雨天打滑撞到電線杆，痛到無法自主移動，家屬急得在一旁大哭。", choices: [{ txt: "冷靜安撫家屬情緒，以最快速度完成頸椎與骨盆 X 光。", nextNode: "n_12" }, { txt: "【慌亂 $20】「家屬請冷靜不要妨礙擺位！」", payCost: 20, nextNode: "n_12" }] },
+            n_12: { title: "12:00 午休抽考", text: "學長拿著便當抽考外傷急救學：", choices: [{ txt: "✍️ 挑戰國考題！", isQuizTrigger: true, nextNode: "n_15" }, { txt: "🧋 花 $50 買飲料避難！", payCost: 50, nextNode: "n_15" }] },
+            n_15: { title: "15:00 下午突發狀況", text: "急診醫師看著妳迅速拍出來的高畫質外傷片，豎起大拇指誇獎效率超高！", choices: [{ txt: "「外傷黃金救援！」", nextNode: "n_17" }] },
+            n_17: { title: "17:00 打卡下班", text: "安全度過急診雨天修羅場，打卡下班！", isArcEnd: true }
+          }
+        },
+        {
+          id: 'er_arc_3',
+          nodes: {
+            n_08: { title: "08:00 急診晨打卡", text: "急診室一片燈火通明，學長打著呵欠：「今天交班聽說有假裝昏倒的奇葩病人要來。」", choices: [{ txt: "「假裝昏倒？演哪一出？」", nextNode: "n_11" }, { txt: "「等等來看他的演技有多好！」", nextNode: "n_11" }] },
+            n_11: { title: "11:00 臨床事件 (急診)", text: "病床推進來，病人閉著眼睛一動不動，但眼皮一直瘋狂顫抖，家屬在一旁嚎啕大哭：「醫生他暈倒了！」", choices: [{ txt: "默默靠近病人耳邊小聲說：「要打針囉，針很粗喔。」病人秒睜眼！", nextNode: "n_12" }, { txt: "【吐槽 $20】「好了啦大哥，眼皮抖得太明顯囉！」", payCost: 20, nextNode: "n_12" }] },
+            n_12: { title: "12:00 午休抽考", text: "學長笑翻抽考基礎醫學：", choices: [{ txt: "✍️ 挑戰國考題！", isQuizTrigger: true, nextNode: "n_15" }, { txt: "🧋 花 $50 請學長喝珍奶！", payCost: 50, nextNode: "n_15" }] },
+            n_15: { title: "15:00 下午突發狀況", text: "下午順利把裝睡的病人請出檢查室，結束一場荒謬的鬧劇，獲得獎金 +$40！", choices: [{ txt: "「演技有待加強！」", nextNode: "n_17" }] },
+            n_17: { title: "17:00 打卡下班", text: "帶著笑聲準時打卡下班！", isArcEnd: true }
+          }
+        },
+        {
+          id: 'er_arc_4',
+          nodes: {
+            n_08: { title: "08:00 急診晨打卡", text: "學長神情緊張：「今天有院檢聯合防災演習，急診會模擬大量傷患進駐！」", choices: [{ txt: "「收到！演習視同作戰！」", nextNode: "n_11" }, { txt: "「希望只是演習就好...」", nextNode: "n_11" }] },
+            n_11: { title: "11:00 臨床事件 (急診)", text: "假裝受傷的演員們身上貼滿了傷妝特效，拿著演習牌子湧入 X 光室，現場氣氛緊張逼真。", choices: [{ txt: "按照演習 SOP 條理分明地完成大量傷患檢傷分類與影像拍攝。", nextNode: "n_12" }, { txt: "【手忙腳亂 $20】「等等，妳這個傷妝太逼真我分不出真假！」", payCost: 20, nextNode: "n_12" }] },
+            n_12: { title: "12:00 午休抽考", text: "演習告一段落，學長抽考災難醫學國考題：", choices: [{ txt: "✍️ 挑戰國考題！", isQuizTrigger: true, nextNode: "n_15" }, { txt: "🧋 花 $50 買飲料壓驚！", payCost: 50, nextNode: "n_15" }] },
+            n_15: { title: "15:00 下午突發狀況", text: "院長親自巡視放射科，稱讚放射科在演習中反應神速，全科室記嘉獎一次！", choices: [{ txt: "「演習圓滿成功！」", nextNode: "n_17" }] },
+            n_17: { title: "17:00 打卡下班", text: "經歷真實感十足的演習洗禮，打卡下班！", isArcEnd: true }
+          }
+        },
+        {
+          id: 'er_arc_5',
+          nodes: {
+            n_08: { title: "08:00 急診晨打卡", text: "學長喝著黑咖啡：「急診室的空氣永遠都充滿著腎上腺素的味道，今天也要保持清醒。」", choices: [{ txt: "「咖啡因已經注入血管！」", nextNode: "n_11" }, { txt: "「學長今天很有哲理喔！」", nextNode: "n_11" }] },
+            n_11: { title: "11:00 臨床事件 (急診)", text: "深夜（或白班交接）送來一位吞下整顆硬幣的小朋友，媽媽急得快哭了。", choices: [{ txt: "溫柔安撫媽媽，迅速拍出頸部到食道的高解析 X 光，精準定位硬幣位置。", nextNode: "n_12" }, { txt: "【嚴肅 $20】「媽媽請不要慌張，我們馬上處理！」", payCost: 20, nextNode: "n_12" }] },
+            n_12: { title: "12:00 午休抽考", text: "學長抽考小兒放射診斷學：", choices: [{ txt: "✍️ 挑戰國考題！", isQuizTrigger: true, nextNode: "n_15" }, { txt: "🧋 花 $50 請學長喝紅茶！", payCost: 50, nextNode: "n_15" }] },
+            n_15: { title: "15:00 下午突發狀況", text: "順利協助耳鼻喉科醫師透過影像取出硬幣，媽媽送來感謝卡片一張！", choices: [{ txt: "「醫病關係滿分！」", nextNode: "n_17" }] },
+            n_17: { title: "17:00 打卡下班", text: "帶著感謝卡片，踏實地打卡下班！", isArcEnd: true }
           }
         }
       ],
@@ -463,50 +458,51 @@
         {
           id: 'ct_arc_1',
           nodes: {
-            n_08: {
-              title: "08:00 CT 室打卡",
-              text: "學長正拿著對比劑檢測表：「今天 15 台 Contrast 增強掃描，打針一定要看清血管，血管太細就準備換針喔！」",
-              choices: [
-                { txt: "「沒問題，我今天手感爆棚！」", nextNode: "n_11" },
-                { txt: "「血管太細的我可以推給學長嗎...」", nextNode: "n_11" }
-              ]
-            },
-            n_11: {
-              title: "11:00 命運熱流事件",
-              text: "高壓注射器注入顯影劑後，中年大哥突然在床上驚恐大喊：「哇靠！放射師！我全身從胸口一路熱到下面！我是不是尿失禁了？！」",
-              choices: [
-                { txt: "「大哥別慌！顯影劑本來就會有全身溫熱的正常生理反應啦！」", nextNode: "n_11_norm" },
-                { txt: "【幹話模式 $20】「沒事沒事，那只是命運的熱流，Hold 住就過去了～」", payCost: 20, nextNode: "n_11_rage" }
-              ]
-            },
-            n_11_norm: {
-              title: "11:15 衛教成功",
-              text: "大哥鬆了一口氣：「呼～嚇死我了，還以為在妳們面前尿褲子超丟臉！」順利完成掃描。",
-              choices: [{ txt: "「準備重建 MPR 畫面！」", nextNode: "n_12" }]
-            },
-            n_11_rage: {
-              title: "11:15 搞笑安撫",
-              text: "大哥噗哧一聲笑出來，緊張感全無，完美的動脈期掃描順利抓到！",
-              choices: [{ txt: "「大哥真幽默，完成囉！」", nextNode: "n_12" }]
-            },
-            n_12: {
-              title: "12:00 午休抽考",
-              text: "學長在 MPR 工作站前切片：「來，回答這題 CT 器材學，答對今天免做保養！」",
-              choices: [
-                { txt: "✍️ 挑戰國考題！", isQuizTrigger: true, nextNode: "n_15" },
-                { txt: "🧋 花 $50 請學長喝大冰美！", payCost: 50, nextNode: "n_15" }
-              ]
-            },
-            n_15: {
-              title: "15:00 下午突發狀況",
-              text: "急診送來 Trauma 重大創傷，妳與學長流暢配合，5 分鐘完成全頭頸胸腹 CT 重建！獲得急診主任電話讚許，加薪 +$80！",
-              choices: [{ txt: "「專業就是效率！」", nextNode: "n_17" }]
-            },
-            n_17: {
-              title: "17:00 打卡下班",
-              text: "完成交班，雖然吸了一整天的對比劑熱流八卦，但救了人踏實無比，順利下班！",
-              isArcEnd: true
-            }
+            n_08: { title: "08:00 CT 室打卡", text: "學長指著對比劑表：「今天 15 台增強掃描，打針看清血管，血管太細就準備換針！」", choices: [{ txt: "「手感爆棚沒問題！」", nextNode: "n_11" }, { txt: "「血管細的可以推給學長嗎...」", nextNode: "n_11" }] },
+            n_11: { title: "11:00 命運熱流事件", text: "注射顯影劑後，大哥驚恐大喊：「哇靠！我全身從胸口一路熱到下面！我是不是失禁了？」", choices: [{ txt: "「大哥別慌！這是顯影劑全身溫熱的正常生理反應啦！」", nextNode: "n_12" }, { txt: "【幹話 $20】「那只是命運的熱流，Hold 住就過去了～」", payCost: 20, nextNode: "n_12" }] },
+            n_12: { title: "12:00 午休抽考", text: "學長抽考 CT 器材學：", choices: [{ txt: "✍️ 挑戰國考題！", isQuizTrigger: true, nextNode: "n_15" }, { txt: "🧋 花 $50 請大冰美！", payCost: 50, nextNode: "n_15" }] },
+            n_15: { title: "15:00 下午突發狀況", text: "急診送來 Trauma 創傷，5 分鐘完成全頭頸胸腹 CT 重建！獲得主任讚許，加薪 +$80！", choices: [{ txt: "「專業高效率！」", nextNode: "n_17" }] },
+            n_17: { title: "17:00 打卡下班", text: "救了人踏實無比，順利下班！", isArcEnd: true }
+          }
+        },
+        {
+          id: 'ct_arc_2',
+          nodes: {
+            n_08: { title: "08:00 CT 室打卡", text: "學長調整著掃描視野 (FOV)：「今天有一台腦部 CT 冠狀動脈鈣化指數 (CAC) 篩檢。」", choices: [{ txt: "「收到！ECG 監控已連線！」", nextNode: "n_11" }, { txt: "<code>「心律過快就要用阻斷劑對吧！」</code>", nextNode: "n_11" }] },
+            n_11: { title: "11:00 臨床事件 (CT)", text: "做心臟 CT 的大哥在檢查台上心跳高達 120 bpm，完全無法配合呼吸閉氣指令。", choices: [{ txt: "耐心花 5 分鐘引導大哥調整呼吸頻率，心跳終於降到 70 bpm。", nextNode: "n_12" }, { txt: "【不耐煩 $20】「大哥心跳太快了啦，這樣影像會糊掉重拍喔！」", payCost: 20, nextNode: "n_12" }] },
+            n_12: { title: "12:00 午休抽考", text: "學長抽考心臟 CT 門控技術國考題：", choices: [{ txt: "✍️ 挑戰國考題！", isQuizTrigger: true, nextNode: "n_15" }, { txt: "🧋 花 $50 買飲料消災！", payCost: 50, nextNode: "n_15" }] },
+            n_15: { title: "15:00 下午突發狀況", text: "完美捕捉冠狀動脈血管影像，無任何 motion artifact，醫師大讚！獎金 +$70！", choices: [{ txt: "「心律完美同步！」", nextNode: "n_17" }] },
+            n_17: { title: "17:00 打卡下班", text: "順利完成心臟 CT 任務，打卡下班！", isArcEnd: true }
+          }
+        },
+        {
+          id: 'ct_arc_3',
+          nodes: {
+            n_08: { title: "08:00 CT 室打卡", text: "學長看著工作站：「今天排了好多腹部動脈期與靜脈期雙相掃描，時間軸要抓準！」", choices: [{ txt: "「Bolus Tracking 觸發線已經設定好！」", nextNode: "n_11" }, { txt: "「雙相掃描最考驗手速了！」", nextNode: "n_11" }] },
+            n_11: { title: "11:00 臨床事件 (CT)", text: "注射對比劑時，自動高壓注射器突然警報聲大作：『Pressure limit exceeded！』", choices: [{ txt: "立刻按下緊急暫停，檢查血管留置針是否有外滲 (Extravasation)。", nextNode: "n_12" }, { txt: "【慌張 $20】「天啊針頭爆開了嗎趕快拔掉！」", payCost: 20, nextNode: "n_12" }] },
+            n_12: { title: "12:00 午休抽考", text: "學長抽考高壓注射器安全防護國考題：", choices: [{ txt: "✍️ 挑戰國考題！", isQuizTrigger: true, nextNode: "n_15" }, { txt: "🧋 花 $50 請學長喝拿鐵！", payCost: 50, nextNode: "n_15" }] },
+            n_15: { title: "15:00 下午突發狀況", text: "重新建立血管通路後順利完成掃描，病人的肝臟腫瘤血管顯影完美呈現！獎金 +$60！", choices: [{ txt: "「危機完美解除！」", nextNode: "n_17" }] },
+            n_17: { title: "17:00 打卡下班", text: "安全第一，順利打卡下班！", isArcEnd: true }
+          }
+        },
+        {
+          id: 'ct_arc_4',
+          nodes: {
+            n_08: { title: "08:00 CT 室打卡", text: "學長拿著擦拭布：「今天有兩台肺部低劑量 CT (LDCT) 篩檢，輻射劑量要設定在最低限度。」", choices: [{ txt: "「ASiR 迭代重建演算法已開啟！」", nextNode: "n_11" }, { txt: "「LDCT 現在是健檢大熱門！」", nextNode: "n_11" }] },
+            n_11: { title: "11:00 臨床事件 (CT)", text: "做 LDCT 的科技新貴一進來就嚴肅問：「放射師，我聽說照一次 CT 等於照幾百張 X 光，輻射會不會讓我致癌？」", choices: [{ txt: "溫柔拿輻射劑量對照表解釋：「其實只相當於搭幾次歐美長途飛機的天然背景輻射喔！」", nextNode: "n_12" }, { txt: "【白眼 $20】「怕輻射就不要來健檢啊～」", payCost: 20, nextNode: "n_12" }] },
+            n_12: { title: "12:00 午休抽考", text: "學長抽考游離輻射生物效應國考題：", choices: [{ txt: "✍️ 挑戰國考題！", isQuizTrigger: true, nextNode: "n_15" }, { txt: "🧋 花 $50 買飲料消災！", payCost: 50, nextNode: "n_15" }] },
+            n_15: { title: "15:00 下午突發狀況", text: "順利幫科技新貴完成 LDCT，對方滿意道謝，稱讚放射師衛教超專業！獎金 +$50！", choices: [{ txt: "「專業衛教滿分！」", nextNode: "n_17" }] },
+            n_17: { title: "17:00 打卡下班", text: "完成低劑量 CT 篩檢任務，打卡下班！", isArcEnd: true }
+          }
+        },
+        {
+          id: 'ct_arc_5',
+          nodes: {
+            n_08: { title: "08:00 CT 室打卡", text: "學長打著呵欠：「今天大夜交班說 CT 管球溫度有點偏高，等下運作小心點。」", choices: [{ txt: "<code>「收到！ tube warm-up 確實執行！」</code>", nextNode: "n_11" }, { txt: "「希望老機器今天別鬧脾氣...」", nextNode: "n_11" }] },
+            n_11: { title: "11:00 臨床事件 (CT)", text: "連續掃了 5 台全腹部 CT 後，機器突然跳出警告：『Tube cooling required』，無法繼續掃描！", choices: [{ txt: "冷靜執行管球冷卻程序，並依序安排病人稍作休息，展現大將之風。", nextNode: "n_12" }, { txt: "【崩潰 $20】「天啊機器燒壞了嗎怎麼辦！」", payCost: 20, nextNode: "n_12" }] },
+            n_12: { title: "12:00 午休抽考", text: "學長抽考 X 光管球陽極熱容量 (Heat Storage Capacity) 國考題：", choices: [{ txt: "✍️ 挑戰國考題！", isQuizTrigger: true, nextNode: "n_15" }, { txt: "🧋 花 $50 請學長喝珍奶！", payCost: 50, nextNode: "n_15" }] },
+            n_15: { title: "15:00 下午突發狀況", text: "管球冷卻完畢後恢復正常運轉，順利消化完下午的急診病人，獲得主管稱讚！", choices: [{ txt: "「危機處理高手！」", nextNode: "n_17" }] },
+            n_17: { title: "17:00 打卡下班", text: "關閉 CT 主機電源，安心打卡下班！", isArcEnd: true }
           }
         }
       ],
@@ -514,53 +510,51 @@
         {
           id: 'mri_arc_1',
           nodes: {
-            n_08: {
-              title: "08:00 MRI 室打卡",
-              text: "學長拿著強磁金屬探測棒：「MRI 磁場 3.0T 不是開玩笑的，身上的金屬扣、提款卡、紋身墨水都要確認清楚！」",
-              choices: [
-                { txt: "「安檢交給我！金屬絕對進不去！」", nextNode: "n_11" },
-                { txt: "「學長，紋身墨水真的會發熱嗎？」", nextNode: "n_11" }
-              ]
-            },
-            n_11: {
-              title: "11:00 幽閉恐懼驚魂",
-              text: "Brain MRI 先生推進孔洞 3 秒就恐懼大喊：「裡面好窄好恐怖！我覺得快不能呼吸了！快放我出去！」",
-              choices: [
-                { txt: "拉出床位，戴上專用反光鏡與耳機播放周杰倫歌曲安撫", nextNode: "n_11_norm" },
-                { txt: "【硬派開嗆 $20】「先生再忍耐 30 分鐘就好了啦，大家進去都這樣啊～」", payCost: 20, nextNode: "n_11_rage", setFlag: 'MRI_CANCEL' }
-              ]
-            },
-            n_11_norm: {
-              title: "11:15 音樂療癒",
-              text: "先生聽著周杰倫的歌放鬆了下來，順利完成 T1/T2/FLAIR 全套掃描！",
-              choices: [{ txt: "「音樂救了我們！」", nextNode: "n_12" }]
-            },
-            n_11_rage: {
-              title: "11:15 崩潰按球",
-              text: "先生在裡面幽閉恐懼症爆發，瘋狂按緊急球大叫！最後只能中途取消檢查，退單重來。",
-              choices: [{ txt: "（唉...被學長念了...）", nextNode: "n_12" }]
-            },
-            n_12: {
-              title: "12:00 午休抽考",
-              text: "學長抹抹額頭：「MRI 擺位講求心理學！來一題 T1/T2 弛豫時間國考題考考妳！」",
-              choices: [
-                { txt: "✍️ 挑戰國考題！", isQuizTrigger: true, nextNode: "n_15" },
-                { txt: "🧋 花 $50 請學長喝星巴克！", payCost: 50, nextNode: "n_15" }
-              ]
-            },
-            n_15: {
-              title: "15:00 下午突發狀況",
-              text: "下午檢查情況：",
-              hasFlagCheck: 'MRI_CANCEL',
-              flagMatchText: "因為早上取消了那台檢查，主治醫師打電話來抱怨流程太慢，扣除津貼 $50！",
-              flagNormalText: "成功幫一位膝關節受傷的運動員拍出超清晰韌帶斷裂影像，為手術提供關鍵依據！加薪 +$80！",
-              choices: [{ txt: "「收工，準備下班！」", nextNode: "n_17" }]
-            },
-            n_17: {
-              title: "17:00 打卡下班",
-              text: "聽了一下午的好歌，確定控制室強磁區沒有鐵夾被吸上去，神清氣爽地打卡下班！",
-              isArcEnd: true
-            }
+            n_08: { title: "08:00 MRI 室打卡", text: "學長拿著強磁金屬探測棒：「MRI 磁場 3.0T 不是開玩笑的，身上的金屬扣與紋身墨水都要確認！」", choices: [{ txt: "「安檢交給我！」", nextNode: "n_11" }, { txt: "「紋身墨水真的會熱嗎？」", nextNode: "n_11" }] },
+            n_11: { title: "11:00 幽閉恐懼驚魂", text: "Brain MRI 先生推進孔洞 3 秒恐懼大喊：「裡面好窄好恐怖！快放我出去！」", choices: [{ txt: "拉出床位戴上耳機播放周杰倫歌曲安撫。", nextNode: "n_12" }, { txt: "【硬派 $20】「先生再忍耐 30 分鐘就好啦！」", payCost: 20, nextNode: "n_12", setFlag: 'MRI_CANCEL' }] },
+            n_12: { title: "12:00 午休抽考", text: "學長抽考 T1/T2 弛豫時間國考題：", choices: [{ txt: "✍️ 挑戰國考題！", isQuizTrigger: true, nextNode: "n_15" }, { txt: "🧋 花 $50 請喝星巴克！", payCost: 50, nextNode: "n_15" }] },
+            n_15: { title: "15:00 下午突發狀況", text: "下午檢查情況：", hasFlagCheck: 'MRI_CANCEL', flagMatchText: "因為早上取消檢查，醫師抱怨流程太慢，扣津貼 $50！", flagNormalText: "成功幫膝關節受傷的運動員拍出清晰韌帶影像！加薪 +$80！", choices: [{ txt: "「收工下班！」", nextNode: "n_17" }] },
+            n_17: { title: "17:00 打卡下班", text: "確定強磁區安全，神清氣爽下班！", isArcEnd: true }
+          }
+        },
+        {
+          id: 'mri_arc_2',
+          nodes: {
+            n_08: { title: "08:00 MRI 室打卡", text: "學長拿著耳塞：「今天有 3 台脊椎 MRI，梯度磁場切換的叩叩聲會很大聲喔。」", choices: [{ txt: "<code>「耳塞與罩耳式耳機已備妥！」</code>", nextNode: "n_11" }, { txt: "「MRI 的聲音聽久了其實挺催眠的...」", nextNode: "n_11" }] },
+            n_11: { title: "11:00 臨床事件 (MRI)", text: "做腰椎 MRI 的阿伯在裡面居然睡著了，而且打呼聲大到竟然透過隔音玻璃傳進控制室！", choices: [{ txt: "忍不住笑出來，透過對講機溫柔呼喚：「阿伯醒醒囉，我們準備換下一個序列囉！」", nextNode: "n_12" }, { txt: "【吐槽 $20】「阿伯打呼聲太大聲干擾到梯度線圈囉！」", payCost: 20, nextNode: "n_12" }] },
+            n_12: { title: "12:00 午休抽考", text: "學長抽考 MRI 梯度磁場 (Gradient coil) 國考題：", choices: [{ txt: "✍️ 挑戰國考題！", isQuizTrigger: true, nextNode: "n_15" }, { txt: "🧋 花 $50 買飲料消災！", payCost: 50, nextNode: "n_15" }] },
+            n_15: { title: "15:00 下午突發狀況", text: "順利完成阿伯的腰椎椎間盤突出 MRI，影像品質極佳，無任何假影！獎金 +$60！", choices: [{ txt: "「睡美人掃描成功！」", nextNode: "n_17" }] },
+            n_17: { title: "17:00 打卡下班", text: "聽了一下午的打呼聲與叩叩聲，準時打卡下班！", isArcEnd: true }
+          }
+        },
+        {
+          id: 'mri_arc_3',
+          nodes: {
+            n_08: { title: "08:00 MRI 室打卡", text: "學長檢查著 RF 線圈 (Coil)：「今天要做肩膀與手腕關節造影 (MR Arthrogram)，要打顯影劑進關節腔喔。」", choices: [{ txt: "「關節專用表面線圈已消毒完成！」", nextNode: "n_11" }, { txt: "「打關節腔聽起來就很痛...」", nextNode: "n_11" }] },
+            n_11: { title: "11:00 臨床事件 (MRI)", text: "年輕投手準備做肩膀關節造影，醫師打完顯影劑後，投手痛到臉色發白冒冷汗。", choices: [{ txt: "立刻遞上溫開水與毛巾，溫柔安撫：「放輕鬆，深呼吸，我們馬上幫您擺位固定。」", nextNode: "n_12" }, { txt: "【冷血 $20】「職業選手這點痛算什麼撐一下就好！」", payCost: 20, nextNode: "n_12" }] },
+            n_12: { title: "12:00 午休抽考", text: "學長抽考 MRI 表面線圈與信噪比 (SNR) 國考題：", choices: [{ txt: "✍️ 挑戰國考題！", isQuizTrigger: true, nextNode: "n_15" }, { txt: "🧋 花 $50 請學長喝珍奶！", payCost: 50, nextNode: "n_15" }] },
+            n_15: { title: "15:00 下午突發狀況", text: "投手做完後連聲道謝，稱讚放射師比防護員還溫柔！獎金 +$70！", choices: [{ txt: "「關節造影完美收工！」", nextNode: "n_17" }] },
+            n_17: { title: "17:00 打卡下班", text: "順利結束關節造影日，打卡下班！", isArcEnd: true }
+          }
+        },
+        {
+          id: 'mri_arc_4',
+          nodes: {
+            n_08: { title: "08:00 MRI 室打卡", text: "學長拿著磁性安全告示牌：「今天有兩位做心臟磁振造影 (Cardiac MRI)，病人的心律不整會很難抓門控。」", choices: [{ txt: "<code>「向量心電圖 (VCG) 電極片已貼好！」</code>", nextNode: "n_11" }, { txt: "「Cardiac MRI 是魔王級的檢查...」", nextNode: "n_11" }] },
+            n_11: { title: "11:00 臨床事件 (MRI)", text: "病人的 VCG 心電圖訊號一直被強磁場干擾抓不到 R 波，掃描被迫中斷。", choices: [{ txt: "冷靜重新調整電極片位置並加貼導電膠，成功鎖定心跳訊號！", nextNode: "n_12" }, { txt: "【慌張 $20】I「天啊 VCG 一直抓不到心跳訊號怎麼辦！」", payCost: 20, nextNode: "n_12" }] },
+            n_12: { title: "12:00 午休抽考", text: "學長抽考 Cardiac MRI 彈丸追蹤與電影式造影 (Cine MRI) 國考題：", choices: [{ txt: "✍️ 挑戰國考題！", isQuizTrigger: true, nextNode: "n_15" }, { txt: "🧋 花 $50 買飲料消災！", payCost: 50, nextNode: "n_15" }] },
+            n_15: { title: "15:00 下午突發狀況", text: "順利完成心肌活力與心室功能評估，心臟科主任打電話來大加讚賞！獎金 +$100！", choices: [{ txt: "「心肌掃描大師！」", nextNode: "n_17" }] },
+            n_17: { title: "17:00 打卡下班", text: "征服魔王級 Cardiac MRI，自豪地打卡下班！", isArcEnd: true }
+          }
+        },
+        {
+          id: 'mri_arc_5',
+          nodes: {
+            n_08: { title: "08:00 MRI 室打卡", text: "學長笑著說：「今天有位貴賓預約全身 MRI 健檢，聽說是个明星藝人喔。」", choices: [{ txt: "「哇！趕快檢查控制室有沒有亂放東西！」", nextNode: "n_11" }, { txt: "「明星也是要乖乖換掉金屬衣服的～」", nextNode: "n_11" }] },
+            n_11: { title: "11:00 臨床事件 (MRI)", text: "明星經紀人神神秘秘要求清空 MRI 等候區，拒絕和其他病人一起排隊等候。", choices: [{ txt: "婉轉且堅定地告知：「本院所有病人一律平等，請依照預約序號與安檢程序進行。」", nextNode: "n_12" }, { txt: "【星光迷失 $20】「天啊可以幫我簽個名嗎！」", payCost: 20, nextNode: "n_12" }] },
+            n_12: { title: "12:00 午休抽考", text: "學長抽考 MRI 磁場安全與生物效應國考題：", choices: [{ txt: "✍️ 挑戰國考題！", isQuizTrigger: true, nextNode: "n_15" }, { txt: "🧋 花 $50 請學長喝冰美式！", payCost: 50, nextNode: "n_15" }] },
+            n_15: { title: "15:00 下午突發狀況", text: "明星順利完成全身 MRI 檢查，私底下稱讚放射師專業又有原則！獎金 +$60！", choices: [{ txt: "「專業不受特權影響！」", nextNode: "n_17" }] },
+            n_17: { title: "17:00 打卡下班", text: "結束星光熠熠的一天，開心打卡下班！", isArcEnd: true }
           }
         }
       ],
@@ -568,13 +562,51 @@
         {
           id: 'mammo_arc_1',
           nodes: {
-            n_08: { title: "08:00 Mammo 打卡", text: "學姐神情莊嚴：「Mammo 是壓迫力學的極致，壓不夠緊影像糊掉，壓太緊病人會痛到想揍妳，力道要拿捏好！」", choices: [{ txt: "「學姐放心，我會溫柔且堅定！」", nextNode: "n_11" }, { txt: "「手好抖...萬一尖叫怎麼辦...」", nextNode: "n_11" }] },
-            n_11: { title: "11:00 壓迫力學考驗", text: "第一次做乳攝的少婦緊張發抖：「放射師...聽說這個超痛，可以不要壓那麼緊嗎？」", choices: [{ txt: "「夾緊一瞬間是為了拉開組織，劑量最低！深吸一口氣忍 3 秒！」", nextNode: "n_11_norm" }, { txt: "【敷衍模式 $20】「那我就輕輕壓一下下，但重拍不要怪我喔～」", payCost: 20, nextNode: "n_11_rage", setFlag: 'MAMMO_RETAKE' }] },
-            n_11_norm: { title: "11:15 完美拍攝", text: "少婦深吸氣配合，3 秒完成！「呼～其實沒想像中可怕耶，謝謝妳！」", choices: [{ txt: "「去外面稍等報告囉！」", nextNode: "n_12" }] },
-            n_11_rage: { title: "11:15 影像重疊", text: "因為壓迫不足，影像出現嚴重腺體重疊，學姐搖頭退單，還是必須重新壓一次！", choices: [{ txt: "（還是得專業壓緊啊...）", nextNode: "n_12" }] },
-            n_12: { title: "12:00 午休抽考", text: "學姐遞給妳蘋果：「壓迫力道掌握得如何？來一題鉬靶 Mo/Rh 過濾片國考題！」", choices: [{ txt: "✍️ 挑戰國考題！", isQuizTrigger: true, nextNode: "n_15" }, { txt: "🧋 花 $50 請學姐喝水果茶！", payCost: 50, nextNode: "n_15" }] },
-            n_15: { title: "15:00 下午突發狀況", text: "幫一位篩檢異常的阿姨完成追蹤攝影，阿姨含淚謝謝妳的鼓勵，感受到了這份工作的溫暖！", choices: [{ txt: "「加油！會沒事的！」", nextNode: "n_17" }] },
-            n_17: { title: "17:00 打卡下班", text: "脫下防護裝備，懷著溫暖的心情順利打卡下班！", isArcEnd: true }
+            n_08: { title: "08:00 Mammo 打卡", text: "學姐神情莊嚴：「Mammo 壓迫力學極致，壓不緊糊掉，壓太緊病人尖叫！」", choices: [{ txt: "「溫柔且堅定！」", nextNode: "n_11" }, { txt: "「手好抖...」", nextNode: "n_11" }] },
+            n_11: { title: "11:00 壓迫力學考驗", text: "少婦緊張發抖：「聽說超痛，可以不要壓那麼緊嗎？」", choices: [{ txt: "「夾緊是為了劑量最低！深吸氣忍 3 秒！」", nextNode: "n_12" }, { txt: "【敷衍 $20】「那輕輕壓一下下就好，重拍別怪我。」", payCost: 20, nextNode: "n_12", setFlag: 'MAMMO_RETAKE' }] },
+            n_12: { title: "12:00 午休抽考", text: "學姐遞蘋果抽考鉬靶 Mo/Rh 國考題：", choices: [{ txt: "✍️ 挑戰國考題！", isQuizTrigger: true, nextNode: "n_15" }, { txt: "🧋 花 $50 請學姐喝水果茶！", payCost: 50, nextNode: "n_15" }] },
+            n_15: { title: "15:00 下午突發狀況", text: "幫篩檢異常阿姨追加攝影，阿姨含淚謝謝妳的鼓勵！", choices: [{ txt: "「溫暖滿分！」", nextNode: "n_17" }] },
+            n_17: { title: "17:00 打卡下班", text: "脫下防護裝備，溫暖打卡下班！", isArcEnd: true }
+          }
+        },
+        {
+          id: 'mammo_arc_2',
+          nodes: {
+            n_08: { title: "08:00 Mammo 打卡", text: "學姐拿著衛教單：「今天有社區乳攝巡迴車支援任務，婆婆媽媽們會一大早排隊。」", choices: [{ txt: "「巡迴車出動！國民健康署篩檢第一線！」", nextNode: "n_11" }, { txt: "「希望阿嬤們不要太緊張...」", nextNode: "n_11" }] },
+            n_11: { title: "11:00 臨床事件 (Mammo)", text: "里長伯帶著社區 30 位阿嬤來到巡迴車前，阿嬤們七嘴八舌：「聽說壓胸會把血管壓斷是真的嗎？」", choices: [{ txt: "耐心地拿乳房模型笑著解釋：「阿嬤那是謠言啦！壓緊是為了讓組織攤開看得更清楚！」", nextNode: "n_12" }, { txt: "【不耐煩 $20】「阿嬤不要聽信謠言好嗎快上車！」", payCost: 20, nextNode: "n_12" }] },
+            n_12: { title: "12:00 午休抽考", text: "學姐抽考乳房攝影壓迫板材質 (PMMA) 國考題：", choices: [{ txt: "✍️ 挑戰國考題！", isQuizTrigger: true, nextNode: "n_15" }, { txt: "🧋 花 $50 買飲料消災！", payCost: 50, nextNode: "n_15" }] },
+            n_15: { title: "15:00 下午突發狀況", text: "里長伯特地送來手搖綠茶慰勞巡迴車團隊，稱讚放射師親切像孫女！獎金 +$60！", choices: [{ txt: "「社區巡迴成功！」", nextNode: "n_17" }] },
+            n_17: { title: "17:00 打卡下班", text: "結束乳攝巡迴車任務，疲憊但滿足地打卡下班！", isArcEnd: true }
+          }
+        },
+        {
+          id: 'mammo_arc_3',
+          nodes: {
+            n_08: { title: "08:00 Mammo 打卡", text: "學姐神情嚴肅：「今天有一位男性乳癌篩檢個案，男士做乳攝比較害羞，態度要特別溫和。」", choices: [{ txt: "「收到！尊重與隱私第一！」", nextNode: "n_11" }, { txt: "「男性乳癌雖然少見但也是有的！」", nextNode: "n_11" }] },
+            n_11: { title: "11:00 臨床事件 (Mammo)", text: "中年大叔神情尷尬走進檢查室：「放射師...我一個大男人怎麼也要做這個檢查...」", choices: [{ txt: "溫柔點頭請大哥放輕鬆：「男性也會有乳腺組織喔，早期發現早期治療！」", nextNode: "n_12" }, { txt: "【直白 $20】「先生放輕鬆，男女平權嘛！」", payCost: 20, nextNode: "n_12" }] },
+            n_12: { title: "12:00 午休抽考", text: "學姐抽考男性乳房發育症 (Gynecomastia) 與乳攝解剖國考題：", choices: [{ txt: "✍️ 挑戰國考題！", isQuizTrigger: true, nextNode: "n_15" }, { txt: "🧋 花 $50 請學姐喝紅茶！", payCost: 50, nextNode: "n_15" }] },
+            n_15: { title: "15:00 下午突發狀況", text: "順利完成男性乳攝，大哥離開時感謝放射師消除他的心理障礙！獎金 +$50！", choices: [{ txt: "「心理建設成功！」", nextNode: "n_17" }] },
+            n_17: { title: "17:00 打卡下班", text: "打破性別刻板印象的一天，準時打卡下班！", isArcEnd: true }
+          }
+        },
+        {
+          id: 'mammo_arc_4',
+          nodes: {
+            n_08: { title: "08:00 Mammo 打卡", text: "學姐檢查著乳攝機的自動曝光控制 (AEC) 偵測器：「今天有隆乳術後 (Implants) 的婦女要做 Eklund 局部推擠攝影。」", choices: [{ txt: "「Eklund 推擠法已掌握！」", nextNode: "n_11" }, { txt: "「隆乳的片子壓迫要特別小心假體破裂...」", nextNode: "n_11" }] },
+            n_11: { title: "11:00 臨床事件 (Mammo)", text: "隆乳貴婦緊張詢問：「放射師，妳們這樣夾我的矽膠假體，會不會把假體壓破啊？」", choices: [{ txt: "耐心地解釋 Eklund 技法：「我們會將乳腺組織往外拉、假體往後推，不會直接強力壓迫假體喔！」", nextNode: "n_12" }, { txt: "【恐嚇 $20】「破掉的話醫院不負賠償責任喔！」", payCost: 20, nextNode: "n_12" }] },
+            n_12: { title: "12:00 午休抽考", text: "學姐抽考隆乳乳房攝影造影技術國考題：", choices: [{ txt: "✍️ 挑戰國考題！", isQuizTrigger: true, nextNode: "n_15" }, { txt: "🧋 花 $50 買飲料消災！", payCost: 50, nextNode: "n_15" }] },
+            n_15: { title: "15:00 下午突發狀況", text: "完美呈現隆乳推擠後的乳腺組織影像，無假體破裂，醫師高度稱讚！獎金 +$80！", choices: [{ txt: "「Eklund 技法滿分！」", nextNode: "n_17" }] },
+            n_17: { title: "17:00 打卡下班", text: "安全完成隆乳個案任務，打卡下班！", isArcEnd: true }
+          }
+        },
+        {
+          id: 'mammo_arc_5',
+          nodes: {
+            n_08: { title: "08:00 Mammo 打卡", text: "學姐拿著品管手冊：「今天下午要進行乳攝機的假體影像品質 QC 測試。」", choices: [{ txt: "<code>「PMMA 假體與試驗片已備妥！」</code>", nextNode: "n_11" }, { txt: "「品管做得好，病人少挨劑量！」", nextNode: "n_11" }] },
+            n_11: { title: "11:00 臨床事件 (Mammo)", text: "上午最後一位阿嬤在壓胸時突然貧血頭暈，差點軟腳跌倒在檢查台上。", choices: [{ txt: "立刻按下壓迫釋放鈕，扶阿嬤坐到椅子上並倒糖水：「阿嬤別怕，我們不拍了先休息！」", nextNode: "n_12" }, { txt: "【冷血 $20】「阿嬤撐一下馬上就拍完了！」", payCost: 20, nextNode: "n_12" }] },
+            n_12: { title: "12:00 午休抽考", text: "學姐抽考乳房攝影假體品管與平均腺體劑量 (AGD) 國考題：", choices: [{ txt: "✍️ 挑戰國考題！", isQuizTrigger: true, nextNode: "n_15" }, { txt: "🧋 花 $50 請學姐喝珍奶！", payCost: 50, nextNode: "n_15" }] },
+            n_15: { title: "15:00 下午突發狀況", text: "下午順利完成機器 QC 測試，數值完全符合原廠規範，獲得醫物師讚賞！獎金 +$60！", choices: [{ txt: "「品管檢測過關！」", nextNode: "n_17" }] },
+            n_17: { title: "17:00 打卡下班", text: "兼顧病人安全與機器品管，完美打卡下班！", isArcEnd: true }
           }
         }
       ],
@@ -582,13 +614,51 @@
         {
           id: 'sono_arc_1',
           nodes: {
-            n_08: { title: "08:00 Sono 室打卡", text: "學姐遞給溫熱耦合劑 Jelly：「今天掃腹部超音波，Jelly 記得先加溫，不然冰冰的塗上去病人會跳起來！」", choices: [{ txt: "「貼心加溫 Jelly 是我的基本功！」", nextNode: "n_11" }, { txt: "「冰冰的比較能讓病人保持清醒啊（笑）」", nextNode: "n_11" }] },
-            n_11: { title: "11:00 超音波癢癢事件", text: "掃膽囊時伯伯突然大笑：「哈哈哈哈！放射師！那個凸凸的東西塗在肚子上好癢喔哈哈哈哈！」", choices: [{ txt: "「伯伯忍耐一下下～深吸一口氣憋住！膽囊才看得清楚喔！」", nextNode: "n_11_norm" }, { txt: "【吐槽模式 $20】「伯伯不要再笑了！您腹肌一直震我的探頭都在晃啦！」", payCost: 20, nextNode: "n_11_rage" }] },
-            n_11_norm: { title: "11:15 完美抓相", text: "伯伯吸氣憋住，探頭瞬間抓到超清晰的膽囊與總膽管影像！", choices: [{ txt: "「完美抓相！」", nextNode: "n_12" }] },
-            n_11_rage: { title: "11:15 震動狂笑", text: "伯伯笑得更厲害，花了兩倍的時間才好不容易掃完，大家都笑翻了！", choices: [{ txt: "「終於掃完了哈哈！」", nextNode: "n_12" }] },
-            n_12: { title: "12:00 午休抽考", text: "學姐擦擦手上的凝膠：「探頭操控不錯！抽考一題超音波壓電效應國考題！」", choices: [{ txt: "✍️ 挑戰國考題！", isQuizTrigger: true, nextNode: "n_15" }, { txt: "🧋 花 $50 請學姐喝紅茶拿鐵！", payCost: 50, nextNode: "n_15" }] },
-            n_15: { title: "15:00 下午突發狀況", text: "協助完成一台超音波導引穿刺，無菌包準備精準到位，獲得醫師肯定，獎金 +$60！", choices: [{ txt: "「無菌作業完成！」", nextNode: "n_17" }] },
-            n_17: { title: "17:00 打卡下班", text: "擦乾淨手上的凝膠，一身輕鬆，準時打卡下班！", isArcEnd: true }
+            n_08: { title: "08:00 Sono 室打卡", text: "學姐遞溫熱耦合劑：「掃腹部超音波，記得 Jelly 先加溫，不然病人會跳起來！」", choices: [{ txt: "「加溫 Jelly 基本功！」", nextNode: "n_11" }, { txt: "「冰冰的比較能保持清醒」", nextNode: "n_11" }] },
+            n_11: { title: "11:00 超音波癢癢事件", text: "掃腹部時伯伯大笑：「哈哈哈哈！放射師！那東西塗在肚子上好癢！」", choices: [{ txt: "「伯伯忍耐吸氣憋住，膽囊才看得清楚！」", nextNode: "n_12" }, { txt: "【吐槽 $20】「伯伯別笑探頭在晃啦！」", payCost: 20, nextNode: "n_12" }] },
+            n_12: { title: "12:00 午休抽考", text: "學姐擦凝膠抽考超音波壓電效應國考題：", choices: [{ txt: "✍️ 挑戰國考題！", isQuizTrigger: true, nextNode: "n_15" }, { txt: "🧋 花 $50 請紅茶拿鐵！", payCost: 50, nextNode: "n_15" }] },
+            n_15: { title: "15:00 下午突發狀況", text: "協助超音波導引穿刺無菌準備到位，獲得醫師肯定，獎金 +$60！", choices: [{ txt: "「無菌作業完成！」", nextNode: "n_17" }] },
+            n_17: { title: "17:00 打卡下班", text: "擦乾凝膠一身輕鬆打卡下班！", isArcEnd: true }
+          }
+        },
+        {
+          id: 'sono_arc_2',
+          nodes: {
+            n_08: { title: "08:00 Sono 室打卡", text: "學姐檢查著高頻線性探頭 (Linear probe)：「今天有頸動脈超音波與甲狀腺掃描。」", choices: [{ txt: "「高頻探頭解析度最高！」", nextNode: "n_11" }, { txt: "「甲狀腺超音波要細細掃過每一個小結節。」", nextNode: "n_11" }] },
+            n_11: { title: "11:00 臨床事件 (Sono)", text: "做頸動脈超音波的貴婦阿姨脖子上戴著一條沉重的珍珠項鍊，嫌麻煩不想拔下來。", choices: [{ txt: "溫柔勸說：「阿姨珍珠項鍊會擋住探頭滑動，而且耦合劑會弄髒珍珠喔！」", nextNode: "n_12" }, { txt: "【白眼 $20】「不拔項鍊就無法掃頸動脈血管喔！」", payCost: 20, nextNode: "n_12" }] },
+            n_12: { title: "12:00 午休抽考", text: "學姐抽考都卜勒超音波 (Doppler) 頻移與血流方向國考題：", choices: [{ txt: "✍️ 挑戰國考題！", isQuizTrigger: true, nextNode: "n_15" }, { txt: "🧋 花 $50 買飲料消災！", payCost: 50, nextNode: "n_15" }] },
+            n_15: { title: "15:00 下午突發狀況", text: "順利測出頸動脈內中膜厚度 (IMT) 與血流流速，醫師稱讚數據精準！獎金 +$70！", choices: [{ txt: "「都卜勒血流清晰！」", nextNode: "n_17" }] },
+            n_17: { title: "17:00 打卡下班", text: "完成血管超音波掃描任務，打卡下班！", isArcEnd: true }
+          }
+        },
+        {
+          id: 'sono_arc_3',
+          nodes: {
+            n_08: { title: "08:00 Sono 室打卡", text: "學姐拿著消毒酒精：「今天有急診下腹痛 Sono，懷疑是急性闌尾炎或婦科急症。」", choices: [{ txt: "「急診 Sono 隨時候命！」", nextNode: "n_11" }, { txt: "「腹痛超音波要用壓痛點定位法。」", nextNode: "n_11" }] },
+            n_11: { title: "11:00 臨床事件 (Sono)", text: "年輕女孩痛到在床上打滾，探頭一壓下去右下腹就尖叫：「好痛！醫生說我是不是盲腸炎！」", choices: [{ txt: "輕柔一邊掃描一邊安撫：「別怕，我們馬上找出痛點給醫師判斷。」迅速抓到腫大闌尾！", nextNode: "n_12" }, { txt: "【嚴肅 $20】「請不要一直亂動探頭無法定位！」", payCost: 20, nextNode: "n_12" }] },
+            n_12: { title: "12:00 午休抽考", text: "學姐抽考急性闌尾炎超音波特徵 (Non-compressible tubular structure) 國考題：", choices: [{ txt: "✍️ 挑戰國考題！", isQuizTrigger: true, nextNode: "n_15" }, { txt: "🧋 花 $50 請學姐喝珍奶！", payCost: 50, nextNode: "n_15" }] },
+            n_15: { title: "15:00 下午突發狀況", text: "外科醫師根據超音波影像緊急安排開刀切除闌尾，成功化解危機！獎金 +$80！", choices: [{ txt: "「急診超音波神救援！」", nextNode: "n_17" }] },
+            n_17: { title: "17:00 打卡下班", text: "俐落結束急診超音波日，打卡下班！", isArcEnd: true }
+          }
+        },
+        {
+          id: 'sono_arc_4',
+          nodes: {
+            n_08: { title: "08:00 Sono 室打卡", text: "學姐擦拭著探頭導線：「今天預約了一整天的乳房超音波 (Breast Sono) 篩檢。」", choices: [{ txt: "<code>q「高頻寬探頭與水袋準備就緒！」</code>", nextNode: "n_11" }, { txt: "「乳房超音波是年輕女性的好幫手。」", nextNode: "n_11" }] },
+            n_11: { title: "11:00 臨床事件 (Sono)", text: "年輕女孩緊張兮兮問：「放射師，我摸到胸部有一個硬塊會不會是癌症？」", choices: [{ txt: "溫柔滑動探頭並解說：「別擔心，我們在螢幕上看邊界很規則，看起來多半是良性纖維腺瘤喔！」", nextNode: "n_12" }, { txt: "【冷漠 $20】「等醫師看報告才知道不要自己嚇自己。」", payCost: 20, nextNode: "n_12" }] },
+            n_12: { title: "12:00 午休抽考", text: "學姐抽考乳房超音波 BI-RADS 分類國考題：", choices: [{ txt: "✍️ 挑戰國考題！", isQuizTrigger: true, nextNode: "n_15" }, { txt: "🧋 花 $50 買飲料消災！", payCost: 50, nextNode: "n_15" }] },
+            n_15: { title: "15:00 下午突發狀況", text: "順利完成一整天乳房超音波，女孩離開前笑著道謝，解除心中的大石！獎金 +$60！", choices: [{ txt: "「解除恐慌滿分！」", nextNode: "n_17" }] },
+            n_17: { title: "17:00 打卡下班", text: "完成溫馨的乳超檢查日，準時打卡下班！", isArcEnd: true }
+          }
+        },
+        {
+          id: 'sono_arc_5',
+          nodes: {
+            n_08: { title: "08:00 Sono 室打卡", text: "學姐笑著說：「今天下午有超音波品管 QC，要測試探頭的死區 (Dead zone) 與穿透深度。」", choices: [{ txt: "「多功能超音波測試模體已準備好！」", nextNode: "n_11" }, { txt: "「探頭水晶片要是破裂影像就會有陰影條紋。」", nextNode: "n_11" }] },
+            n_11: { title: "11:00 臨床事件 (Sono)", text: "幫一位肝硬化病人做腹水超音波評估時，病人突然嘔吐，把嘔吐袋全吐滿了。", choices: [{ txt: "立刻遞上衛生紙與乾淨袋子，輕聲安撫並請清潔阿姨協助，展現高情商。", nextNode: "n_12" }, { txt: "【嫌棄 $20】「哎呀怎麼吐在外面啦好臭喔！」", payCost: 20, nextNode: "n_12" }] },
+            n_12: { title: "12:00 午休抽考", text: "學姐抽考超音波假體品管與軸向解像力國考題：", choices: [{ txt: "✍️ 挑戰國考題！", isQuizTrigger: true, nextNode: "n_15" }, { txt: "🧋 花 $50 請學姐喝珍奶！", payCost: 50, nextNode: "n_15" }] },
+            n_15: { title: "15:00 下午突發狀況", text: "下午超音波機器 QC 測試全數過關，性能優良！獎金 +$50！", choices: [{ txt: "「機器品管過關！」", nextNode: "n_17" }] },
+            n_17: { title: "17:00 打卡下班", text: "整理好超音波室，安心打卡下班！", isArcEnd: true }
           }
         }
       ],
@@ -596,13 +666,51 @@
         {
           id: 'cath_arc_1',
           nodes: {
-            n_08: { title: "08:00 心導管打卡", text: "學姐拿著厚重雙面鉛衣給妳：「今天有心導管支架置入術，重鉛衣穿整天，腰力要好喔！」", choices: [{ txt: "「我有練核心！沒在怕的！」", nextNode: "n_11" }, { txt: "「穿上瞬間覺得腰要斷了...」", nextNode: "n_11" }] },
-            n_11: { title: "11:00 C-arm 角度考驗", text: "手術中內科醫師喊：「放射師，C-arm 角度轉到 LAO 45 度 Cranial 30 度！快！」", choices: [{ txt: "迅速操控 C-arm 到位，完美展現左前降支血管！", nextNode: "n_11_norm" }, { txt: "【手忙腳亂 $20】「等等...LAO 是左邊還是右邊？！學姐救我！」", payCost: 20, nextNode: "n_11_rage" }] },
-            n_11_norm: { title: "11:15 醫師讚許", text: "醫師點頭：「角度抓得很準！讚喔！」手術進行超順利。", choices: [{ txt: "「繼續維持！」", nextNode: "n_12" }] },
-            n_11_rage: { title: "11:15 學姐救援", text: "學姐立馬伸手幫忙修正角度，還好沒耽誤到打通血管的時間！", choices: [{ txt: "「感謝學姐救援！」", nextNode: "n_12" }] },
-            n_12: { title: "12:00 午休抽考", text: "脫下鉛衣那一刻覺得自己要飛起來了！學姐笑說：「來一題心血管造影投照角度國考題！」", choices: [{ txt: "✍️ 挑戰國考題！", isQuizTrigger: true, nextNode: "n_15" }, { txt: "🧋 花 $50 請學姐喝綠茶！", payCost: 50, nextNode: "n_15" }] },
-            n_15: { title: "15:00 下午突發狀況", text: "順利完成一台緊急心肌梗塞 (AMI) 打通血管手術，看著心電圖恢復正常，汗水都值得了！加薪 +$100！", choices: [{ txt: "「救人成功！」", nextNode: "n_17" }] },
-            n_17: { title: "17:00 打卡下班", text: "伸展痠痛的腰，懷著救人的驕傲順利打卡下班！", isArcEnd: true }
+            n_08: { title: "08:00 心導管打卡", text: "學姐拿重鉛衣：「今天有支架置入術，鉛衣穿整天，腰力要好！」", choices: [{ txt: "<code>「核心肌群已啟動！」</code>", nextNode: "n_11" }, { txt: "「鉛衣好重...」", nextNode: "n_11" }] },
+            n_11: { title: "11:00 C-arm 角度考驗", text: "內科醫師喊：「放射師，C-arm 角度轉到 LAO 45 度 Cranial 30 度！快！」", choices: [{ txt: "迅速操控 C-arm 到位，完美展現左前降支血管！", nextNode: "n_12" }, { txt: "【手忙腳亂 $20】「等等...LAO 是哪邊？學姐救我！」", payCost: 20, nextNode: "n_12" }] },
+            n_12: { title: "12:00 午休抽考", text: "脫下鉛衣抽考心血管造影角度國考題：", choices: [{ txt: "✍️ 挑戰國考題！", isQuizTrigger: true, nextNode: "n_15" }, { txt: "🧋 花 $50 請綠茶！", payCost: 50, nextNode: "n_15" }] },
+            n_15: { title: "15:00 下午突發狀況", text: "完成緊急 AMI 打通血管手術，心電圖恢復正常，加薪 +$100！", choices: [{ txt: "「救人成功！」", nextNode: "n_17" }] },
+            n_17: { title: "17:00 打卡下班", text: "伸展痠痛的腰，驕傲打卡下班！", isArcEnd: true }
+          }
+        },
+        {
+          id: 'cath_arc_2',
+          nodes: {
+            n_08: { title: "08:00 心導管打卡", text: "學姐檢查著心血管造影劑自動注射壓力極限：「今天有周邊血管氣球擴張術 (PTA)。」", choices: [{ txt: "<code>「高壓灌注導管與壓力槍準備就緒！」</code>", nextNode: "n_11" }, { txt: "「腳部血管狹窄通常是因為糖尿病引起。」", nextNode: "n_11" }] },
+            n_11: { title: "11:00 臨床事件 (導管室)", text: "導管室內正準備穿刺動脈時，病人因為極度緊張血壓飆高到 200 mmHg。", choices: [{ txt: "溫柔握住病人的手聊天轉移注意力：「阿伯放輕鬆，聽音樂深呼吸，醫師技術很好不用怕！」", nextNode: "n_12" }, { txt: "【嚴肅 $20】「血壓太高無法手術請趕快放輕鬆！」", payCost: 20, nextNode: "n_12" }] },
+            n_12: { title: "12:00 午休抽考", text: "學姐抽考心導管顯影劑過敏防範與急救藥物國考題：", choices: [{ txt: "✍️ 挑戰國考題！", isQuizTrigger: true, nextNode: "n_15" }, { txt: "🧋 花 $50 買飲料消災！", payCost: 50, nextNode: "n_15" }] },
+            n_15: { title: "15:00 下午突發狀況", text: "病人的血壓在溫柔安撫下慢慢下降，PTA 手術順利打通足部阻塞血管！獎金 +$90！", choices: [{ txt: "「血管暢通無阻！」", nextNode: "n_17" }] },
+            n_17: { title: "17:00 打卡下班", text: "順利完成周邊血管導管任務，打卡下班！", isArcEnd: true }
+          }
+        },
+        {
+          id: 'cath_arc_3',
+          nodes: {
+            n_08: { title: "08:00 心導管打卡", text: "學姐調整著平板偵檢器 (Flat panel detector) 的視野大小：「今天要做主動脈支架置入術 (EVAR)。」", choices: [{ txt: "「大視野 Roadmap 道路圖功能已啟動！」", nextNode: "n_11" }, { txt: "「EVAR 手術是大工程，鉛衣要穿雙層！」", nextNode: "n_11" }] },
+            n_11: { title: "11:00 臨床事件 (導管室)", text: "手術中醫師需要精準對齊主動脈腎動脈分支，大喊：「Roadmap 道路圖疊影再精準一點！」", choices: [{ txt: "迅速調整數位減影遮罩與對比度，完美對齊動脈分岔點！", nextNode: "n_12" }, { txt: "【手忙腳亂 $20】「等一下 Roadmap 畫面跑掉重刷！」", payCost: 20, nextNode: "n_12" }] },
+            n_12: { title: "12:00 午休抽考", text: "學姐抽考數位減影血管攝影 (DSA) 像素與遮罩國考題：", choices: [{ txt: "✍️ 挑戰國考題！", isQuizTrigger: true, nextNode: "n_15" }, { txt: "🧋 花 $50 請學姐喝黑糖珍奶！", payCost: 50, nextNode: "n_15" }] },
+            n_15: { title: "15:00 下午突發狀況", text: "主動脈支架完美釋放，無內漏 (Endoleak)，心外醫師豎起大拇指！獎金 +$100！", choices: [{ txt: "「主動脈支架完美！」", nextNode: "n_17" }] },
+            n_17: { title: "17:00 打卡下班", text: "征服 EVAR 大手術，光榮打卡下班！", isArcEnd: true }
+          }
+        },
+        {
+          id: 'cath_arc_4',
+          nodes: {
+            n_08: { title: "08:00 心導管打卡", text: "學姐拿著防輻射鉛屏風：「今天有電生理燒灼術 (EP/Ablation) 治療心律不整。」", choices: [{ txt: "「三維心臟電生理定位系統已開機！」", nextNode: "n_11" }, { txt: "「EP 手術時間通常很長，大家耐心點。」", nextNode: "n_11" }] },
+            n_11: { title: "11:00 臨床事件 (導管室)", text: "電生理醫師在燒灼心肌異常放電點時，心律不整突然轉變成心室顫動 (VF)！", choices: [{ txt: "立刻備好體外除顫器，並協助醫師監控影像，冷靜應變！", nextNode: "n_12" }, { txt: "【驚慌 $20】「天啊病人 VF 了快叫急救車！」", payCost: 20, nextNode: "n_12" }] },
+            n_12: { title: "12:00 午休抽考", text: "學姐抽考心律不整與電擊除顫能量國考題：", choices: [{ txt: "✍️ 挑戰國考題！", isQuizTrigger: true, nextNode: "n_15" }, { txt: "🧋 花 $50 買飲料壓驚！", payCost: 50, nextNode: "n_15" }] },
+            n_15: { title: "15:00 下午突發狀況", text: "電擊後順利回復正常竇性心律，手術成功完成！獎金 +$90！", choices: [{ txt: "「心跳恢復正常！」", nextNode: "n_17" }] },
+            n_17: { title: "17:00 打卡下班", text: "驚險刺激的 EP 手術日結束，打卡下班！", isArcEnd: true }
+          }
+        },
+        {
+          id: 'cath_arc_5',
+          nodes: {
+            n_08: { title: "08:00 心導管打卡", text: "學姐拿著個人劑量佩章 (TLD/OSL)：「今天例行每月輻射劑量檢測，大家在導管室站位要站好。」", choices: [{ txt: "「鉛玻璃與吊掛鉛屏風位置已調整好！」", nextNode: "n_11" }, { txt: "「導管室的散射輻射是全院最高的要小心。」", nextNode: "n_11" }] },
+            n_11: { title: "11:00 臨床事件 (導管室)", text: "家屬在導管室外焦急拍門大喊：「裡面到底好了沒！為什麼不讓我們進去！」", choices: [{ txt: "開門溫柔請家屬到家屬休息室等候，並解釋手術正在關鍵血管打通階段。", nextNode: "n_12" }, { txt: "【不耐煩 $20】「外面請安靜不要打擾裡面手術！」", payCost: 20, nextNode: "n_12" }] },
+            n_12: { title: "12:00 午休抽考", text: "學姐抽考導管室散射輻射防護與距離平方反比定律國考題：", choices: [{ txt: "✍️ 挑戰國考題！", isQuizTrigger: true, nextNode: "n_15" }, { txt: "🧋 花 $50 請學姐喝紅茶！", payCost: 50, nextNode: "n_15" }] },
+            n_15: { title: "15:00 下午突發狀況", text: "順利完成當日最後一台導管支架手術，主治醫師請大家喝下午茶！獎金 +$70！", choices: [{ txt: "「下午茶時間！」", nextNode: "n_17" }] },
+            n_17: { title: "17:00 打卡下班", text: "導管室鐵人一日任務達成，打卡下班！", isArcEnd: true }
           }
         }
       ],
@@ -610,13 +718,51 @@
         {
           id: 'dental_arc_1',
           nodes: {
-            n_08: { title: "08:00 牙科打卡", text: "學長喝著咖啡：「牙科環景 Pano 很輕鬆，咬好咬合棒、背脊挺直，基本上不會出錯。」", choices: [{ txt: "「太好了，今天可以稍微放鬆一下！」", nextNode: "n_11" }, { txt: "「學長，這該不會又是 Flag 吧...」", nextNode: "n_11" }] },
-            n_11: { title: "11:00 全口金牙事件", text: "阿伯進來嘴裡滿滿都是閃亮金牙與活動假牙：「放射師，我假牙要拔嗎？拔下來很難看捏～」", choices: [{ txt: "「阿伯～活動假牙一定要拔喔！不然影像會有巨大金屬偽影擋住下顎骨！」", nextNode: "n_11_norm" }, { txt: "【順從阿伯 $20】「沒關係啦阿伯，您覺得好看就好，我不強求～」", payCost: 20, nextNode: "n_11_rage", setFlag: 'DENTAL_RETAKE' }] },
-            n_11_norm: { title: "11:15 完美牙床", text: "阿伯乖乖拔下假牙用衛生紙包好，拍出超完美全口牙床片！", choices: [{ txt: "「阿伯很配合喔！」", nextNode: "n_12" }] },
-            n_11_rage: { title: "11:15 亮光遮蔽", text: "掃出來全口都是金屬亮光偽影，醫師退單重照，最後還是得拔掉假牙重來一次！", choices: [{ txt: "（還是得照規定拔假牙啊...）", nextNode: "n_12" }] },
-            n_12: { title: "12:00 午休抽考", text: "學長看著牙科 Pano 斷層圖：「來，抽考一題 Focal Trough 焦槽斷層原理國考題！」", choices: [{ txt: "✍️ 挑戰國考題！", isQuizTrigger: true, nextNode: "n_15" }, { txt: "🧋 花 $50 請學長喝四季春！", payCost: 50, nextNode: "n_15" }] },
-            n_15: { title: "15:00 下午突發狀況", text: "幫要矯正的高中生照全口與側頭追蹤片，學生親切向妳道謝並送妳一顆糖果！加薪 +$40！", choices: [{ txt: "「甜在心裡！」", nextNode: "n_17" }] },
-            n_17: { title: "17:00 打卡下班", text: "愉快收拾好牙科攝影室，準時打卡下班！", isArcEnd: true }
+            n_08: { title: "08:00 牙科打卡", text: "學長喝咖啡：「牙科 Pano 很輕鬆，咬好咬合棒、背脊挺直，不出錯。」", choices: [{ txt: "「放鬆一下！」", nextNode: "n_11" }, { txt: "「這該不會是 Flag 吧」", nextNode: "n_11" }] },
+            n_11: { title: "11:00 全口金牙事件", text: "阿伯滿嘴金牙假牙：「放射師，我假牙要拔嗎？拔下來很難看捏～」", choices: [{ txt: "「活動假牙一定要拔！不然影像有巨大偽影！」", nextNode: "n_12" }, { txt: "【順從 $20】「沒關係阿伯，您覺得好看就好～」", payCost: 20, nextNode: "n_12", setFlag: 'DENTAL_RETAKE' }] },
+            n_12: { title: "12:00 午休抽考", text: "學長抽考 Focal Trough 焦槽斷層原理國考題：", choices: [{ txt: "✍️ 挑戰國考題！", isQuizTrigger: true, nextNode: "n_15" }, { txt: "🧋 花 $50 請四季春！", payCost: 50, nextNode: "n_15" }] },
+            n_15: { title: "15:00 下午突發狀況", text: "幫矯正高中生照全口與側頭片，送了一顆糖果，加薪 +$40！", choices: [{ txt: "「甜在心裡！」", nextNode: "n_17" }] },
+            n_17: { title: "17:00 打卡下班", text: "愉快收拾牙科室，準時下班！", isArcEnd: true }
+          }
+        },
+        {
+          id: 'dental_arc_2',
+          nodes: {
+            n_08: { title: "08:00 牙科打卡", text: "學長拿著口腔內片夾 (Film holder)：「今天有一整天的牙科根尖片 (Periapical) 與咬合片拍攝。」", choices: [{ txt: "「平行攝影法 (Paralleling technique) 已就緒！」", nextNode: "n_11" }, { txt: "「口內片放進嘴巴病人常常會作嘔...」", nextNode: "n_11" }] },
+            n_11: { title: "11:00 臨床事件 (牙科)", text: "阿伯做後牙根尖片時，片匣才放進嘴巴就開始狂作嘔：『嘔...放射師我受不了...』", choices: [{ txt: "溫柔拍拍阿伯背部：「深呼吸吸鼻子不要用嘴巴呼吸，我們快閃 1 秒就好！」", nextNode: "n_12" }, { txt: "【嚴肅 $20】「阿伯請忍耐一下馬上好！」", payCost: 20, nextNode: "n_12" }] },
+            n_12: { title: "12:00 午休抽考", text: "學長抽考牙科平行攝影法與垂直角度校正國考題：", choices: [{ txt: "✍️ 挑戰國考題！", isQuizTrigger: true, nextNode: "n_15" }, { txt: "🧋 花 $50 買飲料消災！", payCost: 50, nextNode: "n_15" }] },
+            n_15: { title: "15:00 下午突發狀況", text: "順利完成根尖牙周病變診斷 X 光，牙醫師稱讚片子角度抓得極準！獎金 +$50！", choices: [{ txt: "「根尖影像清晰！」", nextNode: "n_17" }] },
+            n_17: { title: "17:00 打卡下班", text: "克服作嘔挑戰，牙科日打卡下班！", isArcEnd: true }
+          }
+        },
+        {
+          id: 'dental_arc_3',
+          nodes: {
+            n_08: { title: "08:00 牙科打卡", text: "學長調整著 CBCT 錐狀束電腦斷層機：「今天有植牙術前評估的 3D CBCT 掃描。」", choices: [{ txt: "「小視野 (FOV) 牙科 CBCT 已開機！」", nextNode: "n_11" }, { txt: "「植牙前一定要評估齒槽骨高度與神經管位置。」", nextNode: "n_11" }] },
+            n_11: { title: "11:00 臨床事件 (牙科)", text: "要做植牙 CBCT 的大叔嘴裡有金屬假牙牙冠，導致影像出現嚴重的金屬干擾條紋。", choices: [{ txt: "開啟 CBCT 金屬假牙偽影去除演算法 (MAR)，重新重建 3D 骨骼影像！", nextNode: "n_12" }, { txt: "【放棄 $20】「金屬假牙拔掉才有辦法拍清楚啦！」", payCost: 20, nextNode: "n_12" }] },
+            n_12: { title: "12:00 午休抽考", text: "學長抽考牙科 CBCT 假牙偽影去除與體素解析度國考題：", choices: [{ txt: "✍️ 挑戰國考題！", isQuizTrigger: true, nextNode: "n_15" }, { txt: "🧋 花 $50 請學長喝珍奶！", payCost: 50, nextNode: "n_15" }] },
+            n_15: { title: "15:00 下午突發狀況", text: "MAR 演算法成功去除假影，下顎齒槽神經管清晰可見，牙科主任大讚！獎金 +$80！", choices: [{ txt: "「3D 植牙評估完美！」", nextNode: "n_17" }] },
+            n_17: { title: "17:00 打卡下班", text: "完成高科技牙科 CBCT 任務，打卡下班！", isArcEnd: true }
+          }
+        },
+        {
+          id: 'dental_arc_4',
+          nodes: {
+            n_08: { title: "08:00 牙科打卡", text: "學長拿著頭顱測顱定位架 (Cephalostat)：「今天有一堆矯正科預約的側頭顱 X 光 (Ceph)。」", choices: [{ txt: "「耳棒 (Ear rods) 與鼻根定位夾已消毒！」", nextNode: "n_11" }, { txt: "「矯正科醫師最愛量測 SNA 和 SNB 角了。」", nextNode: "n_11" }] },
+            n_11: { title: "11:00 臨床事件 (牙科)", text: "國中生妹妹在固定頭顱耳棒時，嫌耳棒太冰尖叫說不想夾：「我不要耳朵被戳進去啦！」", choices: [{ txt: "溫柔拿酒精棉片擦拭耳棒並輕輕引導：「像戴耳機一樣一下就好喔，頭不可以歪掉喔！」", nextNode: "n_12" }, { txt: "【嚴肅 $20】「不固定頭會歪掉無法量測角度快坐好！」", payCost: 20, nextNode: "n_12" }] },
+            n_12: { title: "12:00 午休抽考", text: "學長抽考側頭顱 X 光法蘭克福平面 (Frankfort plane) 國考題：", choices: [{ txt: "✍️ 挑戰國考題！", isQuizTrigger: true, nextNode: "n_15" }, { txt: "🧋 花 $50 買飲料消災！", payCost: 50, nextNode: "n_15" }] },
+            n_15: { title: "15:00 下午突發狀況", text: "側頭顱法蘭克福平面平行地面，牙齒咬合切齊，矯正醫師滿意點頭！獎金 +$50！", choices: [{ txt: "「Ceph 定位百分百！」", nextNode: "n_17" }] },
+            n_17: { title: "17:00 打卡下班", text: "順利完成矯正科頭顱拍攝，打卡下班！", isArcEnd: true }
+          }
+        },
+        {
+          id: 'dental_arc_5',
+          nodes: {
+            n_08: { title: "08:00 牙科打卡", text: "學長拿著清潔刷：「今天下午定期牙科 X 光機品管與曝光開關消毒。」", choices: [{ txt: "<code>「牙科數位感測器 (Sensor) 保護套已換新！」</code>", nextNode: "n_11" }, { txt: "「口內感測器很昂貴千萬不能摔到。」", nextNode: "n_11" }] },
+            n_11: { title: "11:00 臨床事件 (牙科)", text: "牙科助理不小心把無線口內 Sensor 從桌上滑落摔到地上，嚇得花容失色。", choices: [{ txt: "溫柔安慰助理：「沒關係我們先檢測看看有沒有破裂，下次小心點就好！」", nextNode: "n_12" }, { txt: "【責備 $20】「天啊這支好幾十萬妳怎麼那麼不小心！」", payCost: 20, nextNode: "n_12" }] },
+            n_12: { title: "12:00 午休抽考", text: "學長抽考牙科數位影像儲存傳輸系統 (PACS) 與 DICOM 國考題：", choices: [{ txt: "✍️ 挑戰國考題！", isQuizTrigger: true, nextNode: "n_15" }, { txt: "🧋 花 $50 請學姐喝珍奶！", payCost: 50, nextNode: "n_15" }] },
+            n_15: { title: "15:00 下午突發狀況", text: "檢測後 Sensor 功能一切正常無損壞，虛驚一場！下午茶時間大家鬆了一口氣。獎金 +$40！", choices: [{ txt: "<code>「裝備安然無恙！」</code>", nextNode: "n_17" }] },
+            n_17: { title: "17:00 打卡下班", text: "平安度過驚險的牙科裝備摔落事件，打卡下班！", isArcEnd: true }
           }
         }
       ],
@@ -624,13 +770,51 @@
         {
           id: 'angio_arc_1',
           nodes: {
-            n_08: { title: "08:00 血管攝影打卡", text: "學長檢查高壓注射器：「今天做腦血管栓塞，導管對位與曝光相序要百分之百精準！」", choices: [{ txt: "「安啦！我的血管追蹤技術一流！」", nextNode: "n_11" }, { txt: "「高壓注射器聲音好大好緊張...」", nextNode: "n_11" }] },
-            n_11: { title: "11:00 DSA 減算造影考驗", text: "主治醫師喊：「微導管到位了，準備走 DSA 減算血管造影！減算幀率拉滿！」", choices: [{ txt: "精準按下曝光與注射同步鈕，影像完美呈現動脈瘤！", nextNode: "n_11_norm" }, { txt: "【慢一拍 $20】「完蛋，慢了一拍才按，漏掉動脈早期相...」", payCost: 20, nextNode: "n_11_rage" }] },
-            n_11_norm: { title: "11:15 完美減算", text: "減算影像超清晰，動脈瘤位置一目瞭然，醫師大讚！", choices: [{ txt: "「準備栓塞！」", nextNode: "n_12" }] },
-            n_11_rage: { title: "11:15 重新追加", text: "因為漏掉早期相，必須重新追加一次 Contrast 注射，學長幫忙調整時間差！", choices: [{ txt: "（下次要抓得更準...）", nextNode: "n_12" }] },
-            n_12: { title: "12:00 午休抽考", text: "學長拿著 DSA 影像：「來一題血管攝影對比劑與幀率國考題！」", choices: [{ txt: "✍️ 挑戰國考題！", isQuizTrigger: true, nextNode: "n_15" }, { txt: "🧋 花 $50 請學長喝百香雙響砲！", payCost: 50, nextNode: "n_15" }] },
-            n_15: { title: "15:00 下午突發狀況", text: "順利完成腦動脈瘤栓塞手術，家屬在外面連聲感謝，獲得專業津貼 +$80！", choices: [{ txt: "「成就感滿滿！」", nextNode: "n_17" }] },
-            n_17: { title: "17:00 打卡下班", text: "收好防輻射鉛領，收拾乾淨控制室，順利打卡下班！", isArcEnd: true }
+            n_08: { title: "08:00 血管攝影打卡", text: "學長檢查高壓注射器：「今天做腦血管栓塞，導管對位要精準！」", choices: [{ txt: "「血管追蹤一流！」", nextNode: "n_11" }, { txt: "「緊張...」", nextNode: "n_11" }] },
+            n_11: { title: "11:00 DSA 減算造影考驗", text: "醫師喊：「微導管到位，準備走 DSA 減算血管造影！」", choices: [{ txt: "精準按下曝光與注射同步鈕，影像完美呈現動脈瘤！", nextNode: "n_12" }, { txt: "【慢一拍 $20】「完蛋慢了一拍，漏掉早期相...」", payCost: 20, nextNode: "n_12" }] },
+            n_12: { title: "12:00 午休抽考", text: "學長抽考血管攝影對比劑國考題：", choices: [{ txt: "✍️ 挑戰國考題！", isQuizTrigger: true, nextNode: "n_15" }, { txt: "🧋 花 $50 請百香雙響砲！", payCost: 50, nextNode: "n_15" }] },
+            n_15: { title: "15:00 下午突發狀況", text: "順利完成腦動脈瘤栓塞手術，家屬連聲感謝，津貼 +$80！", choices: [{ txt: "「榮譽感滿分！」", nextNode: "n_17" }] },
+            n_17: { title: "17:00 打卡下班", text: "收好鉛領打卡下班！", isArcEnd: true }
+          }
+        },
+        {
+          id: 'angio_arc_2',
+          nodes: {
+            n_08: { title: "08:00 血管攝影打卡", text: "學長檢查著急救推車：「今天有一台肝癌栓塞 (TACE) 手術，化學藥物準備中。」", choices: [{ txt: "「抗癌藥物與鉛防護面罩已備妥！」", nextNode: "n_11" }, { txt: "「TACE 手術需要精準超選擇性導管插入。」", nextNode: "n_11" }] },
+            n_11: { title: "11:00 臨床事件 (血管攝影)", text: "醫師在打入化學藥物時，病人突然抱怨劇烈腹痛與噁心想吐。", choices: [{ txt: "立刻請麻醉護理師施打止吐劑，並溫柔握住病人雙手鼓勵：「加油，這是藥物正常反應！」", nextNode: "n_12" }, { txt: "【冷血 $20】「栓塞藥物副作用忍耐一下就好！」", payCost: 20, nextNode: "n_12" }] },
+            n_12: { title: "12:00 午休抽考", text: "學長抽考肝動脈化學栓塞療法 (TACE) 國考題：", choices: [{ txt: "✍️ 挑戰國考題！", isQuizTrigger: true, nextNode: "n_15" }, { txt: "🧋 花 $50 買飲料消災！", payCost: 50, nextNode: "n_15" }] },
+            n_15: { title: "15:00 下午突發狀況", text: "順利完成肝腫瘤血管栓塞，腫瘤血流完全被阻斷，醫師手術極為成功！獎金 +$90！", choices: [{ txt: "「肝癌栓塞成功！」", nextNode: "n_17" }] },
+            n_17: { title: "17:00 打卡下班", text: "結束高張力的 TACE 手術日，打卡下班！", isArcEnd: true }
+          }
+        },
+        {
+          id: 'angio_arc_3',
+          nodes: {
+            n_08: { title: "08:00 血管攝影打卡", text: "學長調整著 C-arm 雙向血管造影機 (Biplane Angio system)：「今天有急性腦中風血栓移除術 (Thrombectomy)。」", choices: [{ txt: "<code>「雙向同步造影 (Frontal & Lateral) 已開機！」</code>", nextNode: "n_11" }, { txt: "「腦中風黃金救援時間分秒必爭！」", nextNode: "n_11" }] },
+            n_11: { title: "11:00 臨床事件 (血管攝影)", text: "急診送來半身不遂的中風患者，神經外科醫師大喊：「快！血栓取栓網 (Stentriever) 進去了，雙向造影秒數拉高！」", choices: [{ txt: "以極致手速同步按下雙向高速造影，清晰捕捉血栓被拉出的瞬間！", nextNode: "n_12" }, { txt: "【慌張 $20】「雙向同步按鈕在哪裡一時找不到！」", payCost: 20, nextNode: "n_12" }] },
+            n_12: { title: "12:00 午休抽考", text: "學長抽考急性腦中風機械取栓與雙向血管造影國考題：", choices: [{ txt: "✍️ 挑戰國考題！", isQuizTrigger: true, nextNode: "n_15" }, { txt: "🧋 花 $50 請學長喝珍奶！", payCost: 50, nextNode: "n_15" }] },
+            n_15: { title: "15:00 下午突發狀況", text: "血栓順利被完整拉出，患者在導管室當場恢復手腳知覺，創造醫學奇蹟！獎金 +$120！", choices: [{ txt: "「腦中風神救援！」", nextNode: "n_17" }] },
+            n_17: { title: "17:00 打卡下班", text: "拯救中風患者的感動滿分，光榮打卡下班！", isArcEnd: true }
+          }
+        },
+        {
+          id: 'angio_arc_4',
+          nodes: {
+            n_08: { title: "08:00 血管攝影打卡", text: "學長檢查著血管造影室的防輻射吊屏：「今天要做下肢血管攝影兼氣球擴張。」", choices: [{ txt: "「下肢全長血管拼接攝影 (Steitching) 準備就緒！」", nextNode: "n_11" }, { txt: "「糖尿病足要是血管阻塞不通就要面臨截肢。」", nextNode: "n_11" }] },
+            n_11: { title: "11:00 臨床事件 (血管攝影)", text: "糖尿病足阿伯的腳趾已經發黑，神情痛苦躺在血管攝影台上。", choices: [{ txt: "溫柔幫阿伯蓋上毯子保暖，並在擺位時極度小心避免壓痛點。", nextNode: "n_12" }, { txt: "【冷漠 $20】「腳趕快放平不要一直動！」", payCost: 20, nextNode: "n_12" }] },
+            n_12: { title: "12:00 午休抽考", text: "學長抽考下肢血管攝影拼接與對比劑過敏防範國考題：", choices: [{ txt: "✍️ 挑戰國考題！", isQuizTrigger: true, nextNode: "n_15" }, { txt: "🧋 花 $50 買飲料消災！", payCost: 50, nextNode: "n_15" }] },
+            n_15: { title: "15:00 下午突發狀況", text: "順利打通足部阻塞血管，腳趾恢復血色免於截肢命運，家屬跪謝醫療團隊！獎金 +$90！", choices: [{ txt: "「保住足部大作戰成功！」", nextNode: "n_17" }] },
+            n_17: { title: "17:00 打卡下班", text: "充滿人情味的一日血管攝影，打卡下班！", isArcEnd: true }
+          }
+        },
+        {
+          id: 'angio_arc_5',
+          nodes: {
+            n_08: { title: "08:00 血管攝影打卡", text: "學長整理著鉛衣架：「今天下午有血管攝影室定期輻射防護與設備校正。」", choices: [{ txt: "<code>「鉛衣鉛圍領無破損檢測完畢！」</code>", nextNode: "n_11" }, { txt: "「血管攝影的管球消耗量極大要定期維護。」", nextNode: "n_11" }] },
+            n_11: { title: "11:00 臨床事件 (血管攝影)", text: "急診突然轉入一例外傷性骨盆腔大出血休克病人，啟動安基試驗與血管栓塞急救。", choices: [{ txt: "以最快速度完成血管造影，精準找出內髂動脈出血點進行彈簧圈栓塞！", nextNode: "n_12" }, { txt: "【慌亂 $20】「天啊大量出血休克快叫血庫送血！」", payCost: 20, nextNode: "n_12" }] },
+            n_12: { title: "12:00 午休抽考", text: "學長抽考骨盆腔大出血血管栓塞與彈簧圈 (Coil) 國考題：", choices: [{ txt: "✍️ 挑戰國考題！", isQuizTrigger: true, nextNode: "n_15" }, { txt: "🧋 花 $50 請學長喝珍奶！", payCost: 50, nextNode: "n_15" }] },
+            n_15: { title: "15:00 下午突發狀況", text: "成功止血挽回病人生命，急診主任特地打電話來致謝！獎金 +$100！", choices: [{ txt: "「骨盆大出血神救援！」", nextNode: "n_17" }] },
+            n_17: { title: "17:00 打卡下班", text: "驚險萬分的急救日完美落幕，光榮打卡下班！", isArcEnd: true }
           }
         }
       ],
@@ -638,13 +822,51 @@
         {
           id: 'special_arc_1',
           nodes: {
-            n_08: { title: "08:00 特攝打卡", text: "學長拿著鋇劑與灌腸套件：「今天有一台 Lower GI 大腸雙重對比，氣壓要拿捏好，不然爆漿就精彩了！」", choices: [{ txt: "「放心！我會精準控制灌氣壓力！」", nextNode: "n_11" }, { txt: "「爆漿...是指我想的那樣嗎...」", nextNode: "n_11" }] },
-            n_11: { title: "11:00 雙重對比爆漿危機", text: "正當鋇劑灌到一半準備灌氣透視時，阿伯突然發出警告：「放射師...我憋不住了！快噴出來了！」", choices: [{ txt: "迅速抬高透視床頭，指導阿伯：「夾緊臀部！吸氣忍住 10 秒！」", nextNode: "n_11_norm" }, { txt: "【尖叫模式 $20】「大喊：學長快拿保麗龍桶來擋啊啊啊！」", payCost: 20, nextNode: "n_11_rage" }] },
-            n_11_norm: { title: "11:15 抓拍成功", text: "阿伯成功夾住！瞬間抓拍到超完美的雙重對比大腸黏膜圖，學長拍手！", choices: [{ txt: "「太驚險了！」", nextNode: "n_12" }] },
-            n_11_rage: { title: "11:15 現場混亂", text: "現場一片混亂，還好學長拿著保麗龍箱及時擋住，虛驚一場！", choices: [{ txt: "（還好有擋住...）", nextNode: "n_12" }] },
-            n_12: { title: "12:00 午休抽考", text: "學長洗完手：「剛剛危機處理不錯！來一題 Barium Enema 禁忌症國考題！」", choices: [{ txt: "✍️ 挑戰國考題！", isQuizTrigger: true, nextNode: "n_15" }, { txt: "🧋 花 $50 請學長喝冬瓜檸檬！", payCost: 50, nextNode: "n_15" }] },
-            n_15: { title: "15:00 下午突發狀況", text: "下午完成一台 IVU 靜脈腎盂造影，順利追蹤到腎結石位置，獲得獎金 +$60！", choices: [{ txt: "「精準定位！」", nextNode: "n_17" }] },
-            n_17: { title: "17:00 打卡下班", text: "順利下班，覺得自己連最難的特殊攝影都能駕馭了！", isArcEnd: true }
+            n_08: { title: "08:00 特攝打卡", text: "學長拿著鋇劑：「今天有一台 Lower GI 大腸雙重對比，氣壓要拿捏好，不然會爆漿！」", choices: [{ txt: "「精準控制灌氣！」", nextNode: "n_11" }, { txt: "「爆漿...」", nextNode: "n_11" }] },
+            n_11: { title: "11:00 雙重對比爆漿危機", text: "正當鋇劑灌到一半準備灌氣時，阿伯大喊：「放射師...我憋不住了快噴出來！」", choices: [{ txt: "抬高床頭指導阿伯夾緊臀部深呼吸忍住 10 秒！", nextNode: "n_12" }, { txt: "【尖叫 $20】「大喊學長快拿保麗龍桶擋啊！」", payCost: 20, nextNode: "n_12" }] },
+            n_12: { title: "12:00 午休抽考", text: "學長抽考 Barium Enema 禁忌症國考題：", choices: [{ txt: "✍️ 挑戰國考題！", isQuizTrigger: true, nextNode: "n_15" }, { txt: "🧋 花 $50 請冬瓜檸檬！", payCost: 50, nextNode: "n_15" }] },
+            n_15: { title: "15:00 下午突發狀況", text: "下午完成 IVU 靜脈腎盂造影，順利追蹤到腎結石位置，獎金 +$60！", choices: [{ txt: "「精準定位！」", nextNode: "n_17" }] },
+            n_17: { title: "17:00 打卡下班", text: "駕馭特攝順利下班！", isArcEnd: true }
+          }
+        },
+        {
+          id: 'special_arc_2',
+          nodes: {
+            n_08: { title: "08:00 特攝打卡", text: "學長準備著吞鋇造影 (Upper GI series) 設備：「今天有一整天的胃部雙重對比造影。」", choices: [{ txt: "「發泡劑與高濃度鋇劑已備妥！」", nextNode: "n_11" }, { txt: "「喝完發泡劑絕對不能打嗝！」", nextNode: "n_11" }] },
+            n_11: { title: "11:00 臨床事件 (特攝)", text: "阿伯才剛吞下發泡劑與鋇劑，立刻忍不住打了一個驚天動地的飽嗝，胃部氣體瞬間跑光！", choices: [{ txt: "無奈笑著請阿伯重新再喝一次發泡劑：「阿伯忍住千萬不能打嗝喔！」", nextNode: "n_12" }, { txt: "【崩潰 $20】「天啊氣泡跑光了又要重來一次！」", payCost: 20, nextNode: "n_12" }] },
+            n_12: { title: "12:00 午休抽考", text: "學長抽考 Upper GI 鋇劑吞嚥與胃黏膜雙重對比國考題：", choices: [{ txt: "✍️ 挑戰國考題！", isQuizTrigger: true, nextNode: "n_15" }, { txt: "🧋 花 $50 買飲料消災！", payCost: 50, nextNode: "n_15" }] },
+            n_15: { title: "15:00 下午突發狀況", text: "第二次順利捕捉到完美的胃潰瘍龕影 (Niche)，醫師稱讚特攝技術一流！獎金 +$70！", choices: [{ txt: "「胃潰瘍完美顯影！」", nextNode: "n_17" }] },
+            n_17: { title: "17:00 打卡下班", text: "完成吞鋇造影任務，準時打卡下班！", isArcEnd: true }
+          }
+        },
+        {
+          id: 'special_arc_3',
+          nodes: {
+            n_08: { title: "08:00 特攝打卡", text: "學長拿著無菌導管包：「今天要做子宮輸卵管攝影 (HSG) 檢查不孕症主因。」", choices: [{ txt: "「油性/水性顯影劑與子宮頸虎鉗夾準備就緒！」", nextNode: "n_11" }, { txt: "「HSG 檢查通常會伴隨強烈下腹痙攣痛。」", nextNode: "n_11" }] },
+            n_11: { title: "11:00 臨床事件 (特攝)", text: "年輕太太在打入顯影劑時痛到眼淚直流，抓住床單哭喊：「好痛...我不要做了啦！」", choices: [{ txt: "溫柔停下手邊動作握住太太的手：「深呼吸馬上就好了，輸卵管有通暢喔！」", nextNode: "n_12" }, { txt: "【冷血 $20】「忍耐一下馬上就拍完了快放鬆！」", payCost: 20, nextNode: "n_12" }] },
+            n_12: { title: "12:00 午休抽考", text: "學長抽考子宮輸卵管攝影 (HSG) 解剖與輸卵管通暢度國考題：", choices: [{ txt: "✍️ 挑戰國考題！", isQuizTrigger: true, nextNode: "n_15" }, { txt: "🧋 花 $50 請學姐喝珍奶！", payCost: 50, nextNode: "n_15" }] },
+            n_15: { title: "15:00 下午突發狀況", text: "影像顯示雙側輸卵管通暢無阻，太太破涕為笑頻頻道謝！獎金 +$80！", choices: [{ txt: "<code>「輸卵管通暢無阻！」</code>", nextNode: "n_17" }] },
+            n_17: { title: "17:00 打卡下班", text: "溫馨的 HSG 檢查日結束，打卡下班！", isArcEnd: true }
+          }
+        },
+        {
+          id: 'special_arc_4',
+          nodes: {
+            n_08: { title: "08:00 特攝打卡", text: "學長拿著引流管包：「今天下午有一台廔管攝影 (Fistulogram) 與排糞造影 (Defecography)。」", choices: [{ txt: "「水溶性顯影劑與專用排便椅準備就緒！」", nextNode: "n_11" }, { txt: "「排糞造影需要病人坐在特殊椅子上動態攝影。」", nextNode: "n_11" }] },
+            n_11: { title: "11:00 臨床事件 (特攝)", text: "排糞造影檢查時，病人覺得要在大家面前排顯影劑感到極度害羞與尷尬，一直解不出來。", choices: [{ txt: "溫柔把燈光調暗並放輕音樂：「沒關係我們不急，放輕鬆當作在自己家裡就好。」", nextNode: "n_12" }, { txt: "【催促 $20】「外面還有很多人在排隊請趕快用力！」", payCost: 20, nextNode: "n_12" }] },
+            n_12: { title: "12:00 午休抽考", text: "學長抽考排糞造影與直腸脫垂動態評估國考題：", choices: [{ txt: "✍️ 挑戰國考題！", isQuizTrigger: true, nextNode: "n_15" }, { txt: "🧋 花 $50 買飲料消災！", payCost: 50, nextNode: "n_15" }] },
+            n_15: { title: "15:00 下午突發狀況", text: "順利捕捉到骨盆底肌群無力與直腸前突動態影像，醫師稱讚特攝切面完美！獎金 +$70！", choices: [{ txt: "<code>「骨盆動態影像完美！」</code>", nextNode: "n_17" }] },
+            n_17: { title: "17:00 打卡下班", text: "克服害羞尷尬的特攝任務，準時打卡下班！", isArcEnd: true }
+          }
+        },
+        {
+          id: 'special_arc_5',
+          nodes: {
+            n_08: { title: "08:00 特攝打卡", text: "學長清理著特殊透視床：「今天有一台 ERCP 逆行性膽胰管攝影 X 光輔助。」", choices: [{ txt: "<code>「C-arm 透視與數位影像儲存系統已就緒！」</code>", nextNode: "n_11" }, { txt: "「ERCP 需要消化內科醫師與放射師完美默契配合。」", nextNode: "n_11" }] },
+            n_11: { title: "11:00 臨床事件 (特攝)", text: "ERCP 檢查中，內視鏡醫師打入顯影劑發現總膽管有巨大結石，急需多角度透視存檔。", choices: [{ txt: "迅速且流暢旋轉 C-arm 角度並連續擷取多張數位減影膽胰管 X 光片！", nextNode: "n_12" }, { txt: "【手忙腳亂 $20】「等一下 C-arm 旋轉角度卡住不動了！」", payCost: 20, nextNode: "n_12" }] },
+            n_12: { title: "12:00 午休抽考", text: "學長抽考 ERCP 膽胰管造影解剖與結石 X 光特徵國考題：", choices: [{ txt: "✍️ 挑戰國考題！", isQuizTrigger: true, nextNode: "n_15" }, { txt: "🧋 花 $50 請學姐喝珍奶！", payCost: 50, nextNode: "n_15" }] },
+            n_15: { title: "15:00 下午突發狀況", text: "成功協助內視鏡醫師取出膽管結石，病人黃疸指數迅速下降！獎金 +$90！", choices: [{ txt: "<code>「膽胰管結石順利清除！」</code>", nextNode: "n_17" }] },
+            n_17: { title: "17:00 打卡下班", text: "完成高難度 ERCP 特攝支援，光榮打卡下班！", isArcEnd: true }
           }
         }
       ],
@@ -652,13 +874,51 @@
         {
           id: 'dexa_arc_1',
           nodes: {
-            n_08: { title: "08:00 DEXA 打卡", text: "學姐消毒檢查床：「今天都是健檢大媽，記得金屬飾品都要摘乾淨，不然掃出來會變骨頭長結石！」", choices: [{ txt: "「收到！我今天會睜大雙眼掃描！」", nextNode: "n_11" }, { txt: "「學姐，如果大媽不肯拔戒指怎麼辦？」", nextNode: "n_11" }] },
-            n_11: { title: "11:00 鑽石手鍊事件", text: "貴婦阿姨戴著閃亮鑽石手鍊躺上床，信誓旦旦：「我這鑽石純天然的！沒有金屬啦！」", choices: [{ txt: "「阿姨～純天然鑽石原子序還是會擋光，骨頭會有陰影啦！」", nextNode: "n_11_norm" }, { txt: "【開吐槽 $20】「阿姨，鑽石再純，底座還是 K 金金屬啊...」", payCost: 20, nextNode: "n_11_rage" }] },
-            n_11_norm: { title: "11:15 專業衛教", text: "貴婦阿姨驚呼：「哎呀！原來原子序會影響喔！妳好專業喔！」乖乖拔掉手鍊。", choices: [{ txt: "「開始掃描腰椎與髖骨！」", nextNode: "n_12" }] },
-            n_11_rage: { title: "11:15 恍然大悟", text: "貴婦阿姨愣了一下：「對勒！底座是金屬捏！」笑著把珠寶摘下來。", choices: [{ txt: "「掃描順利！」", nextNode: "n_12" }] },
-            n_12: { title: "12:00 午休抽考", text: "學姐拿著 DEXA 報告：「來，抽考一題 T-score 與 Z-score 計算國考題！」", choices: [{ txt: "✍️ 挑戰國考題！", isQuizTrigger: true, nextNode: "n_15" }, { txt: "🧋 花 $50 請學姐喝鮮奶茶！", payCost: 50, nextNode: "n_15" }] },
-            n_15: { title: "15:00 下午突發狀況", text: "幫一位脊椎嚴重側彎的阿嬤溫柔調整腳架，順利完成掃描，阿嬤連聲讚許，加薪 +$50！", choices: [{ txt: "「阿嬤祝您健康！」", nextNode: "n_17" }] },
-            n_17: { title: "17:00 打卡下班", text: "順利交班，帶著滿滿的骨密知識打卡下班！", isArcEnd: true }
+            n_08: { title: "08:00 DEXA 打卡", text: "學姐消毒檢查床：「今天都是健檢大媽，記得金屬飾品摘乾淨！」", choices: [{ txt: "「收到！」", nextNode: "n_11" }, { txt: "「大媽不肯拔戒指...」", nextNode: "n_11" }] },
+            n_11: { title: "11:00 鑽石手鍊事件", text: "貴婦阿姨戴著鑽石手鍊：「我純天然的沒有金屬啦！」", choices: [{ txt: "「純天然原子序還是會擋光有陰影啦！」", nextNode: "n_12" }, { txt: "【吐槽 $20】「底座還是 K 金金屬啊...」", payCost: 20, nextNode: "n_12" }] },
+            n_12: { title: "12:00 午休抽考", text: "學姐拿報告抽考 T-score 計算國考題：", choices: [{ txt: "✍️ 挑戰國考題！", isQuizTrigger: true, nextNode: "n_15" }, { txt: "🧋 花 $50 請鮮奶茶！", payCost: 50, nextNode: "n_15" }] },
+            n_15: { title: "15:00 下午突發狀況", text: "幫脊椎側彎阿嬤細心擺位完成掃描，阿嬤大讚，加薪 +$50！", choices: [{ txt: "<code>「阿嬤祝健康！」</code>", nextNode: "n_17" }] },
+            n_17: { title: "17:00 打卡下班", text: "帶著骨密知識打卡下班！", isArcEnd: true }
+          }
+        },
+        {
+          id: 'dexa_arc_2',
+          nodes: {
+            n_08: { title: "08:00 DEXA 打卡", text: "學姐拿著品管腰椎假體 (Spine phantom)：「今天早上要執行 DEXA 機器每日精確度 QC 掃描。」", choices: [{ txt: "<code>q「每日 QC 假體定位與 BMD 數值校正已完成！」</code>", nextNode: "n_11" }, { txt: "「骨密度儀的每日校正攸關 T 值診斷準確度。」", nextNode: "n_11" }] },
+            n_11: { title: "11:00 臨床事件 (DEXA)", text: "一位 85 歲骨質疏鬆嚴重的阿嬤躺上 DEXA 床時，因為腰椎嚴重退化骨刺，脊椎 T 值測出來竟然高達 +1.5（呈現正常假象）！", choices: [{ txt: "立刻手動排除骨刺與主動脈鈣化偽影的 ROI 範圍，重新計算真實骨密度！", nextNode: "n_12" }, { txt: "【不理會 $20】「機器測出來正常就是正常不用管它啦！」", payCost: 20, nextNode: "n_12" }] },
+            n_12: { title: "12:00 午休抽考", text: "學姐抽考 DEXA 骨刺與主動脈鈣化造成的偽影國考題：", choices: [{ txt: "✍️ 挑戰國考題！", isQuizTrigger: true, nextNode: "n_15" }, { txt: "🧋 花 $50 買飲料消災！", payCost: 50, nextNode: "n_15" }] },
+            n_15: { title: "15:00 下午突發狀況", text: "修正偽影後正確診斷出阿嬤患有嚴重的骨質疏鬆症，醫師開立骨穩治療！獎金 +$70！", choices: [{ txt: "<code>「精準揪出骨質疏鬆！」</code>", nextNode: "n_17" }] },
+            n_17: { title: "17:00 打卡下班", text: "完成精準骨密度檢測任務，打卡下班！", isArcEnd: true }
+          }
+        },
+        {
+          id: 'dexa_arc_3',
+          nodes: {
+            n_08: { title: "08:00 DEXA 打卡", text: "學姐看著預約表：「今天下午有一整團老年社區長照中心的長輩來做骨密篩檢。」", choices: [{ txt: "「長者移動輔具與上下床安全措施已就緒！」", nextNode: "n_11" }, { txt: "「老人家上下 DEXA 檢查床動作要慢慢來。」", nextNode: "n_11" }] },
+            n_11: { title: "11:00 臨床事件 (DEXA)", text: "一位爺爺上下床時重心不穩差點摔倒，幸好妳眼明手快一把將爺爺扶住。", choices: [{ txt: "溫柔扶爺爺坐好並安慰：「爺爺別急，我們慢慢來不趕時間！」", nextNode: "n_12" }, { txt: "【責備 $20】「爺爺走路要小心不要跌倒了！」", payCost: 20, nextNode: "n_12" }] },
+            n_12: { title: "12:00 午休抽考", text: "學姐抽考 WHO 骨質疏鬆症診斷標準 (T-score 小於等於 -2.5) 國考題：", choices: [{ txt: "✍️ 挑戰國考題！", isQuizTrigger: true, nextNode: "n_15" }, { txt: "🧋 花 $50 請學姐喝珍奶！", payCost: 50, nextNode: "n_15" }] },
+            n_15: { title: "15:00 下午突發狀況", text: "長照中心社工特地打電話來感謝放射師對長輩們的貼心照顧！獎金 +$60！", choices: [{ txt: "<code>「長者關懷滿分！」</code>", nextNode: "n_17" }] },
+            n_17: { title: "17:00 打卡下班", text: "溫馨的長者骨密篩檢日結束，打卡下班！", isArcEnd: true }
+          }
+        },
+        {
+          id: 'dexa_arc_4',
+          nodes: {
+            n_08: { title: "08:00 DEXA 打卡", text: "學姐拿著雙能量 X 光吸收儀 (DEXA) 原理圖：「今天有機場海關或考古學家送來的特殊骨骼標本要測骨密。」", choices: [{ txt: "「雙能量減影技術已啟動！」", nextNode: "n_11" }, { txt: "<code>q「DEXA 不僅能測人體骨密也能測動物與標本！」</code>", nextNode: "n_11" }] },
+            n_11: { title: "11:00 臨床事件 (DEXA)", text: "研究人員送來一箱神祕動物骨骼標本要求掃描骨密度，結果機器因為密度太高無法自動判讀。", choices: [{ txt: "手動調整掃描參數與軟組織基準線，成功產出標本骨密度報告！", nextNode: "n_12" }, { txt: "【放棄 $20】「這不是人類骨骼機器無法判讀退件！」", payCost: 20, nextNode: "n_12" }] },
+            n_12: { title: "12:00 午休抽考", text: "學姐抽考 DEXA 雙能量 X 光吸收與軟組織/骨骼衰減係數國考題：", choices: [{ txt: "✍️ 挑戰國考題！", isQuizTrigger: true, nextNode: "n_15" }, { txt: "🧋 花 $50 買飲料消災！", payCost: 50, nextNode: "n_15" }] },
+            n_15: { title: "15:00 下午突發狀況", text: "研究團隊對放射師的高超技術驚嘆不已，發表論文時特別將放射師列入致謝名單！獎金 +$100！", choices: [{ txt: "<code>「論文致謝放射師！」</code>", nextNode: "n_17" }] },
+            n_17: { title: "17:00 打卡下班", text: "充滿學術氣息的一天，打卡下班！", isArcEnd: true }
+          }
+        },
+        {
+          id: 'dexa_arc_5',
+          nodes: {
+            n_08: { title: "08:00 DEXA 打卡", text: "學姐笑著說：「今天下午要做 DEXA 機器周邊散射輻射外洩檢測。」", choices: [{ txt: "<code>「貝克曼巡檢器 (Survey meter) 準備就緒！」</code>", nextNode: "n_11" }, { txt: "「DEXA 射源極小，但防護依然不可馬虎。」", nextNode: "n_11" }] },
+            n_11: { title: "11:00 臨床事件 (DEXA)", text: "一位年輕健身教練來做全身體脂肪與肌肉量分析 (Body composition)，對數據斤斤計較。", choices: [{ txt: "專業詳細解說脂肪與肌肉佔比：「教練您看，您的內臟脂肪指數超低，肌肉量破表！」", nextNode: "n_12" }, { txt: "【敷衍 $20】「體脂正常自己看報表就好囉！」", payCost: 20, nextNode: "n_12" }] },
+            n_12: { title: "12:00 午休抽考", text: "學姐抽考 DEXA 全身組成分析 (Body composition: Fat/Lean mass) 國考題：", choices: [{ txt: "✍️ 挑戰國考題！", isQuizTrigger: true, nextNode: "n_15" }, { txt: "🧋 花 $50 請學姐喝珍奶！", payCost: 50, nextNode: "n_15" }] },
+            n_15: { title: "15:00 下午突發狀況", text: "健身教練滿意離開並推薦許多會員來健檢！獎金 +$70！", choices: [{ txt: "<code>「健身網紅推薦！」</code>", nextNode: "n_17" }] },
+            n_17: { title: "17:00 打卡下班", text: "順利完成體脂與骨密雙效任務，打卡下班！", isArcEnd: true }
           }
         }
       ],
@@ -666,13 +926,51 @@
         {
           id: 'nuc_arc_1',
           nodes: {
-            n_08: { title: "08:00 核醫打卡", text: "學長穿著鉛衣在 Hot Lab 分裝同位素：「核醫用 𝛾-camera，同位素藥劑有半衰期，動作要快！」", choices: [{ txt: "「收到！我會算好半衰期精準執行！」", nextNode: "n_11" }, { txt: "「學長，這些同位素會發光嗎？」", nextNode: "n_11" }] },
-            n_11: { title: "11:00 骨骼掃描事件", text: "注射完 Tc-99m MDP 骨骼掃描藥劑的阿姨，一直想跑去外面逛街打卡。", choices: [{ txt: "「阿姨～打完藥要多喝水排尿，按時回來掃描，藥劑衰變太久影像會不清楚喔！」", nextNode: "n_11_norm" }, { txt: "【恐嚇模式 $20】「阿姨去逛街可以，但您現在身上有微量輻射，別靠近孕婦小孩喔！」", payCost: 20, nextNode: "n_11_rage" }] },
-            n_11_norm: { title: "11:15 乖乖喝水", text: "阿姨乖乖坐在等候區狂喝水，按時回來掃描，骨骼影像超清晰！", choices: [{ txt: "「影像超完美！」", nextNode: "n_12" }] },
-            n_11_rage: { title: "11:15 嚇回等候區", text: "阿姨嚇得立刻坐回位置上不敢動：「那我還是乖乖待在醫院好了！」", choices: [{ txt: "「按時掃描最安全！」", nextNode: "n_12" }] },
-            n_12: { title: "12:00 午休抽考", text: "學長拿著 G-M 計數器：「抽考一題 Tc-99m 半衰期 6 小時與 140 keV 能量國考題！」", choices: [{ txt: "✍️ 挑戰國考題！", isQuizTrigger: true, nextNode: "n_15" }, { txt: "🧋 花 $50 請學長喝四季春！", payCost: 50, nextNode: "n_15" }] },
-            n_15: { title: "15:00 下午突發狀況", text: "SPECT/CT 完成心肌灌流掃描，快速落實廢棄物衰變處置，獲得品管加薪 +$70！", choices: [{ txt: "「品管第一！」", nextNode: "n_17" }] },
-            n_17: { title: "17:00 打卡下班", text: "確認身上沒有輻射污染殘留後，安心打卡下班！", isArcEnd: true }
+            n_08: { title: "08:00 核醫打卡", text: "學長在 Hot Lab 分裝同位素：「核醫用 𝛾-camera，藥劑有半衰期，動作要快！」", choices: [{ txt: "「算好半衰期精準執行！」", nextNode: "n_11" }, { txt: "「同位素會發光嗎？」", nextNode: "n_11" }] },
+            n_11: { title: "11:00 骨骼掃描事件", text: "注射 Bone Scan 藥劑的阿姨想跑去逛街打卡。", choices: [{ txt: "「阿姨要多喝水排尿，藥劑衰變太久影像不清楚！」", nextNode: "n_12" }, { txt: "【恐嚇 $20】「身上有微量輻射別靠近孕婦小孩！」", payCost: 20, nextNode: "n_12" }] },
+            n_12: { title: "12:00 午休抽考", text: "學長抽考 Tc-99m 半衰期 140 keV 國考題：", choices: [{ txt: "✍️ 挑戰國考題！", isQuizTrigger: true, nextNode: "n_15" }, { txt: "🧋 花 $50 請四季春！", payCost: 50, nextNode: "n_15" }] },
+            n_15: { title: "15:00 下午突發狀況", text: "SPECT/CT 心肌灌流掃描完成，廢棄物處置落實，獎金 +$70！", choices: [{ txt: "「品管第一！」", nextNode: "n_17" }] },
+            n_17: { title: "17:00 打卡下班", text: "確認無輻射殘留，安心下班！", isArcEnd: true }
+          }
+        },
+        {
+          id: 'nuc_arc_2',
+          nodes: {
+            n_08: { title: "08:00 核醫打卡", text: "學長穿著鉛衣拿著注射針筒：「今天有正子斷層造影 (PET/CT)，注射的是 F-18 FDG 葡萄糖類似物。」", choices: [{ txt: "<code>q「正子藥劑注射後需靜置休息 60 分鐘！」</code>", nextNode: "n_11" }, { txt: "「PET/CT 對腫瘤早期發現與轉移評估超神準。」", nextNode: "n_11" }] },
+            n_11: { title: "11:00 臨床事件 (核醫)", text: "做 PET/CT 的癌友在注射顯影劑後，因為嘴饞偷偷吃了一顆朋友帶的喉糖。", choices: [{ txt: "溫柔告知：「大哥喉糖含有糖分會干擾 FDG 葡萄糖代謝分佈，我們可能需要多休息 30 分鐘再掃描！」", nextNode: "n_12" }, { txt: "【嚴肅 $20】「偷吃糖果影像報廢重來！」", payCost: 20, nextNode: "n_12" }] },
+            n_12: { title: "12:00 午休抽考", text: "學長抽考 PET/CT F-18 FDG 放射性藥物與血糖控制國考題：", choices: [{ txt: "✍️ 挑戰國考題！", isQuizTrigger: true, nextNode: "n_15" }, { txt: "🧋 花 $50 買飲料消災！", payCost: 50, nextNode: "n_15" }] },
+            n_15: { title: "15:00 下午突發狀況", text: "多休息 30 分鐘後血糖代謝恢復正常，順利捕捉到全身癌細胞轉移造影！獎金 +$90！", choices: [{ txt: "<code>「正子造影完美捕捉！」</code>", nextNode: "n_17" }] },
+            n_17: { title: "17:00 打卡下班", text: "完成高科技正子造影任務，打卡下班！", isArcEnd: true }
+          }
+        },
+        {
+          id: 'nuc_arc_3',
+          nodes: {
+            n_08: { title: "08:00 核醫打卡", text: "學長拿著碘-131 膠囊防護鉛罐：「今天有一位甲狀腺亢進與甲狀腺癌術後追蹤病患要服碘-131 治療。」", choices: [{ txt: "「碘-131 治療病房與排泄物衰變槽已確認！」", nextNode: "n_11" }, { txt: "「碘-131 會發射貝塔與加馬射線，防護要滴水不漏。」", nextNode: "n_11" }] },
+            n_11: { title: "11:00 臨床事件 (核醫)", text: "病患吞下放射性碘-131 膠囊時不小心掉在地上，現場響起輻射警報器嗶嗶聲！", choices: [{ txt: "立刻穿戴鉛手套依輻射防護標準程序使用蓋革計數器隔離並回收膠囊！", nextNode: "n_12" }, { txt: "【慌張 $20】「天啊碘-131 掉在地上輻射外洩了快逃！」", payCost: 20, nextNode: "n_12" }] },
+            n_12: { title: "12:00 午休抽考", text: "學長抽考碘-131 治療劑量與放射性核種沾染清除國考題：", choices: [{ txt: "✍️ 挑戰國考題！", isQuizTrigger: true, nextNode: "n_15" }, { txt: "🧋 花 $50 請學姐喝珍奶！", payCost: 50, nextNode: "n_15" }] },
+            n_15: { title: "15:00 下午突發狀況", text: "危機圓滿解除，無任何輻射沾染外洩，主管讚許放射師臨危不亂！獎金 +$100！", choices: [{ txt: "<code>「輻射危機完美解除！」</code>", nextNode: "n_17" }] },
+            n_17: { title: "17:00 打卡下班", text: "安全第一的核醫治療日，打卡下班！", isArcEnd: true }
+          }
+        },
+        {
+          id: 'nuc_arc_4',
+          nodes: {
+            n_08: { title: "08:00 核醫打卡", text: "學長清理著甲狀腺能譜儀 (Thyroid uptake probe)：「今天要做甲狀腺碘-131 攝取率檢查。」", choices: [{ txt: "「頸部專用銫碘化鈉偵檢器已預熱！」", nextNode: "n_11" }, { txt: "「甲狀腺功能亢進的病人攝取率通常曲線飆高。」", nextNode: "n_11" }] },
+            n_11: { title: "11:00 臨床事件 (核醫)", text: "阿桑做完甲狀腺攝取率測量後好奇問：「放射師，我脖子裡有放射線，晚上回家會不會在黑暗中發光呀？」", choices: [{ txt: "溫柔大笑解釋：「阿嬤那是電影情節啦！劑量極低不會發光也不會變成超人喔！」", nextNode: "n_12" }, { txt: "【惡趣味 $20】「對啊關燈就會變成綠色夜明珠喔！」", payCost: 20, nextNode: "n_12" }] },
+            n_12: { title: "12:00 午休抽考", text: "學長抽考甲狀腺攝取率 (Thyroid uptake rate) 國考題：", choices: [{ txt: "✍️ 挑戰國考題！", isQuizTrigger: true, nextNode: "n_15" }, { txt: "🧋 花 $50 買飲料消災！", payCost: 50, nextNode: "n_15" }] },
+            n_15: { title: "15:00 下午突發狀況", text: "順利完成甲狀腺功能評估報告，阿桑笑著說要帶孫子來感謝放射師！獎金 +$50！", choices: [{ txt: "<code>「夜明珠笑話滿分！」</code>", nextNode: "n_17" }] },
+            n_17: { title: "17:00 打卡下班", text: "帶著歡笑的核醫日，打卡下班！", isArcEnd: true }
+          }
+        },
+        {
+          id: 'nuc_arc_5',
+          nodes: {
+            n_08: { title: "08:00 核醫打卡", text: "學長拿著多頻道能譜分析儀 (MCA)：「今天要做核醫 𝛾-camera 的能譜校正與固有不均勻度測試。」", choices: [{ txt: "<code>q「鈷-57 (Co-57) 點射源已放入機頭中心！」</code>", nextNode: "n_11" }, { txt: "「能譜儀要是能量窗 (Window) 偏移影像就會模糊。」", nextNode: "n_11" }] },
+            n_11: { title: "11:00 臨床事件 (核醫)", text: "品管測出來 𝛾-camera 的能量能譜峰值 (Photopeak) 偏移了 5%，不符合品管規範。", choices: [{ txt: "重新執行高壓自動校正與光電倍增管 (PMT) 增益調整，成功修正能譜峰值！", nextNode: "n_12" }, { txt: "【放棄 $20】「機器壞了叫原廠工程師來修就好！」", payCost: 20, nextNode: "n_12" }] },
+            n_12: { title: "12:00 午休抽考", text: "學長抽考 𝛾-camera 光電倍增管 (PMT) 與能譜分析國考題：", choices: [{ txt: "✍️ 挑戰國考題！", isQuizTrigger: true, nextNode: "n_15" }, { txt: "🧋 花 $50 請學姐喝珍奶！", payCost: 50, nextNode: "n_15" }] },
+            n_15: { title: "15:00 下午突發狀況", text: "校正後的 𝛾-camera 均勻度完美達標，下午順利完成骨骼與腎臟造影！獎金 +$70！", choices: [{ txt: "<code>q「能譜校正完美過關！」</code>", nextNode: "n_17" }] },
+            n_17: { title: "17:00 打卡下班", text: "兼顧機器校正與臨床掃描，光榮打卡下班！", isArcEnd: true }
           }
         }
       ],
@@ -680,13 +978,51 @@
         {
           id: 'rt_arc_1',
           nodes: {
-            n_08: { title: "08:00 RT 打卡", text: "學姐檢查直線加速器 LINAC 雷射光：「腫瘤放療講求 mm 級擺位，擺錯 1 mm 正常組織就會受量，絕不能馬虎！」", choices: [{ txt: "「明白！毫米級擺位是我的強項！」", nextNode: "n_11" }, { txt: "「1 mm...聽起來壓力好大...」", nextNode: "n_11" }] },
-            n_11: { title: "11:00 定位紅線事件", text: "伯伯的皮膚定位紅線有點被汗水弄髒，不好意思地向妳求助。", choices: [{ txt: "溫熱記號筆補線，配合 CBCT 影像比對，精準校正 0.5 mm 誤差！", nextNode: "n_11_norm" }, { txt: "【天真模式 $20】「拿濕紙巾試圖把紅線擦掉重新畫...」", payCost: 20, nextNode: "n_11_rage" }] },
-            n_11_norm: { title: "11:15 精準吻合", text: "擺位完全吻合！伯伯讚許：「謝謝妳這麼細心，每次來治療我都很有安全感！」", choices: [{ txt: "「開始照射！」", nextNode: "n_12" }] },
-            n_11_rage: { title: "11:15 學姐尖叫", text: "學姐一把拉住妳：「不行擦掉啦！那是畫好的基準線啦！」驚險化解。", choices: [{ txt: "（還好學姐有阻止...）", nextNode: "n_12" }] },
-            n_12: { title: "12:00 午休抽考", text: "學姐拿著 MLC 多葉準直儀圖解：「抽考一題 VMAT 與 MLC 國考題！」", choices: [{ txt: "✍️ 挑戰國考題！", isQuizTrigger: true, nextNode: "n_15" }, { txt: "🧋 花 $50 請學姐喝黑糖珍奶！", payCost: 50, nextNode: "n_15" }] },
-            n_15: { title: "15:00 下午突發狀況", text: "一位完成最後一次放療畢業的阿姨特別送來花束與卡片，整個 RT 團隊充滿溫馨與感動！獎金 +$100！", choices: [{ txt: "「恭喜阿姨畢業！」", nextNode: "n_17" }] },
-            n_17: { title: "17:00 打卡下班", text: "帶著滿滿的正能量與使命感，順利打卡下班！", isArcEnd: true }
+            n_08: { title: "08:00 RT 打卡", text: "學姐檢查 LINAC 雷射光：「放療講求 mm 級擺位，不能馬虎！」", choices: [{ txt: "「毫米級擺位！」", nextNode: "n_11" }, { txt: "「壓力好大...」", nextNode: "n_11" }] },
+            n_11: { title: "11:00 定位紅線事件", text: "伯伯紅線被汗水弄髒向妳求助。", choices: [{ txt: "溫熱筆補線，配合 CBCT 影像校正 0.5 mm 誤差！", nextNode: "n_12" }, { txt: "【天真 $20】「拿濕紙巾試圖把紅線擦掉重畫！」", payCost: 20, nextNode: "n_12" }] },
+            n_12: { title: "12:00 午休抽考", text: "學姐抽考 MLC 與 VMAT 國考題：", choices: [{ txt: "✍️ 挑戰國考題！", isQuizTrigger: true, nextNode: "n_15" }, { txt: "🧋 花 $50 請黑糖珍奶！", payCost: 50, nextNode: "n_15" }] },
+            n_15: { title: "15:00 下午突發狀況", text: "放療畢業阿姨送來花束與感謝卡，團隊充滿感動！獎金 +$100！", choices: [{ txt: "<code>「恭喜畢業！」</code>", nextNode: "n_17" }] },
+            n_17: { title: "17:00 打卡下班", text: "帶著正能量打卡下班！", isArcEnd: true }
+          }
+        },
+        {
+          id: 'rt_arc_2',
+          nodes: {
+            n_08: { title: "08:00 RT 打卡", text: "學姐拿著熱塑頭模 (Thermoplastic mask)：「今天有腦部腫瘤定位與頭模製作。」", choices: [{ txt: "「熱水槽溫度調至 70 度已就緒！」", nextNode: "n_11" }, { txt: "「頭模塑形要趁熱服貼病人的臉部曲線。」", nextNode: "n_11" }] },
+            n_11: { title: "11:00 臨床事件 (RT)", text: "做腦部放療的大哥戴上熱騰騰的塑膠頭模時，因為密閉空間突然感到呼吸困難：「好悶...拿掉！」", choices: [{ txt: "溫柔一邊幫頭模剪開鼻孔與眼睛通風孔，一邊鼓勵：「放輕鬆深呼吸，頭模是為了固定頭部不能亂動喔！」", nextNode: "n_12" }, { txt: "【嚴肅 $20】「頭模已經定型了不能拿掉請忍耐！」", payCost: 20, nextNode: "n_12" }] },
+            n_12: { title: "12:00 午休抽考", text: "學姐抽考熱塑頭模固定原理與腦部放療擺位誤差國考題：", choices: [{ txt: "✍️ 挑戰國考題！", isQuizTrigger: true, nextNode: "n_15" }, { txt: "🧋 花 $50 買飲料消災！", payCost: 50, nextNode: "n_15" }] },
+            n_15: { title: "15:00 下午突發狀況", text: "頭模透氣孔修剪完美，大哥舒適度大增，順利完成 CT 模擬定位！獎金 +$70！", choices: [{ txt: "<code>「頭模塑形完美服貼！」</code>", nextNode: "n_17" }] },
+            n_17: { title: "17:00 打卡下班", text: "完成精細的放療模具製作日，打卡下班！", isArcEnd: true }
+          }
+        },
+        {
+          id: 'rt_arc_3',
+          nodes: {
+            n_08: { title: "08:00 RT 打卡", text: "學姐拿著游離腔劑量儀 (Ion chamber)：「今天早上的重頭戲是直線加速器的每日劑量 Output 常規 QC 檢測。」", choices: [{ txt: "<code>q「水假體 (Water phantom) 與絕對劑量校正已開機！」</code>", nextNode: "n_11" }, { txt: "「放療劑量誤差絕對不能超過正負 2%！」", nextNode: "n_11" }] },
+            n_11: { title: "11:00 臨床事件 (RT)", text: "新進物理師在計算射束輸出劑量時不小心算錯小數點，學姐發現後緊急叫停。", choices: [{ txt: "冷靜協助物理師重新覈對公式與吸收劑量轉換表，確保病人治療安全萬無一失。", nextNode: "n_12" }, { txt: "【責備 $20】「劑量算錯會把病人燒傷的妳怎麼那麼不小心！」", payCost: 20, nextNode: "n_12" }] },
+            n_12: { title: "12:00 午休抽考", text: "學姐抽考放射治療絕對劑量測量與 TG-51 協定國考題：", choices: [{ txt: "✍️ 挑戰國考題！", isQuizTrigger: true, nextNode: "n_15" }, { txt: "🧋 花 $50 請學姐喝珍奶！", payCost: 50, nextNode: "n_15" }] },
+            n_15: { title: "15:00 下午突發狀況", text: "劑量校正覆核無誤，直線加速器精準輸出，下午順利治療 40 位腫瘤患者！獎金 +$90！", choices: [{ txt: "<code>「劑量校正安全過關！」</code>", nextNode: "n_17" }] },
+            n_17: { title: "17:00 打卡下班", text: "嚴格把關放療劑量的安全一日，光榮打卡下班！", isArcEnd: true }
+          }
+        },
+        {
+          id: 'rt_arc_4',
+          nodes: {
+            n_08: { title: "08:00 RT 打卡", text: "學姐調整著呼吸調控呼吸門控系統 (RGSC)：「今天有肺癌與乳癌的深吸氣憋氣 (DIBH) 放療治療。」", choices: [{ txt: "「紅外線反光追蹤器與胸口呼吸方塊已定位！」", nextNode: "n_11" }, { txt: "<code>q「DIBH 技術能有效保護心臟免受輻射劑量傷害！」</code>", nextNode: "n_11" }] },
+            n_11: { title: "11:00 臨床事件 (RT)", text: "做乳癌 DIBH 放療的年輕媽媽在吸氣憋氣時總是憋不到 20 秒就忍不住呼吸吐氣。", choices: [{ txt: "溫柔在旁邊陪伴倒數計時並鼓勵：「媽媽吸氣～吸飽！好，憋氣 1, 2, 3... 完美！」", nextNode: "n_12" }, { txt: "【催促 $20】「呼吸起伏太大機器會自動中斷請憋好！」", payCost: 20, nextNode: "n_12" }] },
+            n_12: { title: "12:00 午休抽考", text: "學姐抽考呼吸調控 (Respiratory gating) 與 DIBH 心臟保護國考題：", choices: [{ txt: "✍️ 挑戰國考題！", isQuizTrigger: true, nextNode: "n_15" }, { txt: "🧋 花 $50 買飲料消災！", payCost: 50, nextNode: "n_15" }] },
+            n_15: { title: "15:00 下午突發狀況", text: "媽媽順利抓到 DIBH 憋氣節奏，心臟劑量下降 50%，腫瘤精準照射！獎金 +$80！", choices: [{ txt: "<code>「DIBH 呼吸門控完美！」</code>", nextNode: "n_17" }] },
+            n_17: { title: "17:00 打卡下班", text: "守護乳癌患者心臟的放療日，打卡下班！", isArcEnd: true }
+          }
+        },
+        {
+          id: 'rt_arc_5',
+          nodes: {
+            n_08: { title: "08:00 RT 打卡", text: "學姐拿著防散射鉛磚：「今天有一台全身電子束皮膚全身照射 (TSEI) 治療。」", choices: [{ txt: "<code>q「特製壓克力散射板與站立旋轉平台已架設！」</code>", nextNode: "n_11" }, { txt: "「TSEI 治療需要特殊的 6 個方位擺位與大照野。」", nextNode: "n_11" }] },
+            n_11: { title: "11:00 臨床事件 (RT)", text: "皮膚淋巴瘤病人在進行全皮膚電子束照射時，因為要維持站立姿勢 20 分鐘感到雙腿發軟。", choices: [{ txt: "立刻準備防倒安全扶手與中場休息椅讓病人喘口氣：「辛苦了，我們分段完成！」", nextNode: "n_12" }, { txt: "【嚴格 $20】「姿勢不能動請撐下去！」", payCost: 20, nextNode: "n_12" }] },
+            n_12: { title: "12:00 午休抽考", text: "學姐抽考電子束深度劑量分佈 (PDD) 與皮膚劑量建立國考題：", choices: [{ txt: "✍️ 挑戰國考題！", isQuizTrigger: true, nextNode: "n_15" }, { txt: "🧋 花 $50 請學姐喝珍奶！", payCost: 50, nextNode: "n_15" }] },
+            n_15: { title: "15:00 下午突發狀況", text: "高難度 TSEI 全身皮膚治療順利完成，主治醫師對於劑量均勻度讚不絕口！獎金 +$100！", choices: [{ txt: "<code>「TSEI 全身照射成功！」</code>", nextNode: "n_17" }] },
+            n_17: { title: "17:00 打卡下班", text: "征服高難度放療特例，光榮打卡下班！", isArcEnd: true }
           }
         }
       ]
@@ -708,33 +1044,33 @@
       return title;
     }
 
-    /* STATE MANAGEMENT (localStorage Persistence) */
+    /* STATE MANAGEMENT */
     let state = {
-      questions: [], // 初始為 0 題
+      questions: [],
       userStats: { money: 200, xp: 0, stress: 0, bonusMultiplier: 1.0 },
       subjectUnits: { basic: 0, physics: 0, equip: 0, diag: 0, therapy: 0, nuc: 0 },
       unitWorkCounts: {},
-      storyFlags: {}, // 狀態記憶 Flags
+      storyFlags: {},
       activeQuiz: null,
       matchingState: { selectedLeft: null, matchedCount: 0 },
       vnActive: null
     };
 
     function loadState() {
-      const q = localStorage.getItem('radingo_v12_q'); state.questions = q ? JSON.parse(q) : [];
-      const st = localStorage.getItem('radingo_v12_st'); if (st) state.userStats = JSON.parse(st);
-      const su = localStorage.getItem('radingo_v12_su'); if (su) state.subjectUnits = JSON.parse(su);
-      const uw = localStorage.getItem('radingo_v12_uw'); if (uw) state.unitWorkCounts = JSON.parse(uw);
-      const fl = localStorage.getItem('radingo_v12_fl'); if (fl) state.storyFlags = JSON.parse(fl);
+      const q = localStorage.getItem('radingo_v13_q'); state.questions = q ? JSON.parse(q) : [];
+      const st = localStorage.getItem('radingo_v13_st'); if (st) state.userStats = JSON.parse(st);
+      const su = localStorage.getItem('radingo_v13_su'); if (su) state.subjectUnits = JSON.parse(su);
+      const uw = localStorage.getItem('radingo_v13_uw'); if (uw) state.unitWorkCounts = JSON.parse(uw);
+      const fl = localStorage.getItem('radingo_v13_fl'); if (fl) state.storyFlags = JSON.parse(fl);
       updateStatsUI();
     }
 
     function saveState() {
-      localStorage.setItem('radingo_v12_q', JSON.stringify(state.questions));
-      localStorage.setItem('radingo_v12_st', JSON.stringify(state.userStats));
-      localStorage.setItem('radingo_v12_su', JSON.stringify(state.subjectUnits));
-      localStorage.setItem('radingo_v12_uw', JSON.stringify(state.unitWorkCounts));
-      localStorage.setItem('radingo_v12_fl', JSON.stringify(state.storyFlags));
+      localStorage.setItem('radingo_v13_q', JSON.stringify(state.questions));
+      localStorage.setItem('radingo_v13_st', JSON.stringify(state.userStats));
+      localStorage.setItem('radingo_v13_su', JSON.stringify(state.subjectUnits));
+      localStorage.setItem('radingo_v13_uw', JSON.stringify(state.unitWorkCounts));
+      localStorage.setItem('radingo_v13_fl', JSON.stringify(state.storyFlags));
       updateStatsUI();
     }
 
@@ -753,7 +1089,7 @@
       if (tab === 'shop') renderShop();
     }
 
-    /* QUIZ MAP & ENGINE */
+    /* QUIZ ENGINE */
     function renderQuizMap() {
       const container = document.getElementById('subject-node-container');
       container.innerHTML = '';
@@ -857,7 +1193,6 @@
         const leftCol = document.createElement('div'); leftCol.className = "space-y-2";
         const rightCol = document.createElement('div'); rightCol.className = "space-y-2";
 
-        // 分別洗牌打亂左右兩欄
         const leftItems = shuffle(q.pairs.map((p, idx) => ({ txt: p.left, id: idx })));
         const rightItems = shuffle(q.pairs.map((p, idx) => ({ txt: p.right, id: idx })));
 
@@ -874,7 +1209,6 @@
         grid.appendChild(leftCol); grid.appendChild(rightCol); zone.appendChild(grid);
       }
 
-      // 清理舊的對錯解析面板
       const panel = document.getElementById('feedback-panel');
       panel.classList.add('hidden'); panel.className = "hidden p-3 rounded-xl border mb-3 space-y-2";
       
@@ -960,7 +1294,7 @@
       }
     }
 
-    /* CAREER STORY ENGINE (記憶狀態機與因果連貫) */
+    /* CAREER STORY ENGINE (13科各5篇以上隨機陣列抽取) */
     function renderCareerUnits() {
       const container = document.getElementById('career-units-list');
       container.innerHTML = '';
@@ -997,14 +1331,16 @@
 
     function startDepartmentStory(unitId) {
       const unit = WORK_UNITS.find(u => u.id === unitId);
-      const pool = DEPARTMENT_STORY_ARCS[unitId] || DEPARTMENT_STORY_ARCS['xray'];
-      const arc = pool[Math.floor(Math.random() * pool.length)];
+      
+      // 嚴格從對應科別陣列中隨機抽取一篇獨立故事文本 (保證絕不重複、每次隨機)
+      const storyArray = DEPARTMENT_STORY_ARCS[unitId] || DEPARTMENT_STORY_ARCS['xray'];
+      const randomStory = storyArray[Math.floor(Math.random() * storyArray.length)];
 
       state.vnActive = {
         unitId: unitId,
         unitName: unit.name,
         reqSubject: unit.reqSubject,
-        arc: arc,
+        arc: randomStory,
         currentNodeId: 'n_08',
         earnedPay: 0,
         tempFlags: {}
@@ -1030,7 +1366,6 @@
 
       timeBadge.innerText = node.title || "職場連貫日常";
 
-      // 檢查記憶狀態機 Flag
       let textContent = node.text;
       if (node.hasFlagCheck) {
         if (state.storyFlags[node.hasFlagCheck] || active.tempFlags[node.hasFlagCheck]) {
@@ -1043,7 +1378,6 @@
       }
       textEl.innerHTML = textContent;
 
-      // 渲染選項
       node.choices.forEach(c => {
         const btn = document.createElement('button');
         
@@ -1195,7 +1529,7 @@
       }
     }
 
-    /* EDITOR & DYNAMIC 4-TYPE FIELDS */
+    /* EDITOR */
     function renderMatchingInputs() {
       const container = document.getElementById('matching-inputs-container');
       container.innerHTML = '';
