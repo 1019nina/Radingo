@@ -6,7 +6,7 @@
     <title>Radingo - 放射師國考與職場物語</title>
     <!-- Tailwind CSS -->
     <script src="https://cdn.tailwindcss.com"></script>
-    <!-- FontAwesome -->
+    <!-- FontAwesome icons -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <!-- Canvas Confetti -->
     <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
@@ -14,22 +14,29 @@
         @import url('https://fonts.googleapis.com/css2?family=Fredoka:wght@400;600;700&family=Noto+Sans+TC:wght@400;500;700;900&display=swap');
         body {
             font-family: 'Noto Sans TC', 'Fredoka', sans-serif;
-            background-color: #f7f9fa;
+            background-color: #f8fafc;
             user-select: none;
         }
         .duo-btn {
-            box-shadow: 0 4px 0 0 #46a302;
+            box-shadow: 0 4px 0 0 #16a34a;
             transition: all 0.1s ease;
         }
         .duo-btn:active {
-            box-shadow: 0 0 0 0 #46a302;
+            box-shadow: 0 0 0 0 #16a34a;
             transform: translateY(4px);
         }
         .duo-btn-blue {
-            box-shadow: 0 4px 0 0 #1899d6;
+            box-shadow: 0 4px 0 0 #0284c7;
         }
         .duo-btn-blue:active {
-            box-shadow: 0 0 0 0 #1899d6;
+            box-shadow: 0 0 0 0 #0284c7;
+            transform: translateY(4px);
+        }
+        .duo-btn-purple {
+            box-shadow: 0 4px 0 0 #7e22ce;
+        }
+        .duo-btn-purple:active {
+            box-shadow: 0 0 0 0 #7e22ce;
             transform: translateY(4px);
         }
         .duo-card {
@@ -39,7 +46,7 @@
             width: 6px;
         }
         .custom-scrollbar::-webkit-scrollbar-track {
-            background: #f1f1f1;
+            background: #f1f5f9;
             border-radius: 10px;
         }
         .custom-scrollbar::-webkit-scrollbar-thumb {
@@ -50,47 +57,47 @@
 </head>
 <body class="text-slate-800 h-screen flex flex-col md:flex-row overflow-hidden">
 
-    <!-- 側邊欄導覽 (Duolingo Style) -->
+    <!-- 側邊欄導覽 (Duolingo 風格) -->
     <aside class="w-full md:w-64 bg-white border-r-2 border-slate-200 flex flex-col justify-between p-4 z-20 shrink-0">
         <div>
-            <div class="flex items-center space-x-3 px-3 py-2 mb-6">
-                <i class="fa-solid fa-radiation text-green-500 text-3xl animate-spin" style="animation-duration: 8s;"></i>
-                <span class="text-2xl font-black text-green-600 tracking-wider">Radingo</span>
+            <div class="flex items-center space-x-3 px-3 py-2 mb-4 md:mb-6">
+                <i class="fa-solid fa-radiation text-emerald-500 text-3xl animate-spin" style="animation-duration: 10s;"></i>
+                <span class="text-2xl font-black text-emerald-600 tracking-wider">Radingo</span>
             </div>
 
-            <nav class="space-y-2">
-                <button onclick="switchTab('quiz-map')" id="nav-quiz-map" class="nav-btn w-full flex items-center space-x-4 px-4 py-3 rounded-xl font-bold text-slate-600 hover:bg-slate-100 transition border-2 border-transparent">
-                    <i class="fa-solid fa-[#58cc02] fa-graduation-cap text-xl text-green-500"></i>
+            <nav class="space-y-1.5 md:space-y-2">
+                <button onclick="switchTab('quiz-map')" id="nav-quiz-map" class="nav-btn w-full flex items-center space-x-3 px-4 py-3 rounded-xl font-bold text-slate-600 hover:bg-slate-100 transition border-2 border-transparent">
+                    <i class="fa-solid fa-graduation-cap text-xl text-emerald-500"></i>
                     <span>無限國考刷題</span>
                 </button>
-                <button onclick="switchTab('workplace')" id="nav-workplace" class="nav-btn w-full flex items-center space-x-4 px-4 py-3 rounded-xl font-bold text-slate-600 hover:bg-slate-100 transition border-2 border-transparent">
+                <button onclick="switchTab('workplace')" id="nav-workplace" class="nav-btn w-full flex items-center space-x-3 px-4 py-3 rounded-xl font-bold text-slate-600 hover:bg-slate-100 transition border-2 border-transparent">
                     <i class="fa-solid fa-hospital-user text-xl text-sky-500"></i>
                     <span>職場物語 RPG</span>
                 </button>
-                <button onclick="switchTab('shop')" id="nav-shop" class="nav-btn w-full flex items-center space-x-4 px-4 py-3 rounded-xl font-bold text-slate-600 hover:bg-slate-100 transition border-2 border-transparent">
+                <button onclick="switchTab('shop')" id="nav-shop" class="nav-btn w-full flex items-center space-x-3 px-4 py-3 rounded-xl font-bold text-slate-600 hover:bg-slate-100 transition border-2 border-transparent">
                     <i class="fa-solid fa-store text-xl text-amber-500"></i>
                     <span>放射師商店</span>
                 </button>
-                <button onclick="switchTab('q-bank')" id="nav-q-bank" class="nav-btn w-full flex items-center space-x-4 px-4 py-3 rounded-xl font-bold text-slate-600 hover:bg-slate-100 transition border-2 border-transparent">
+                <button onclick="switchTab('q-bank')" id="nav-q-bank" class="nav-btn w-full flex items-center space-x-3 px-4 py-3 rounded-xl font-bold text-slate-600 hover:bg-slate-100 transition border-2 border-transparent">
                     <i class="fa-solid fa-database text-xl text-purple-500"></i>
                     <span>題庫管理員</span>
                 </button>
             </nav>
         </div>
 
-        <!-- 狀態與資源標籤 -->
+        <!-- 資源狀態列 -->
         <div class="bg-slate-50 p-3 rounded-2xl border-2 border-slate-200 space-y-2 mt-4">
             <div class="flex justify-between items-center text-sm font-bold text-slate-700">
-                <span class="flex items-center gap-2"><i class="fa-solid fa-[#ffc800] fa-coins text-amber-400"></i> 金幣</span>
+                <span class="flex items-center gap-2"><i class="fa-solid fa-coins text-amber-400"></i> 金幣</span>
                 <span id="player-coins" class="text-amber-600 text-base">0</span>
             </div>
             <div class="flex justify-between items-center text-sm font-bold text-slate-700">
                 <span class="flex items-center gap-2"><i class="fa-solid fa-bolt text-amber-500"></i> 經驗值</span>
                 <span id="player-xp" class="text-sky-600 text-base">0 XP</span>
             </div>
-            <div class="flex justify-between items-center text-xs text-slate-500 border-t pt-2 mt-2">
-                <span>刷題收益加成</span>
-                <span id="player-multiplier" class="font-bold text-green-600">x1.0</span>
+            <div class="flex justify-between items-center text-xs text-slate-500 border-t pt-2">
+                <span>收益加成</span>
+                <span id="player-multiplier" class="font-bold text-emerald-600">x1.0</span>
             </div>
         </div>
     </aside>
@@ -101,36 +108,36 @@
         <!-- ===== TAB 1: 國考地圖與刷題 ===== -->
         <section id="tab-quiz-map" class="tab-content max-w-4xl mx-auto">
             <div class="mb-8 text-center md:text-left">
-                <h1 class="text-3xl font-extrabold text-slate-800">放射線師國家考試地圖</h1>
-                <p class="text-slate-500 font-medium">無限次數刷題！完全沒有愛心或體力限制，練到滿分為止！</p>
+                <h1 class="text-3xl font-extrabold text-slate-800">放射師國家考試地圖</h1>
+                <p class="text-slate-500 font-medium mt-1">無限次數刷題！題庫完全由你控制，無體力限制！</p>
             </div>
 
             <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6" id="subject-cards-container">
-                <!-- 6 大科目動態渲染於此 -->
+                <!-- 6 大科目 -->
             </div>
         </section>
 
         <!-- ===== 刷題進行中 View ===== -->
         <section id="quiz-session" class="tab-content max-w-2xl mx-auto hidden flex-col h-full justify-between">
             <div>
-                <!-- 進度條與頂部列 -->
+                <!-- 進度條 -->
                 <div class="flex items-center justify-between mb-6 gap-4">
                     <button onclick="exitQuiz()" class="text-slate-400 hover:text-slate-600 text-2xl font-bold"><i class="fa-solid fa-xmark"></i></button>
                     <div class="w-full bg-slate-200 h-4 rounded-full overflow-hidden">
-                        <div id="quiz-progress-bar" class="bg-green-500 h-full w-0 transition-all duration-300"></div>
+                        <div id="quiz-progress-bar" class="bg-emerald-500 h-full w-0 transition-all duration-300"></div>
                     </div>
                     <span id="quiz-progress-text" class="text-sm font-bold text-slate-500 whitespace-nowrap">0 / 0</span>
                 </div>
 
-                <!-- 題目內容區 -->
+                <!-- 題目卡片 -->
                 <div id="question-card" class="bg-white p-6 rounded-2xl border-2 border-slate-200 duo-card shadow-sm mb-6">
-                    <!-- 動態渲染題目類型 -->
+                    <!-- 動態渲染題目內文與選單 -->
                 </div>
             </div>
 
-            <!-- 答題反饋與底欄 -->
+            <!-- 底欄答題控制按鈕區 -->
             <div id="quiz-footer" class="border-t-2 border-slate-200 pt-4 bg-slate-50">
-                <button id="quiz-submit-btn" onclick="checkAnswer()" class="w-full bg-green-500 hover:bg-green-600 text-white font-extrabold py-3.5 px-6 rounded-2xl duo-btn text-lg tracking-wide uppercase">
+                <button id="quiz-submit-btn" onclick="checkAnswer()" class="w-full bg-emerald-500 hover:bg-emerald-600 text-white font-extrabold py-3.5 px-6 rounded-2xl duo-btn text-lg tracking-wide">
                     檢查答案
                 </button>
             </div>
@@ -138,75 +145,72 @@
 
         <!-- ===== TAB 2: 職場物語 RPG ===== -->
         <section id="tab-workplace" class="tab-content max-w-5xl mx-auto hidden">
-            <div class="mb-8 flex flex-col md:flex-row md:items-center justify-between gap-4">
+            <div class="mb-6 flex flex-col md:flex-row md:items-center justify-between gap-4">
                 <div>
-                    <h1 class="text-3xl font-extrabold text-slate-800">醫院職場物語</h1>
-                    <p class="text-slate-500 font-medium">選擇臨床科別，體驗真實又爆笑的放射師日常！</p>
+                    <h1 class="text-3xl font-extrabold text-slate-800">醫院職場物語 RPG</h1>
+                    <p class="text-slate-500 font-medium mt-1">選擇臨床科別，體驗真實又爆笑的放射師日常！</p>
                 </div>
-                <div class="bg-sky-100 border-2 border-sky-300 px-4 py-2 rounded-2xl flex items-center gap-3">
+                <div class="bg-sky-100 border-2 border-sky-300 px-4 py-2.5 rounded-2xl flex items-center gap-3 shrink-0">
                     <i class="fa-solid fa-id-badge text-sky-600 text-2xl"></i>
                     <div>
-                        <div id="department-title" class="text-xs font-bold text-sky-700">當前選擇科別：一般 X 光</div>
+                        <div id="department-title" class="text-xs font-bold text-sky-700">選擇科別：一般 X 光</div>
                         <div id="department-rank" class="text-sm font-black text-sky-900">職等：見習生 (班次: 0)</div>
                     </div>
                 </div>
             </div>
 
-            <!-- 科別選擇器 -->
+            <!-- 13 科別選擇器 -->
             <div class="mb-8">
-                <h3 class="text-lg font-bold text-slate-700 mb-3"><i class="fa-solid fa-hospital-symbol text-red-500 mr-2"></i>選擇班表科別 (共 13 科獨立劇情)</h3>
-                <div class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-3" id="dept-selector-grid">
-                    <!-- 動態渲染 13 科按鈕 -->
+                <h3 class="text-base font-bold text-slate-700 mb-3 flex items-center"><i class="fa-solid fa-hospital-symbol text-red-500 mr-2"></i>選擇臨床科別 (共 13 科獨家專屬劇本庫)</h3>
+                <div class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-2.5" id="dept-selector-grid">
+                    <!-- 動態渲染 13 科 -->
                 </div>
             </div>
 
-            <!-- 上班入口與故事開端 -->
+            <!-- 打卡入口 -->
             <div id="workplace-start-panel" class="bg-white p-8 rounded-3xl border-2 border-slate-200 duo-card text-center space-y-4">
                 <div class="w-20 h-20 bg-emerald-100 text-emerald-600 rounded-full flex items-center justify-center mx-auto text-3xl">
                     <i class="fa-solid fa-user-doctor"></i>
                 </div>
-                <h2 id="dept-start-title" class="text-2xl font-extrabold text-slate-800">準備好進入「一般 X 光」打卡上班了嗎？</h2>
-                <p class="text-slate-500 max-w-md mx-auto">一天將分為 5 個時間段。應對各種奇葩病人與學長姐考驗，賺取金幣與經驗！</p>
+                <h2 id="dept-start-title" class="text-2xl font-extrabold text-slate-800">準備進入「一般 X 光」打卡上班嗎？</h2>
+                <p class="text-slate-500 max-w-md mx-auto text-sm">一天包含 5 個時間段。隨機組合不重複情節，面對臨床突發與學長姐考驗！</p>
                 <button onclick="startShift()" class="bg-sky-500 hover:bg-sky-600 text-white font-black px-8 py-3.5 rounded-2xl duo-btn duo-btn-blue text-lg">
                     <i class="fa-solid fa-clock mr-2"></i>開始今日班表 (08:00 打卡)
                 </button>
             </div>
 
-            <!-- 職場事件遊玩區 (5 段時間軸) -->
+            <!-- 職場 5 段時間軸遊玩區 -->
             <div id="workplace-timeline-panel" class="hidden space-y-6">
-                <!-- 時間狀態列 -->
                 <div class="flex items-center justify-between bg-white p-4 rounded-2xl border-2 border-slate-200">
                     <div class="flex items-center space-x-3">
                         <span id="shift-time-tag" class="bg-amber-100 text-amber-800 text-sm font-black px-3 py-1 rounded-xl">08:00 晨間打卡</span>
                         <span id="shift-dept-tag" class="text-slate-600 font-bold text-sm">科別: 一般 X 光</span>
                     </div>
-                    <div class="text-xs font-bold text-slate-400">事件 1 / 5</div>
+                    <div id="shift-step-count" class="text-xs font-bold text-slate-400">時段 1 / 5</div>
                 </div>
 
-                <!-- 劇情內文卡片 -->
                 <div id="story-card" class="bg-white p-6 rounded-2xl border-2 border-slate-200 duo-card space-y-4">
                     <div class="flex items-center gap-3">
-                        <div id="story-avatar" class="w-12 h-12 bg-sky-100 rounded-full flex items-center justify-center text-sky-600 text-xl font-bold">
-                            <i class="fa-solid fa-user"></i>
+                        <div class="w-12 h-12 bg-sky-100 rounded-full flex items-center justify-center text-sky-600 text-xl font-bold">
+                            <i class="fa-solid fa-user-nurse"></i>
                         </div>
                         <div>
-                            <h4 id="story-title" class="font-bold text-slate-800 text-lg">晨間打卡突發狀況</h4>
-                            <p id="story-subtitle" class="text-xs text-slate-400">事件分類：科別專屬故事</p>
+                            <h4 id="story-title" class="font-bold text-slate-800 text-lg">事件載入中</h4>
+                            <p id="story-subtitle" class="text-xs text-slate-400">科別專屬劇情</p>
                         </div>
                     </div>
                     <p id="story-text" class="text-slate-700 leading-relaxed font-medium bg-slate-50 p-4 rounded-xl border border-slate-200">
-                        劇情加載中...
+                        ...
                     </p>
 
-                    <!-- 選項按鈕區 -->
                     <div id="story-options" class="space-y-3 pt-2">
-                        <!-- 動態選項 -->
+                        <!-- 選項 -->
                     </div>
                 </div>
 
-                <!-- 劇情結果/次頁按鈕 -->
-                <div id="story-result-box" class="hidden bg-emerald-50 border-2 border-emerald-300 p-4 rounded-2xl space-y-3">
-                    <div id="story-result-text" class="text-emerald-900 font-bold"></div>
+                <!-- 職場事件結果區 -->
+                <div id="story-result-box" class="hidden bg-emerald-50 border-2 border-emerald-300 p-5 rounded-2xl space-y-3">
+                    <div id="story-result-text" class="text-emerald-900 font-bold leading-relaxed"></div>
                     <button id="story-next-btn" onclick="nextShiftSegment()" class="bg-emerald-500 hover:bg-emerald-600 text-white font-extrabold px-6 py-2.5 rounded-xl duo-btn text-sm">
                         進入下一個時段 <i class="fa-solid fa-arrow-right ml-1"></i>
                     </button>
@@ -218,7 +222,7 @@
         <section id="tab-shop" class="tab-content max-w-4xl mx-auto hidden">
             <div class="mb-8">
                 <h1 class="text-3xl font-extrabold text-slate-800">放射師精神補充站</h1>
-                <p class="text-slate-500 font-medium">購買好物提升你的刷題收益與臨床抗壓值！</p>
+                <p class="text-slate-500 font-medium mt-1">購買配備以大幅提升刷題金幣倍率！</p>
             </div>
 
             <div class="grid grid-cols-1 md:grid-cols-3 gap-6" id="shop-items-container">
@@ -231,7 +235,7 @@
             <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
                 <div>
                     <h1 class="text-3xl font-extrabold text-slate-800">題庫管理員</h1>
-                    <p class="text-slate-500 font-medium">自行增刪改題目、匯入或匯出自訂題庫 JSON。</p>
+                    <p class="text-slate-500 font-medium mt-1">預設為 0 題空題庫！可新增或匯入 JSON 題庫。</p>
                 </div>
                 <div class="flex gap-2">
                     <button onclick="exportQuestionBank()" class="bg-slate-700 hover:bg-slate-800 text-white px-4 py-2.5 rounded-xl text-sm font-bold flex items-center gap-2">
@@ -244,77 +248,85 @@
                 </div>
             </div>
 
-            <!-- 新增題目表單 -->
+            <!-- 新增題目動態 UI 表單 -->
             <div class="bg-white p-6 rounded-2xl border-2 border-slate-200 duo-card space-y-4">
-                <h3 class="font-extrabold text-lg text-slate-800"><i class="fa-solid fa-plus-circle text-purple-500 mr-2"></i>新增國考題目</h3>
+                <h3 class="font-extrabold text-lg text-slate-800 flex items-center">
+                    <i class="fa-solid fa-plus-circle text-purple-500 mr-2"></i>新增題目
+                </h3>
+                
                 <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
                     <div>
-                        <label class="block text-xs font-bold text-slate-500 mb-1">科目</label>
+                        <label class="block text-xs font-bold text-slate-500 mb-1">對應科目</label>
                         <select id="new-q-subject" class="w-full bg-slate-50 border-2 border-slate-200 rounded-xl p-2.5 text-sm font-bold">
-                            <!-- 6 科 -->
+                            <!-- 科目下拉選單 -->
                         </select>
                     </div>
                     <div>
-                        <label class="block text-xs font-bold text-slate-500 mb-1">題型</label>
-                        <select id="new-q-type" class="w-full bg-slate-50 border-2 border-slate-200 rounded-xl p-2.5 text-sm font-bold" onchange="toggleQuestionTypeFields()">
+                        <label class="block text-xs font-bold text-slate-500 mb-1">題目題型 (共 4 種)</label>
+                        <select id="new-q-type" class="w-full bg-slate-50 border-2 border-slate-200 rounded-xl p-2.5 text-sm font-bold" onchange="renderDynamicQuestionForm()">
                             <option value="choice">單選題</option>
                             <option value="tf">是非題</option>
+                            <option value="matching">觀念配對連連看 (6 組 12 格)</option>
+                            <option value="fill">填空選擇題</option>
                         </select>
                     </div>
                 </div>
 
                 <div>
-                    <label class="block text-xs font-bold text-slate-500 mb-1">題目內文</label>
-                    <textarea id="new-q-title" class="w-full bg-slate-50 border-2 border-slate-200 rounded-xl p-2.5 text-sm font-medium" rows="2" placeholder="請輸入國考題目內容..."></textarea>
+                    <label class="block text-xs font-bold text-slate-500 mb-1">題目說明 / 題幹</label>
+                    <textarea id="new-q-title" class="w-full bg-slate-50 border-2 border-slate-200 rounded-xl p-2.5 text-sm font-medium" rows="2" placeholder="請輸入國考題目內容描述..."></textarea>
                 </div>
 
-                <div id="choice-options-field" class="grid grid-cols-1 sm:grid-cols-2 gap-3">
-                    <div><input type="text" id="opt-0" placeholder="選項 A" class="w-full bg-slate-50 border border-slate-200 rounded-lg p-2 text-sm"></div>
-                    <div><input type="text" id="opt-1" placeholder="選項 B" class="w-full bg-slate-50 border border-slate-200 rounded-lg p-2 text-sm"></div>
-                    <div><input type="text" id="opt-2" placeholder="選項 C" class="w-full bg-slate-50 border border-slate-200 rounded-lg p-2 text-sm"></div>
-                    <div><input type="text" id="opt-3" placeholder="選項 D" class="w-full bg-slate-50 border border-slate-200 rounded-lg p-2 text-sm"></div>
+                <!-- 動態注入的介面 -->
+                <div id="dynamic-type-fields" class="space-y-4">
+                    <!-- JS 動態渲染 -->
                 </div>
 
                 <div>
-                    <label class="block text-xs font-bold text-slate-500 mb-1">正確答案 (選擇題填選項文字/是非題填 True 或 False)</label>
-                    <input type="text" id="new-q-answer" class="w-full bg-slate-50 border-2 border-slate-200 rounded-xl p-2.5 text-sm font-bold" placeholder="例如：選項 A 的完整文字，或 True">
+                    <label class="block text-xs font-bold text-slate-500 mb-1">詳細答案解析與學習筆記 (答題後顯示)</label>
+                    <textarea id="new-q-explanation" class="w-full bg-slate-50 border-2 border-slate-200 rounded-xl p-2.5 text-sm font-medium" rows="2" placeholder="請輸入解析內容..."></textarea>
                 </div>
 
-                <button onclick="addNewQuestion()" class="bg-purple-600 hover:bg-purple-700 text-white font-extrabold px-6 py-3 rounded-xl duo-btn text-sm w-full">
-                    儲存題目至題庫
+                <button onclick="saveNewQuestion()" class="bg-purple-600 hover:bg-purple-700 text-white font-extrabold px-6 py-3 rounded-xl duo-btn duo-btn-purple text-sm w-full">
+                    儲存題目至系統
                 </button>
             </div>
 
             <!-- 現有題目清單 -->
             <div class="bg-white p-6 rounded-2xl border-2 border-slate-200 duo-card">
-                <h3 class="font-extrabold text-lg text-slate-800 mb-4"><i class="fa-solid fa-list-check text-slate-500 mr-2"></i>現有題目清單</h3>
+                <h3 class="font-extrabold text-lg text-slate-800 mb-4 flex items-center">
+                    <i class="fa-solid fa-list-check text-slate-500 mr-2"></i>題庫清單 (<span id="total-q-count">0</span> 題)
+                </h3>
                 <div id="question-list-container" class="space-y-3 max-h-96 overflow-y-auto custom-scrollbar">
-                    <!-- 題目動態列表 -->
+                    <!-- 動態渲染清單 -->
                 </div>
             </div>
         </section>
 
     </main>
 
-    <!-- Modal 反饋 (Duolingo Style 底部彈出框) -->
-    <div id="feedback-modal" class="fixed inset-x-0 bottom-0 p-6 bg-green-100 border-t-4 border-green-500 transition-transform transform translate-y-full z-50 flex items-center justify-between">
-        <div class="flex items-center space-x-4">
-            <div id="feedback-icon" class="w-12 h-12 rounded-full bg-green-500 text-white flex items-center justify-center text-2xl font-bold">
+    <!-- Modal 答題反饋 (固定停留在畫面，點擊確定後才消失並下一題) -->
+    <div id="feedback-modal" class="fixed inset-x-0 bottom-0 p-6 bg-white border-t-4 border-emerald-500 shadow-2xl transition-transform duration-300 transform translate-y-full z-50 flex flex-col md:flex-row items-center justify-between gap-4">
+        <div class="flex items-start space-x-4 max-w-3xl">
+            <div id="feedback-icon" class="w-12 h-12 rounded-full bg-emerald-500 text-white flex items-center justify-center text-2xl font-bold shrink-0">
                 <i class="fa-solid fa-check"></i>
             </div>
-            <div>
-                <h4 id="feedback-title" class="text-xl font-black text-green-800">答對了！非常優秀！</h4>
-                <p id="feedback-desc" class="text-sm font-bold text-green-700">獲得 +15 金幣，+20 XP</p>
+            <div class="space-y-1">
+                <h4 id="feedback-title" class="text-xl font-black text-emerald-800">答對了！非常優秀！</h4>
+                <p id="feedback-desc" class="text-sm font-bold text-slate-600"></p>
+                <div id="feedback-explanation" class="text-xs bg-slate-100 p-3 rounded-xl border border-slate-200 text-slate-700 mt-2 leading-relaxed">
+                    <!-- 解析內文 -->
+                </div>
             </div>
         </div>
-        <button id="modal-next-btn" onclick="continueQuizSession()" class="bg-green-500 hover:bg-green-600 text-white font-extrabold px-8 py-3 rounded-xl duo-btn">
-            繼續
+        <button id="modal-next-btn" onclick="confirmAndNextQuestion()" class="bg-emerald-500 hover:bg-emerald-600 text-white font-extrabold px-8 py-3.5 rounded-2xl duo-btn text-base shrink-0 w-full md:w-auto">
+            確定 / 下一題 <i class="fa-solid fa-arrow-right ml-2"></i>
         </button>
     </div>
 
     <script>
         /* ==========================================================================
-           遊戲全局狀態與 LocalStorage 管理
+           1. 全局狀態與科目對照表
            ========================================================================== */
         const SUBJECTS = [
             { id: 'med_base', name: '基礎醫學', icon: 'fa-brain', color: 'bg-red-500' },
@@ -337,104 +349,200 @@
             selectedDept: "一般 X 光",
             deptShiftCounts: {},
             purchasedItems: [],
-            questions: []
+            questions: [] // 預設初始為空陣列 (0題)
         };
 
-        // 預設國考題庫種子資料
-        const DEFAULT_QUESTIONS = [
-            { id: 1, subject: 'rad_diag', type: 'choice', title: '在胸部 X 光攝影 (Chest PA) 中，標準焦距 (SID) 通常設定為多少以減少心臟放大率？', options: ['100 cm', '120 cm', '180 cm', '250 cm'], answer: '180 cm' },
-            { id: 2, subject: 'rad_physics', type: 'choice', title: '輻射防護三大原則「ALARA」的意思是？', options: ['盡可能高', '合理地盡可能低', '絕對零輻射', '依醫院規定即可'], answer: '合理地盡可能低' },
-            { id: 3, subject: 'rad_equip', type: 'choice', title: 'CT 掃描中，控制 X 光管射線質與穿透力主要調整何種參數？', options: ['mAs', 'kVp', 'Pitch', 'Matrix'], answer: 'kVp' },
-            { id: 4, subject: 'nuc_med', type: 'tf', title: 'FDG-PET 檢查前，患者通常需要禁食至少 4-6 小時以降低血糖影響。', answer: 'True' },
-            { id: 5, subject: 'rad_therapy', type: 'choice', title: '放射治療中，醫用直線加速器 (LINAC) 產生之高能量 X 光主要是透過什麼機制？', options: ['靶極煞車輻射 (Bremsstrahlung)', '光電效應', '康普頓效應', '成對產生'], answer: '靶極煞車輻射 (Bremsstrahlung)' },
-            { id: 6, subject: 'med_base', type: 'tf', title: '人體最大的淋巴器官是脾臟 (Spleen)。', answer: 'True' }
-        ];
-
         /* ==========================================================================
-           13 科別隔離龐大劇本庫 (每個科別獨立，包含 5 段時間軸)
+           2. 13 個獨立科別隔離劇本庫 (每科 5 個時間段各具獨家專屬情節)
            ========================================================================== */
-        const DEPARTMENT_SCRIPTS = {};
-
-        // 動態生成 13 個科別專屬劇本庫
-        DEPARTMENTS.forEach(dept => {
-            DEPARTMENT_SCRIPTS[dept] = {
+        const DEPARTMENT_SCRIPTS = {
+            "一般 X 光": {
                 t0800: [
-                    {
-                        title: `【${dept}】08:00 晨間打卡`,
-                        subtitle: `${dept} 專屬晨會`,
-                        text: `今日剛到 ${dept} 檢查室，學長正滿頭大汗地重啟儀器。「這台機器昨晚傳出奇怪的運轉聲，今天第一班病人就是急診重症！」`,
-                        options: [
-                            { text: "A: 學長讓我來！先做每日 QA/QC 品管校正。", cost: 0, coins: 20, xp: 15, textResult: "學長點頭讚許：「反應很快，品管通過，今天運作順暢！」" },
-                            { text: "B: 嗆學長：「是不是昨晚沒關機跑去喝奶茶啊？」 (花 $20)", cost: 20, coins: 0, xp: 30, risk: true, textResult: "學長被嗆到愣住：「算你狠...被你猜中了。」(被投訴風險提升)" }
-                        ]
-                    },
-                    {
-                        title: `【${dept}】08:00 交接班`,
-                        subtitle: `${dept} 晨間熱鬧開場`,
-                        text: `交接班時，夜班學姐遞給你一杯大冰奶：「${dept} 今天排了 35 個病人，加油囉！」`,
-                        options: [
-                            { text: "A: 謝謝學姐！立刻開啟電腦開始喊名單。", cost: 0, coins: 15, xp: 10, textResult: "精神飽滿地開始了活力滿滿的一天！" },
-                            { text: "B: 搞笑：「學姐，喝這杯大冰奶我早上會一直跑廁所啦！」", cost: 0, coins: 10, xp: 20, textResult: "學姐笑了笑：「那你要跑得比 X 光還快喔！」" }
-                        ]
-                    }
+                    { title: "【一般 X 光】08:00 晨間打卡", text: "早晨第一班門診病人湧入，門口排滿了持 X 光單的民眾。學長正在校正 Bucky 桌，大喊：「今天 Chest 和 KUB 預估超過 100 人！」", options: [{ text: "A: 迅速開啟兩間攝影室，協助引導引號。", cost: 0, coins: 20, xp: 15, textResult: "流暢排班使早上等候時間縮短半小時，學長大讚！" }] },
+                    { title: "【一般 X 光】08:00 交接與奶茶", text: "夜班學長遞上一杯早餐冰奶茶，笑稱「今天照胸部 X 光照到手軟，接下來交給你了！」", options: [{ text: "A: 活力滿滿收下奶茶開工！", cost: 0, coins: 15, xp: 10, textResult: "活力充沛開始了一天！" }] }
                 ],
                 t1100: [
-                    {
-                        title: `【${dept}】11:00 臨床突發狀況`,
-                        subtitle: `${dept} 病人應對`,
-                        text: `一位阿嬤進到 ${dept} 檢查室，全身戴滿金項鍊與鑽石手鍊，堅持說：「這都是純金的，不用拿下來啦！」`,
-                        options: [
-                            { text: "A: 耐心解釋金屬會產生假影，幫阿嬤把飾品收進保管盒。", cost: 0, coins: 25, xp: 25, textResult: "阿嬤誇獎你服務真好，還從口袋掏出一顆糖果送你！" },
-                            { text: "B: 開嗆：「阿嬤！你這樣照出來整張影像都是金光閃閃啦！」 (花 $30)", cost: 30, coins: 0, xp: 40, risk: true, textResult: "阿嬤氣得拿拐杖敲地，差點跑去院長室投訴你！" }
-                        ]
-                    },
-                    {
-                        title: `【${dept}】11:00 酒醉大叔鬧場`,
-                        subtitle: `${dept} 急診支援`,
-                        text: `滿身酒氣的大叔被推進 ${dept}，大喊：「你們誰敢動我！我認識你們院長！」`,
-                        options: [
-                            { text: "A: 保持安全距離，立刻按下警民連線請警衛前來協助。", cost: 0, coins: 30, xp: 20, textResult: "駐衛警大哥 10 秒內衝進來化解危機，順利完成檢查！" },
-                            { text: "B: 上前跟醉漢理論：「大哥！這裡醫院捏！你認識院長又怎樣！」 (花 $50)", cost: 50, coins: 0, xp: 50, risk: true, textResult: "醉漢差點揮拳過來，還好學長一把將你拉開，嚇死所有人！" }
-                        ]
-                    }
+                    { title: "【一般 X 光】11:00 照 Chest PA", text: "一位阿伯照 Chest PA 時一直無法深吸氣憋住，影像屢屢晃動。", options: [
+                        { text: "A: 耐心使用聯鎖口令引導阿伯吸氣憋住。", cost: 0, coins: 25, xp: 20, textResult: "阿伯終於吸足氣，照出肺底清晰優良的清晰影像！" },
+                        { text: "B: 開嗆：「阿伯！你吸這口氣比吸珍珠奶茶還小力！」", cost: 20, coins: 0, xp: 30, risk: true, textResult: "阿伯驚呆後突然深吸一大口氣，意外成功了！" }
+                    ]}
                 ],
-                t1200: [
-                    {
-                        title: `【${dept}】12:00 午休抽考`,
-                        subtitle: `學長姐的國考抽測`,
-                        text: `午休時間，學長一邊吃便當一邊問：「剛剛 ${dept} 的考題來一題，答對有零用錢獎金！」`,
-                        options: [
-                            { text: "A: 正當接受國考題挑戰！", cost: 0, isQuizChallenge: true },
-                            { text: "B: 花 $50 買一杯珍珠奶茶請學長：「學長辛苦了，請你喝茶！」", cost: 50, coins: 0, xp: 25, textResult: "學長喝了珍奶心滿意足，決定放你一馬去睡午覺！" }
-                        ]
-                    }
+                t1200: [{ title: "【一般 X 光】12:00 午休抽測", text: "學長問：「照 Chest PA 時，標準焦距 SID 設定為多少？」", options: [{ text: "A: 挑戰回答：180 cm (1.8公尺)！", cost: 0, isQuizChallenge: true }] }],
+                t1500: [{ title: "【一般 X 光】15:00 夾板立板故障", text: "壁掛式直立架夾板卡住無法升降，現場等候人數開始增加。", options: [{ text: "A: 冷靜手動重置微動開關與磁扣。", cost: 0, coins: 30, xp: 25, textResult: "成功排解故障，排隊人潮迅速消化！" }] }],
+                t1700: [{ title: "【一般 X 光】17:00 順利下班", text: "結束今日一般 X 光高強度拍攝，完成本日打卡。", options: [{ text: "打卡下班領取津貼！", cost: 0, isFinishShift: true }] }]
+            },
+            "急診": {
+                t0800: [
+                    { title: "【急診】08:00 晨間交接", text: "一進急診 X 光室，紅燈警示亮起，推床聲此起彼落。夜班放射師說：「昨晚車禍多，移動式 X 光機都快推到輪胎冒煙了！」", options: [{ text: "A: 檢查移動式 C-arm 與可攜式 X 光機電量。", cost: 0, coins: 20, xp: 20, textResult: "設備整備完成，隨時應付重症打擊！" }] }
                 ],
-                t1500: [
-                    {
-                        title: `【${dept}】15:00 下午緊急事件`,
-                        subtitle: `${dept} 設備與流程`,
-                        text: `下午高峰期，${dept} 的 PACS 系統忽然卡住，影像傳不出去，門口圍滿了等報告的家屬！`,
-                        options: [
-                            { text: "A: 冷靜檢查網路線與服務重啟，並向家屬安撫說明。", cost: 0, coins: 35, xp: 30, textResult: "系統 3 分鐘後恢復，家屬紛紛讚賞你的專業處理！" },
-                            { text: "B: 搞笑：「大家不要急！我們現在改用心靈感應傳送影像！」", cost: 0, coins: 15, xp: 20, textResult: "門口家屬被你逗笑了，現場緊張氣氛頓時緩和下來。" }
-                        ]
-                    }
+                t1100: [
+                    { title: "【急診】11:00 重症 trauma 檢驗", text: "急診送來一位疑似骨盆骨折車禍患者，無法自行移動。", options: [
+                        { text: "A: 協同護理師使用滑墊，在不挪動脊椎下放置 IP 板。", cost: 0, coins: 35, xp: 30, textResult: "專業保護患者脊椎，完美完成 AP 照相！" },
+                        { text: "B: 大喊：「大家保持安全距離，準備倒數拍攝！」", cost: 0, coins: 15, xp: 15, textResult: "指揮有序，現場急診團隊配合默契。" }
+                    ]}
                 ],
-                t1700: [
-                    {
-                        title: `【${dept}】17:00 打卡下班`,
-                        subtitle: `今日結算`,
-                        text: `終於到了 17:00 打卡時間！一整天在 ${dept} 的奮戰順利結束。`,
-                        options: [
-                            { text: "打卡下班！領取今日上班津貼與 XP！", cost: 0, isFinishShift: true }
-                        ]
-                    }
-                ]
-            };
-        });
+                t1200: [{ title: "【急診】12:00 午休問答", text: "急診醫師跑來問：「骨盆 AP 攝影時，雙腳大拇趾要向內旋轉幾度才能看清大轉子？」", options: [{ text: "A: 正確回答：15-20 度！", cost: 0, isQuizChallenge: true }] }],
+                t1500: [{ title: "【急診】15:00 酒醉患者鬧場", text: "滿身酒氣大叔大吵大鬧不想配合拍照，揚言認識院長。", options: [{ text: "A: 保持冷靜，通知急診駐衛警協助安撫。", cost: 0, coins: 30, xp: 25, textResult: "警衛迅速協助控制場面，順利拍攝。" }] }],
+                t1700: [{ title: "【急診】17:00 打卡交接", text: "急診戰場順利完成交接，辛苦了一整天！", options: [{ text: "打卡下班領取津貼！", cost: 0, isFinishShift: true }] }]
+            },
+            "CT": {
+                t0800: [
+                    { title: "【CT】08:00 晨間品管", text: "開啟 128 刷多切面 CT 儀器進行每日 Phantom 水射線校正，確認 HU 值與噪訊比。", options: [{ text: "A: 仔細完成水假體測試並記錄。", cost: 0, coins: 20, xp: 20, textResult: "水質 HU 值剛好為 0，品管完美通過！" }] }
+                ],
+                t1100: [
+                    { title: "【CT】11:00 顯影劑命運熱流", text: "注射靜脈對比劑前，病人緊張問：「聽說打這個藥全身會發熱甚至尿失禁？」", options: [
+                        { text: "A: 溫柔解釋：「血管擴張會有正常溫熱感，不用擔心尿失禁喔！」", cost: 0, coins: 30, xp: 25, textResult: "病人放鬆配合，血管造影影像品質超高！" },
+                        { text: "B: 搞笑說：「熱熱的是正常現象，如果有股暖流...那是心靈的昇華啦！」", cost: 0, coins: 20, xp: 20, textResult: "病人被你逗笑，順利完成自動高壓注藥。" }
+                    ]}
+                ],
+                t1200: [{ title: "【CT】12:00 午休考題", text: "學長問：「CT 影像中，空氣的 Hounsfield Unit (HU) 值通常定義為多少？」", options: [{ text: "A: 正確回答：-1000 HU！", cost: 0, isQuizChallenge: true }] }],
+                t1500: [{ title: "【CT】15:00 心臟冠狀動脈 CTA 挑戰", text: "病人 HR 心跳原本高達 85 bpm，服藥後下降至 58 bpm，準備進行心臟閘門攝影。", options: [{ text: "A: 精準設定 ECG 門閥相位開拍。", cost: 0, coins: 40, xp: 35, textResult: "冠狀動脈無搏動假影，主治醫師讚不絕口！" }] }],
+                t1700: [{ title: "【CT】17:00 交接下班", text: "結束一整天的高壓高精準度 CT 掃描。", options: [{ text: "打卡領取每日獎勵！", cost: 0, isFinishShift: true }] }]
+            },
+            "MRI": {
+                t0800: [
+                    { title: "【MRI】08:00 磁場與金屬安檢", text: "進入 3.0T 超導磁浮掃描室前，檢查是否有人帶鐵磁性物品進入安全區。", options: [{ text: "A: 使用金屬探測棒落實安檢關卡。", cost: 0, coins: 20, xp: 20, textResult: "成功攔截民眾口袋裡的鐵螺絲起子，避免飛彈危機！" }] }
+                ],
+                t1100: [
+                    { title: "【MRI】11:00 幽閉恐懼症克服", text: "病人進到狹窄磁頭孔洞內突然恐慌發作，大喊：「這裡好逼仄我快不能呼吸了！」", options: [
+                        { text: "A: 為病人戴上耳機放周杰倫歌曲，並開啟孔洞通風小風扇。", cost: 0, coins: 30, xp: 30, textResult: "聽著流行音樂，病人放鬆順利做完 30 分鐘腦部 Brain MRI！" },
+                        { text: "B: 隔空安慰：「閉上眼睛，想像你在馬爾地夫海灘曬太陽！」", cost: 0, coins: 20, xp: 20, textResult: "病人深呼吸，成功克服幽閉恐懼！" }
+                    ]}
+                ],
+                t1200: [{ title: "【MRI】12:00 午休抽考", text: "學姐問：「人體 MRI 訊號主要是來自於哪種原子核的自旋共振？」", options: [{ text: "A: 迅速回答：氫原子核 (Hydrogen, 1H)！", cost: 0, isQuizChallenge: true }] }],
+                t1500: [{ title: "【MRI】15:00 T1/T2 序列調整", text: "膝關節膝十字韌帶掃描，需要高解析度 PD-fat sat 序列。", options: [{ text: "A: 精確優化 TR 與 TE 參數值。", cost: 0, coins: 35, xp: 25, textResult: "韌帶撕裂傷清晰可見，報告準確度大幅提升！" }] }],
+                t1700: [{ title: "【MRI】17:00 打卡離場", text: "結束高噪音卻高精密的 MRI 診間任務。", options: [{ text: "打卡領取津貼！", cost: 0, isFinishShift: true }] }]
+            },
+            "Mammo": {
+                t0800: [
+                    { title: "【Mammo】08:00 乳房攝影室開啟", text: "啟動乳房攝影專用機台，確認壓迫板壓力和自動曝光控制 (AEC) 正常。", options: [{ text: "A: 進行壓迫力與影像品質品管測試。", cost: 0, coins: 20, xp: 20, textResult: "機台壓迫感應器極度精準，完成整備。" }] }
+                ],
+                t1100: [
+                    { title: "【Mammo】11:00 壓迫力學與尖叫", text: "婦人做 CC 與 MLO 攝影時，因壓迫板加壓痛得尖叫大喊：「好痛啊！能不能不要壓這麼緊！」", options: [
+                        { text: "A: 溫柔鼓勵：「再忍耐 5 秒鐘，加壓才能把組織展開、減少輻射量與假影喔！」", cost: 0, coins: 35, xp: 30, textResult: "婦人配合忍耐，照出極度微小鈣化點清晰影像！" },
+                        { text: "B: 開壓迫板笑說：「一口氣壓到底最不痛！長痛不如短痛！」", cost: 0, coins: 20, xp: 20, textResult: "快速完成拍攝，婦人鬆了一口氣！" }
+                    ]}
+                ],
+                t1200: [{ title: "【Mammo】12:00 午休問答", text: "學姐問：「乳房攝影 X 光管的靶極與濾片常選用什麼材質組合？」", options: [{ text: "A: 正確回答：鉬 (Mo) / 銠 (Rh)！", cost: 0, isQuizChallenge: true }] }],
+                t1500: [{ title: "【Mammo】15:00 微小鈣化點審視", text: "篩檢發現疑似微小鈣化集群，需要加照局部放大攝影 (Magnification view)。", options: [{ text: "A: 使用放大座與小壓迫板精準定位。", cost: 0, coins: 30, xp: 25, textResult: "成功定位出 0.2mm 微小鈣化！" }] }],
+                t1700: [{ title: "【Mammo】17:00 打卡下班", text: "今日乳房癌篩任務圓滿達成。", options: [{ text: "領取獎勵下班！", cost: 0, isFinishShift: true }] }]
+            },
+            "Sono": {
+                t0800: [
+                    { title: "【Sono】08:00 超音波探頭校正", text: "整備腹部凸型探頭與淺層高頻直線探頭，備妥大量耦合凝膠 (Gel)。", options: [{ text: "A: 補充溫熱凝膠瓶，避免冷冰冰嚇到病人。", cost: 0, coins: 20, xp: 20, textResult: "病人大讚溫熱凝膠超貼心！" }] }
+                ],
+                t1100: [
+                    { title: "【Sono】11:00 膽囊結石與深呼吸", text: "掃描上腹部超音波時，病人腸氣太多擋住膽囊。", options: [
+                        { text: "A: 請病人吸氣憋住，並改變體位為左側斜臥 (LPO)。", cost: 0, coins: 30, xp: 25, textResult: "腸氣移開，清晰掃出膽囊內 0.5cm 強回音結石！" },
+                        { text: "B: 拿起探頭滑來滑去笑說：「這像是在肚皮上玩冰壺遊戲！」", cost: 0, coins: 15, xp: 15, textResult: "氣氛緩和，順利找到聲影 (Acoustic shadow)。" }
+                    ]}
+                ],
+                t1200: [{ title: "【Sono】12:00 午休抽問", text: "醫師問：「醫用診斷超音波的常用頻率範圍大約在哪裡？」", options: [{ text: "A: 正確回答：2 MHz ~ 15 MHz！", cost: 0, isQuizChallenge: true }] }],
+                t1500: [{ title: "【Sono】15:00 多普勒血流測量", text: "進行頸動脈彩色多普勒超音波，測量 Peak Systolic Velocity (PSV)。", options: [{ text: "A: 調整 Doppler angle 角度使其小於 60 度。", cost: 0, coins: 35, xp: 30, textResult: "速度計算精準，發現微小血栓！" }] }],
+                t1700: [{ title: "【Sono】17:00 清理下班", text: "擦拭探頭進行消毒，順利下班。", options: [{ text: "打卡領取津貼！", cost: 0, isFinishShift: true }] }]
+            },
+            "心導管": {
+                t0800: [
+                    { title: "【心導管】08:00 重裝鉛衣穿戴", text: "穿上重達 5 公斤的厚重鉛衣、鉛脖，準備進導管室配合心臟內科醫師開工。", options: [{ text: "A: 確實穿戴鉛衣並配戴個人輻射佩章。", cost: 0, coins: 25, xp: 20, textResult: "防護完備，腰酸背痛也值得！" }] }
+                ],
+                t1100: [
+                    { title: "【心導管】11:00 急性心肌梗塞 (AMI)", text: "急診送來 STEMI 急救病人，心導管室啟動緊急血管支架置放術。", options: [
+                        { text: "A: 精準操控 C-arm 旋轉角度 (LAO/RAO Cranial/Caudal view)。", cost: 0, coins: 40, xp: 35, textResult: "醫師順利定位 LAD 冠狀動脈堵塞點並打通血管！" },
+                        { text: "B: 快速踩踏腳踏板進行動態連續攝影 (Cine)。", cost: 0, coins: 25, xp: 20, textResult: "影像清晰，搶救成功！" }
+                    ]}
+                ],
+                t1200: [{ title: "【心導管】12:00 午休考驗", text: "心內醫師問：「看冠狀動脈左前降支 (LAD) 最常用的經典 C-arm 視角是？」", options: [{ text: "A: 迅速回答：LAO Cranial (左前斜蛛網位)！", cost: 0, isQuizChallenge: true }] }],
+                t1500: [{ title: "【心導管】15:00 鉛玻璃遮蔽與防護", text: "長時間路徑圖 (Roadmap) 踩射中，評估散射劑量。", options: [{ text: "A: 移動懸掛式鉛玻璃擋在醫師與自己身前。", cost: 0, coins: 30, xp: 25, textResult: "有效降低 80% 散射輻射！" }] }],
+                t1700: [{ title: "【心導管】17:00 脫下鉛衣下班", text: "脫下沉重的鉛衣，感覺全身輕盈無比！", options: [{ text: "打卡領取獎勵！", cost: 0, isFinishShift: true }] }]
+            },
+            "牙科": {
+                t0800: [
+                    { title: "【牙科】08:00 牙科全景機校正", text: "校正 Dental Panorama 與 CBCT 機台，確認雷射定位光束線。", options: [{ text: "A: 使用齒科定位假體完成校正。", cost: 0, coins: 20, xp: 15, textResult: "雷射光精準對準門牙切齒點！" }] }
+                ],
+                t1100: [
+                    { title: "【牙科】11:00 全景 Panorama咬合棒", text: "小朋友做全景攝影時，咬不緊塑膠咬合棒而且一直晃動。", options: [
+                        { text: "A: 用趣味話術引導：「咬住小棒棒，像企鵝一樣站好不要動 10 秒喔！」", cost: 0, coins: 25, xp: 20, textResult: "小朋友順利站好，全景齒列無重疊！" },
+                        { text: "B: 誇張示範給小朋友看咬合動作。", cost: 0, coins: 15, xp: 15, textResult: "逗樂小朋友，順利完成拍攝。" }
+                    ]}
+                ],
+                t1200: [{ title: "【牙科】12:00 午休抽問", text: "學長問：「根尖片 (Periapical view) 常用之等分線分角技術 (Bisecting angle) 原理是？」", options: [{ text: "A: 正確回答：X 光垂直於牙齒長軸與底片夾角的角平分線！", cost: 0, isQuizChallenge: true }] }],
+                t1500: [{ title: "【牙科】15:00 植牙 3D CBCT 掃描", text: "進行局部高解析度錐狀射束 CT (CBCT) 掃描以評估齒槽骨高度。", options: [{ text: "A: 設定小 FOV 以降低劑量並提升空間解析度。", cost: 0, coins: 30, xp: 25, textResult: "植牙醫師大讚骨質密度評估極佳！" }] }],
+                t1700: [{ title: "【牙科】17:00 打卡下班", text: "結束一日輕鬆但精細的牙科影像服務。", options: [{ text: "打卡領取津貼！", cost: 0, isFinishShift: true }] }]
+            },
+            "血管攝影": {
+                t0800: [
+                    { title: "【血管攝影】08:00 血管室無菌準備", text: "準備 DSA 數位減影血管攝影室，鋪設無菌單與高壓注藥器裝填。", options: [{ text: "A: 嚴格執行無菌技術裝填對比劑導管。", cost: 0, coins: 25, xp: 20, textResult: "無菌環境準備就緒！" }] }
+                ],
+                t1100: [
+                    { title: "【血管攝影】11:00 肝動脈栓塞 (TAE)", text: "進行肝癌 TACE 栓塞手術，需要 DSA 減影將骨骼影像扣除。", options: [
+                        { text: "A: 提醒病人呼吸暫停，避免 DSA 產生運動偽影 (Pixel shift)。", cost: 0, coins: 35, xp: 30, textResult: "血管減影極為清晰，成功找到腫瘤供血血管！" },
+                        { text: "B: 使用後處理軟體進行 Pixel shift 像素平移修復。", cost: 0, coins: 25, xp: 20, textResult: "完美修復減影偽影！" }
+                    ]}
+                ],
+                t1200: [{ title: "【血管攝影】12:00 午休考驗", text: "醫師問：「DSA 減影技術中，尚未注入對比劑前的第一張 X 光影像稱作？」", options: [{ text: "A: 迅速回答：面罩影像 (Mask image)！", cost: 0, isQuizChallenge: true }] }],
+                t1500: [{ title: "【血管攝影】15:00 腦血管造影 (Brain DSA)", text: "評估顱內動脈瘤，進行 3D 旋轉血管造影 (3D-RA)。", options: [{ text: "A: 設定 C-arm 200 度高速旋轉掃描。", cost: 0, coins: 40, xp: 35, textResult: "重建出精美的 3D 動脈瘤立體結構！" }] }],
+                t1700: [{ title: "【血管攝影】17:00 整理下班", text: "完成本日血管介入手術支援。", options: [{ text: "打卡下班！", cost: 0, isFinishShift: true }] }]
+            },
+            "特殊攝影": {
+                t0800: [
+                    { title: "【特殊攝影】08:00 鋇劑透視機台準備", text: "調製巴里亞 (Barium) 鋇劑懸浮液，測試透視 (Fluoro) 腳踏板與遙控桌。", options: [{ text: "A: 調製適當濃度的鋇劑並確認胃腸攝影參數。", cost: 0, coins: 20, xp: 20, textResult: "懸浮液均勻，設備運作順暢！" }] }
+                ],
+                t1100: [
+                    { title: "【特殊攝影】11:00 上消化道 UGIS 雙重對比", text: "進行 UGI 胃雙重對比攝影，病人喝下產氣顆粒後忍住不打嗝。", options: [
+                        { text: "A: 迅速指導病人滾動體位，使鋇劑均勻塗抹胃壁。", cost: 0, coins: 35, xp: 30, textResult: "胃黏膜雙重對比清晰呈現，發現微小潰瘍！" },
+                        { text: "B: 幽默說：「忍住這一口氣！打出來胃就扁掉囉！」", cost: 0, coins: 20, xp: 20, textResult: "病人成功憋住，順利拍照！" }
+                    ]}
+                ],
+                t1200: [{ title: "【特殊攝影】12:00 午休抽問", text: "學長問：「進行大腸雙重對比灌腸 (Barium Enema) 時，除了鋇劑還需灌入什麼？」", options: [{ text: "A: 迅速回答：空氣 (Air)！", cost: 0, isQuizChallenge: true }] }],
+                t1500: [{ title: "【特殊攝影】15:00 Barium Enema 爆漿危機", text: "大腸灌鋇攝影中，氣球導管差點滑脫。", options: [{ text: "A: 冷靜調整氣球壓力並請病人夾緊。", cost: 0, coins: 40, xp: 30, textResult: "化解爆漿危機，透視攝影順利完成！" }] }],
+                t1700: [{ title: "【特殊攝影】17:00 打卡下班", text: "收拾清理透視室，準備打卡。", options: [{ text: "領取津貼下班！", cost: 0, isFinishShift: true }] }]
+            },
+            "DEXA": {
+                t0800: [
+                    { title: "【DEXA】08:00 骨密儀品質品管", text: "使用脊椎假體 (Spine Phantom) 進行 DEXA 雙能量 X 光骨質密度儀每日校正。", options: [{ text: "A: 進行光束與能量校正測試。", cost: 0, coins: 20, xp: 15, textResult: "偏差值低於 0.5%，校正通過！" }] }
+                ],
+                t1100: [
+                    { title: "【DEXA】11:00 鑽石手鍊與金飾危機", text: "貴婦阿嬤做 腰椎 (L-spine) 與髖骨 (Hip) 骨密，全身戴滿純金項鍊與金條手鍊，堅持不拆。", options: [
+                        { text: "A: 說明雙能量 X 光會被金屬吸收導致 T-score 誤判為超高骨質。", cost: 0, coins: 30, xp: 25, textResult: "貴婦驚覺後配合配合摘下，測出真實骨質！" },
+                        { text: "B: 開玩笑說：「阿嬤！你這項鍊照出來骨頭會變成黃金骨喔！」", cost: 0, coins: 20, xp: 20, textResult: "阿嬤笑開懷，順利拿去保管盒存放。" }
+                    ]}
+                ],
+                t1200: [{ title: "【DEXA】12:00 午休問答", text: "醫師問：「DEXA 報告中，停經後婦女與 50 歲以上男性主要參考什麼數值？」", options: [{ text: "A: 正確回答：T-score (T分數)！", cost: 0, isQuizChallenge: true }] }],
+                t1500: [{ title: "【DEXA】15:00 髖關節內旋定位", text: "測量左側 Femur Neck 骨密度，需要使用定位腳架將雙腳內旋 15 度。", options: [{ text: "A: 使用腳架將雙腳固定內旋。", cost: 0, coins: 25, xp: 20, textResult: "股骨頸完全展平，測量極為精準！" }] }],
+                t1700: [{ title: "【DEXA】17:00 打卡下班", text: "輕鬆優雅地完成一日骨質密度檢測。", options: [{ text: "打卡領取每日津貼！", cost: 0, isFinishShift: true }] }]
+            },
+            "核醫": {
+                t0800: [
+                    { title: "【核醫】08:00 放射藥物調配與熱室", text: "在 Hot lab 熱室鉛玻璃防護罩內，使用 Mo-99/Tc-99m 產生器抽出 Technetium-99m。", options: [{ text: "A: 使用 Dose Calibrator 活度計量測劑量並記錄。", cost: 0, coins: 25, xp: 25, textResult: "活度精確無誤，防護極佳！" }] }
+                ],
+                t1100: [
+                    { title: "【核醫】11:00 FDG-PET/CT 禁食與血糖", text: "做 FDG 全身癌症掃描的病人，報到時血糖值高達 220 mg/dL。", options: [
+                        { text: "A: 評估高血糖競爭影響，依 SOP 請示核醫科醫師處置。", cost: 0, coins: 30, xp: 25, textResult: "專業處理，確保 PET 影像不因高血糖而造影失敗！" },
+                        { text: "B: 提醒病人：「FDG 就是帶有放射線的葡萄糖喔！」", cost: 0, coins: 20, xp: 20, textResult: "病人恍然大悟配合衛教。" }
+                    ]}
+                ],
+                t1200: [{ title: "【核醫】12:00 午休抽考", text: "學姐問：「核醫最常用之 Tc-99m 放射性同位素，其物理半衰期 (t1/2) 約為多少？」", options: [{ text: "A: 迅速回答：6 小時！", cost: 0, isQuizChallenge: true }] }],
+                t1500: [{ title: "【核醫】15:00 Gamma Camera 骨骼掃描 (Bone Scan)", text: "進行 Tc-99m-MDP 全身骨骼掃描，尋找有無癌症骨轉移。", options: [{ text: "A: 設定雙探頭全身掃描速度 15 cm/min。", cost: 0, coins: 35, xp: 30, textResult: "影像品質優良，明確標示熱點 (Hot spot)！" }] }],
+                t1700: [{ title: "【核醫】17:00 廢棄物與打卡", text: "確認衰變廢棄物妥善存放鉛桶，打卡下班。", options: [{ text: "領取津貼下班！", cost: 0, isFinishShift: true }] }]
+            },
+            "RT": {
+                t0800: [
+                    { title: "【RT】08:00 直線加速器每日品管", text: "啟動醫用直線加速器 (LINAC)，使用 Phantom 進行雷射十字光束與能量輸出 Dose 品管。", options: [{ text: "A: 確認雷射對心誤差在 1mm 以內。", cost: 0, coins: 25, xp: 25, textResult: "品管完全符合規範，允許進行治療！" }] }
+                ],
+                t1100: [
+                    { title: "【RT】11:00 IGRT 影像導引擺位", text: "腦瘤病人進行 VMAT 放射治療，使用 Cone-Beam CT (CBCT) 進行擺位對心。", options: [
+                        { text: "A: 比對 CT 模擬影像，進行 6D 側移與旋轉床精細微調 (1.2mm)。", cost: 0, coins: 40, xp: 35, textResult: "擺位誤差極小，精準打擊腫瘤保護正常腦組織！" },
+                        { text: "B: 使用熱塑面具固定頭部並安慰病人。", cost: 0, coins: 25, xp: 20, textResult: "病人十分安心配合治療。" }
+                    ]}
+                ],
+                t1200: [{ title: "【RT】12:00 午休問答", text: "學長問：「放射治療中，為了使劑量分佈更均勻或保護正常組織，常用什麼擋塊技術？」", options: [{ text: "A: 正確回答：多葉准直儀 (MLC, Multileaf Collimator)！", cost: 0, isQuizChallenge: true }] }],
+                t1500: [{ title: "【RT】15:00 模具製作與 CT 定位", text: "新病人前來製作專屬熱塑面具與真空墊 (Vac-Lok)。", options: [{ text: "A: 使用 70 度熱水泡軟面具塑型。", cost: 0, coins: 30, xp: 25, textResult: "模具貼合度完美，完成模擬定位！" }] }],
+                t1700: [{ title: "【RT】17:00 順利下班", text: "完成今日所有癌症放射治療療程。", options: [{ text: "打卡領取每日獎勵！", cost: 0, isFinishShift: true }] }]
+            }
+        };
 
         /* ==========================================================================
-           核心初始化與 Tab 切換
+           3. 遊戲初始化與頁面切換
            ========================================================================== */
         window.onload = function() {
             loadGameState();
@@ -442,25 +550,23 @@
             renderDeptSelectors();
             renderShopItems();
             renderQuestionBankList();
+            renderDynamicQuestionForm();
             updateUIState();
         };
 
         function loadGameState() {
-            const saved = localStorage.getItem('radingo_game_save');
+            const saved = localStorage.getItem('radingo_game_save_v2');
             if (saved) {
                 try {
                     gameState = JSON.parse(saved);
                 } catch(e) {
-                    console.error("Save state corrupt, reset to default", e);
+                    console.error("Save corrupted, fallback", e);
                 }
-            }
-            if (!gameState.questions || gameState.questions.length === 0) {
-                gameState.questions = [...DEFAULT_QUESTIONS];
             }
         }
 
         function saveGameState() {
-            localStorage.setItem('radingo_game_save', JSON.stringify(gameState));
+            localStorage.setItem('radingo_game_save_v2', JSON.stringify(gameState));
             updateUIState();
         }
 
@@ -468,21 +574,21 @@
             document.getElementById('player-coins').innerText = gameState.coins;
             document.getElementById('player-xp').innerText = `${gameState.xp} XP`;
             document.getElementById('player-multiplier').innerText = `x${gameState.multiplier.toFixed(1)}`;
-            
-            // 更新目前科別職等
+            document.getElementById('total-q-count').innerText = gameState.questions.length;
+
             const dept = gameState.selectedDept;
             const shifts = gameState.deptShiftCounts[dept] || 0;
             const rank = getRankTitle(shifts);
-            document.getElementById('department-title').innerText = `當前選擇科別：${dept}`;
+            document.getElementById('department-title').innerText = `選擇科別：${dept}`;
             document.getElementById('department-rank').innerText = `職等：${rank} (班次: ${shifts})`;
-            document.getElementById('dept-start-title').innerText = `準備好進入「${dept}」打卡上班了嗎？`;
+            document.getElementById('dept-start-title').innerText = `準備進入「${dept}」打卡上班嗎？`;
         }
 
         function getRankTitle(count) {
             if (count < 20) return "見習生";
             if (count < 50) return "實習生";
             if (count < 100) return "PGY 放射師";
-            if (count < 200) return "醫事放射師";
+            if (count < 200) return "放射師";
             return "資深帶教放射師";
         }
 
@@ -498,70 +604,298 @@
         }
 
         /* ==========================================================================
-           1. 多鄰國式國考刷題邏輯
+           4. 動態題庫編輯器 (4 種題型 + 配對題 6 組 12 格 + 左右打亂)
+           ========================================================================== */
+        function renderDynamicQuestionForm() {
+            const type = document.getElementById('new-q-type').value;
+            const container = document.getElementById('dynamic-type-fields');
+
+            if (type === 'choice') {
+                container.innerHTML = `
+                    <label class="block text-xs font-bold text-slate-500 mb-1">選項與正確答案 (勾選者為正確選項)</label>
+                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                        <div class="flex items-center gap-2 bg-slate-50 p-2 rounded-xl border border-slate-200">
+                            <input type="radio" name="choice-correct" value="0" checked>
+                            <input type="text" id="choice-opt-0" placeholder="選項 A" class="w-full bg-transparent text-sm focus:outline-none">
+                        </div>
+                        <div class="flex items-center gap-2 bg-slate-50 p-2 rounded-xl border border-slate-200">
+                            <input type="radio" name="choice-correct" value="1">
+                            <input type="text" id="choice-opt-1" placeholder="選項 B" class="w-full bg-transparent text-sm focus:outline-none">
+                        </div>
+                        <div class="flex items-center gap-2 bg-slate-50 p-2 rounded-xl border border-slate-200">
+                            <input type="radio" name="choice-correct" value="2">
+                            <input type="text" id="choice-opt-2" placeholder="選項 C" class="w-full bg-transparent text-sm focus:outline-none">
+                        </div>
+                        <div class="flex items-center gap-2 bg-slate-50 p-2 rounded-xl border border-slate-200">
+                            <input type="radio" name="choice-correct" value="3">
+                            <input type="text" id="choice-opt-3" placeholder="選項 D" class="w-full bg-transparent text-sm focus:outline-none">
+                        </div>
+                    </div>
+                `;
+            } else if (type === 'tf') {
+                container.innerHTML = `
+                    <label class="block text-xs font-bold text-slate-500 mb-1">設定正確解答</label>
+                    <div class="flex gap-4">
+                        <label class="flex items-center gap-2 font-bold text-emerald-600 bg-emerald-50 px-4 py-2.5 rounded-xl border border-emerald-200 cursor-pointer">
+                            <input type="radio" name="tf-correct" value="True" checked> 正確 (True)
+                        </label>
+                        <label class="flex items-center gap-2 font-bold text-rose-600 bg-rose-50 px-4 py-2.5 rounded-xl border border-rose-200 cursor-pointer">
+                            <input type="radio" name="tf-correct" value="False"> 錯誤 (False)
+                        </label>
+                    </div>
+                `;
+            } else if (type === 'matching') {
+                let rowsHtml = '';
+                for (let i = 0; i < 6; i++) {
+                    rowsHtml += `
+                        <div class="grid grid-cols-12 gap-2 items-center">
+                            <span class="col-span-1 text-xs font-bold text-slate-400 text-center">#${i+1}</span>
+                            <input type="text" id="match-left-${i}" placeholder="左側概念 ${i+1}" class="col-span-5 bg-slate-50 border border-slate-200 rounded-lg p-2 text-xs">
+                            <span class="col-span-1 text-center text-slate-400"><i class="fa-solid fa-arrows-left-right"></i></span>
+                            <input type="text" id="match-right-${i}" placeholder="右側對應 ${i+1}" class="col-span-5 bg-slate-50 border border-slate-200 rounded-lg p-2 text-xs">
+                        </div>
+                    `;
+                }
+                container.innerHTML = `
+                    <label class="block text-xs font-bold text-slate-500 mb-1">觀念配對輸入 (6 組 12 格，同一橫列為正確配對對象)</label>
+                    <div class="space-y-2 bg-slate-100 p-3 rounded-2xl border border-slate-200">
+                        ${rowsHtml}
+                    </div>
+                `;
+            } else if (type === 'fill') {
+                container.innerHTML = `
+                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                        <div>
+                            <label class="block text-xs font-bold text-slate-500 mb-1">填空標準正確答案</label>
+                            <input type="text" id="fill-answer" placeholder="例如：180 cm 或 氫原子" class="w-full bg-slate-50 border border-slate-200 rounded-xl p-2.5 text-sm font-bold">
+                        </div>
+                        <div>
+                            <label class="block text-xs font-bold text-slate-500 mb-1">干擾選項 (用逗號隔開)</label>
+                            <input type="text" id="fill-distractors" placeholder="例如：100 cm, 120 cm, 250 cm" class="w-full bg-slate-50 border border-slate-200 rounded-xl p-2.5 text-sm">
+                        </div>
+                    </div>
+                `;
+            }
+        }
+
+        function saveNewQuestion() {
+            const subject = document.getElementById('new-q-subject').value;
+            const type = document.getElementById('new-q-type').value;
+            const title = document.getElementById('new-q-title').value.trim();
+            const explanation = document.getElementById('new-q-explanation').value.trim();
+
+            if (!title) {
+                alert("請填寫題目描述！");
+                return;
+            }
+
+            let qData = {
+                id: Date.now(),
+                subject,
+                type,
+                title,
+                explanation: explanation || "無詳細解析說明。"
+            };
+
+            if (type === 'choice') {
+                const opts = [
+                    document.getElementById('choice-opt-0').value.trim(),
+                    document.getElementById('choice-opt-1').value.trim(),
+                    document.getElementById('choice-opt-2').value.trim(),
+                    document.getElementById('choice-opt-3').value.trim()
+                ];
+                if (opts.some(o => !o)) {
+                    alert("請填滿 4 個選擇題選項！");
+                    return;
+                }
+                const correctIdx = document.querySelector('input[name="choice-correct"]:checked').value;
+                qData.options = opts;
+                qData.answer = opts[correctIdx];
+            } else if (type === 'tf') {
+                qData.answer = document.querySelector('input[name="tf-correct"]:checked').value;
+            } else if (type === 'matching') {
+                let pairs = [];
+                for (let i = 0; i < 6; i++) {
+                    const l = document.getElementById(`match-left-${i}`).value.trim();
+                    const r = document.getElementById(`match-right-${i}`).value.trim();
+                    if (!l || !r) {
+                        alert("配對題必須完整填滿 6 組 (12 格)！");
+                        return;
+                    }
+                    pairs.push({ left: l, right: r });
+                }
+                qData.pairs = pairs;
+            } else if (type === 'fill') {
+                const ans = document.getElementById('fill-answer').value.trim();
+                const distractors = document.getElementById('fill-distractors').value.trim().split(',').map(s => s.trim()).filter(Boolean);
+                if (!ans || distractors.length === 0) {
+                    alert("請填寫填空正確答案與至少一個干擾選項！");
+                    return;
+                }
+                qData.answer = ans;
+                qData.options = [ans, ...distractors].sort(() => 0.5 - Math.random());
+            }
+
+            gameState.questions.push(qData);
+            saveGameState();
+            renderQuestionBankList();
+
+            document.getElementById('new-q-title').value = '';
+            document.getElementById('new-q-explanation').value = '';
+            alert("成功新增題目至系統！");
+        }
+
+        function renderQuestionBankList() {
+            const container = document.getElementById('question-list-container');
+            const subSelect = document.getElementById('new-q-subject');
+
+            subSelect.innerHTML = SUBJECTS.map(s => `<option value="${s.id}">${s.name}</option>`).join('');
+
+            if (gameState.questions.length === 0) {
+                container.innerHTML = `<div class="text-slate-400 text-center py-8 font-bold bg-slate-50 rounded-2xl border border-dashed border-slate-300">目前題庫為空 (0 題)，請由上方表單新增題目或匯入 JSON 檔案！</div>`;
+                return;
+            }
+
+            container.innerHTML = gameState.questions.map((q, idx) => {
+                const subName = SUBJECTS.find(s => s.id === q.subject)?.name || q.subject;
+                const typeNameMap = { choice: '單選題', tf: '是非題', matching: '6組觀念配對', fill: '填空選擇題' };
+                return `
+                    <div class="p-4 rounded-xl border border-slate-200 bg-slate-50 flex items-center justify-between gap-4">
+                        <div class="space-y-1">
+                            <div class="flex items-center gap-2">
+                                <span class="bg-purple-100 text-purple-700 text-xs font-bold px-2 py-0.5 rounded-md">${subName}</span>
+                                <span class="bg-slate-200 text-slate-700 text-xs font-bold px-2 py-0.5 rounded-md">${typeNameMap[q.type]}</span>
+                            </div>
+                            <p class="font-bold text-slate-800 text-sm">${q.title}</p>
+                        </div>
+                        <button onclick="deleteQuestion(${idx})" class="text-red-400 hover:text-red-600 p-2 font-bold text-lg"><i class="fa-solid fa-trash"></i></button>
+                    </div>
+                `;
+            }).join('');
+        }
+
+        function deleteQuestion(index) {
+            if (confirm("確定要刪除這道題目嗎？")) {
+                gameState.questions.splice(index, 1);
+                saveGameState();
+                renderQuestionBankList();
+            }
+        }
+
+        function exportQuestionBank() {
+            if (gameState.questions.length === 0) {
+                alert("目前題庫沒有資料可以匯出！");
+                return;
+            }
+            const dataStr = "data:text/json;charset=utf-8," + encodeURIComponent(JSON.stringify(gameState.questions, null, 2));
+            const dlAnchor = document.createElement('a');
+            dlAnchor.setAttribute("href", dataStr);
+            dlAnchor.setAttribute("download", "radingo_questions.json");
+            document.body.appendChild(dlAnchor);
+            dlAnchor.click();
+            dlAnchor.remove();
+        }
+
+        function importQuestionBank(event) {
+            const fileReader = new FileReader();
+            fileReader.onload = function(e) {
+                try {
+                    const imported = JSON.parse(e.target.result);
+                    if (Array.isArray(imported)) {
+                        gameState.questions = imported;
+                        saveGameState();
+                        renderQuestionBankList();
+                        alert(`成功匯入 ${imported.length} 道題目！`);
+                    } else {
+                        alert("格式錯誤：JSON 必須為題目陣列。");
+                    }
+                } catch(err) {
+                    alert("匯入失敗，請確認檔案格式是否正確。");
+                }
+            };
+            fileReader.readAsText(event.target.files[0]);
+        }
+
+        /* ==========================================================================
+           5. 國考刷題測驗流程與配對打亂 logic
            ========================================================================== */
         let currentQuizQueue = [];
         let currentQuizIndex = 0;
         let activeQuestion = null;
+        let selectedUserAnswer = null;
+
+        // 配對題專用狀態
+        let matchingState = {
+            selectedLeftIdx: null,
+            selectedRightIdx: null,
+            userPairs: {}, // leftOriginalIdx -> rightOriginalIdx
+            shuffledLeft: [],
+            shuffledRight: []
+        };
 
         function renderSubjectCards() {
             const container = document.getElementById('subject-cards-container');
-            container.innerHTML = SUBJECTS.map(s => `
-                <div onclick="startQuizSubject('${s.id}')" class="bg-white p-6 rounded-3xl border-2 border-slate-200 duo-card hover:border-slate-300 cursor-pointer transition transform hover:-translate-y-1 flex flex-col justify-between">
-                    <div class="flex items-center space-x-4 mb-4">
-                        <div class="${s.color} text-white w-14 h-14 rounded-2xl flex items-center justify-center text-2xl shadow-sm">
-                            <i class="fa-solid ${s.icon}"></i>
+            container.innerHTML = SUBJECTS.map(s => {
+                const count = gameState.questions.filter(q => q.subject === s.id).length;
+                return `
+                    <div onclick="startQuizSubject('${s.id}')" class="bg-white p-6 rounded-3xl border-2 border-slate-200 duo-card hover:border-slate-300 cursor-pointer transition transform hover:-translate-y-1 flex flex-col justify-between">
+                        <div class="flex items-center space-x-4 mb-4">
+                            <div class="${s.color} text-white w-14 h-14 rounded-2xl flex items-center justify-center text-2xl shadow-sm">
+                                <i class="fa-solid ${s.icon}"></i>
+                            </div>
+                            <div>
+                                <h3 class="font-extrabold text-slate-800 text-lg">${s.name}</h3>
+                                <span class="text-xs font-bold text-slate-400">目前題數: ${count} 題</span>
+                            </div>
                         </div>
-                        <div>
-                            <h3 class="font-extrabold text-slate-800 text-lg">${s.name}</h3>
-                            <span class="text-xs font-bold text-slate-400">無限刷題</span>
-                        </div>
+                        <button class="w-full bg-slate-100 hover:bg-slate-200 text-slate-700 font-bold py-2.5 rounded-xl text-sm transition">
+                            開始練習
+                        </button>
                     </div>
-                    <button class="w-full bg-slate-100 hover:bg-slate-200 text-slate-700 font-bold py-2.5 rounded-xl text-sm transition">
-                        開始練習
-                    </button>
-                </div>
-            `).join('');
+                `;
+            }).join('');
         }
 
         function startQuizSubject(subjectId) {
             const pool = gameState.questions.filter(q => q.subject === subjectId);
             if (pool.length === 0) {
-                alert("該科目目前沒有題目，請先至「題庫管理員」新增題目！");
+                alert("該科目目前題庫為 0 題！請先至「題庫管理員」手動新增題目或匯入 JSON！");
                 return;
             }
             currentQuizQueue = [...pool].sort(() => 0.5 - Math.random());
             currentQuizIndex = 0;
-            
+
             switchTab('quiz-session');
             document.getElementById('quiz-session').classList.remove('hidden');
             document.getElementById('tab-quiz-map').classList.add('hidden');
-            
+
             showNextQuestion();
         }
 
         function showNextQuestion() {
             if (currentQuizIndex >= currentQuizQueue.length) {
                 confetti({ particleCount: 100, spread: 70, origin: { y: 0.6 } });
-                alert("恭喜完成本單元所有測驗！");
+                alert("恭喜完成本章節所有測驗！");
                 exitQuiz();
                 return;
             }
 
             activeQuestion = currentQuizQueue[currentQuizIndex];
+            selectedUserAnswer = null;
+
             const progressPct = ((currentQuizIndex) / currentQuizQueue.length) * 100;
             document.getElementById('quiz-progress-bar').style.width = `${progressPct}%`;
             document.getElementById('quiz-progress-text').innerText = `${currentQuizIndex + 1} / ${currentQuizQueue.length}`;
 
             const card = document.getElementById('question-card');
-            
-            if (activeQuestion.type === 'choice') {
+
+            if (activeQuestion.type === 'choice' || activeQuestion.type === 'fill') {
                 card.innerHTML = `
-                    <div class="text-xs font-bold text-sky-600 mb-2 uppercase tracking-wide">單選題</div>
+                    <div class="text-xs font-bold text-sky-600 mb-2 uppercase tracking-wide">${activeQuestion.type === 'choice' ? '單選題' : '填空選擇題'}</div>
                     <h2 class="text-xl font-black text-slate-800 mb-6 leading-relaxed">${activeQuestion.title}</h2>
-                    <div class="space-y-3" id="options-container">
+                    <div class="space-y-3">
                         ${activeQuestion.options.map((opt, i) => `
-                            <button onclick="selectOption(this, '${opt}')" class="option-btn w-full text-left p-4 rounded-xl border-2 border-slate-200 font-bold text-slate-700 hover:bg-slate-50 transition">
+                            <button onclick="selectSingleOption(this, '${opt}')" class="option-btn w-full text-left p-4 rounded-xl border-2 border-slate-200 font-bold text-slate-700 hover:bg-slate-50 transition">
                                 <span class="inline-block w-7 h-7 text-center leading-7 rounded-lg bg-slate-100 text-slate-500 mr-3 text-sm">${String.fromCharCode(65 + i)}</span> ${opt}
                             </button>
                         `).join('')}
@@ -569,69 +903,160 @@
                 `;
             } else if (activeQuestion.type === 'tf') {
                 card.innerHTML = `
-                    <div class="text-xs font-bold text-purple-600 mb-2 uppercase tracking-wide">是非題 (True / False)</div>
+                    <div class="text-xs font-bold text-purple-600 mb-2 uppercase tracking-wide">是非題</div>
                     <h2 class="text-xl font-black text-slate-800 mb-6 leading-relaxed">${activeQuestion.title}</h2>
-                    <div class="grid grid-cols-2 gap-4" id="options-container">
-                        <button onclick="selectOption(this, 'True')" class="option-btn p-6 rounded-2xl border-2 border-slate-200 font-black text-green-600 text-center hover:bg-green-50 transition text-lg">
+                    <div class="grid grid-cols-2 gap-4">
+                        <button onclick="selectSingleOption(this, 'True')" class="option-btn p-6 rounded-2xl border-2 border-slate-200 font-black text-emerald-600 text-center hover:bg-emerald-50 transition text-lg">
                             <i class="fa-solid fa-circle-check text-2xl block mb-2"></i> 正確 (True)
                         </button>
-                        <button onclick="selectOption(this, 'False')" class="option-btn p-6 rounded-2xl border-2 border-slate-200 font-black text-red-500 text-center hover:bg-red-50 transition text-lg">
+                        <button onclick="selectSingleOption(this, 'False')" class="option-btn p-6 rounded-2xl border-2 border-slate-200 font-black text-rose-500 text-center hover:bg-rose-50 transition text-lg">
                             <i class="fa-solid fa-circle-xmark text-2xl block mb-2"></i> 錯誤 (False)
                         </button>
                     </div>
                 `;
+            } else if (activeQuestion.type === 'matching') {
+                setupMatchingData();
+                renderMatchingUI();
             }
         }
 
-        let selectedUserAnswer = null;
-
-        function selectOption(btn, value) {
+        function selectSingleOption(btn, val) {
             document.querySelectorAll('.option-btn').forEach(b => {
-                b.classList.remove('border-green-500', 'bg-green-50', 'text-green-700');
+                b.classList.remove('border-emerald-500', 'bg-emerald-50');
                 b.classList.add('border-slate-200');
             });
             btn.classList.remove('border-slate-200');
-            btn.classList.add('border-green-500', 'bg-green-50');
-            selectedUserAnswer = value;
+            btn.classList.add('border-emerald-500', 'bg-emerald-50');
+            selectedUserAnswer = val;
+        }
+
+        /* 觀念配對題左右打亂演算法 */
+        function setupMatchingData() {
+            matchingState.userPairs = {};
+            matchingState.selectedLeftIdx = null;
+            matchingState.selectedRightIdx = null;
+
+            const original = activeQuestion.pairs;
+            // 左右兩欄分別獨立打亂
+            matchingState.shuffledLeft = original.map((p, idx) => ({ text: p.left, originalIdx: idx })).sort(() => 0.5 - Math.random());
+            matchingState.shuffledRight = original.map((p, idx) => ({ text: p.right, originalIdx: idx })).sort(() => 0.5 - Math.random());
+        }
+
+        function renderMatchingUI() {
+            const card = document.getElementById('question-card');
+            card.innerHTML = `
+                <div class="text-xs font-bold text-amber-600 mb-2 uppercase tracking-wide">觀念配對連連看 (請點擊左右欄進行配對)</div>
+                <h2 class="text-lg font-black text-slate-800 mb-4">${activeQuestion.title}</h2>
+                
+                <div class="grid grid-cols-2 gap-4">
+                    <!-- 左欄 -->
+                    <div class="space-y-2">
+                        <div class="text-xs font-bold text-slate-400 text-center">左欄概念</div>
+                        ${matchingState.shuffledLeft.map((item, lIdx) => {
+                            const isPaired = matchingState.userPairs.hasOwnProperty(item.originalIdx);
+                            const isSelected = matchingState.selectedLeftIdx === lIdx;
+                            return `
+                                <button onclick="clickMatchingItem('left', ${lIdx})" class="w-full p-3 rounded-xl border-2 text-xs font-bold text-left transition flex justify-between items-center ${isSelected ? 'border-amber-500 bg-amber-50' : isPaired ? 'border-emerald-500 bg-emerald-50 text-emerald-800' : 'border-slate-200 bg-white hover:bg-slate-50'}">
+                                    <span>${item.text}</span>
+                                    ${isPaired ? '<i class="fa-solid fa-link text-emerald-500"></i>' : ''}
+                                </button>
+                            `;
+                        }).join('')}
+                    </div>
+
+                    <!-- 右欄 -->
+                    <div class="space-y-2">
+                        <div class="text-xs font-bold text-slate-400 text-center">右欄對應</div>
+                        ${matchingState.shuffledRight.map((item, rIdx) => {
+                            const isPaired = Object.values(matchingState.userPairs).includes(item.originalIdx);
+                            const isSelected = matchingState.selectedRightIdx === rIdx;
+                            return `
+                                <button onclick="clickMatchingItem('right', ${rIdx})" class="w-full p-3 rounded-xl border-2 text-xs font-bold text-left transition flex justify-between items-center ${isSelected ? 'border-amber-500 bg-amber-50' : isPaired ? 'border-emerald-500 bg-emerald-50 text-emerald-800' : 'border-slate-200 bg-white hover:bg-slate-50'}">
+                                    <span>${item.text}</span>
+                                    ${isPaired ? '<i class="fa-solid fa-link text-emerald-500"></i>' : ''}
+                                </button>
+                            `;
+                        }).join('')}
+                    </div>
+                </div>
+            `;
+        }
+
+        function clickMatchingItem(side, idx) {
+            if (side === 'left') {
+                matchingState.selectedLeftIdx = idx;
+            } else {
+                matchingState.selectedRightIdx = idx;
+            }
+
+            // 若左右皆選取，進行連線配對
+            if (matchingState.selectedLeftIdx !== null && matchingState.selectedRightIdx !== null) {
+                const lOrig = matchingState.shuffledLeft[matchingState.selectedLeftIdx].originalIdx;
+                const rOrig = matchingState.shuffledRight[matchingState.selectedRightIdx].originalIdx;
+
+                matchingState.userPairs[lOrig] = rOrig;
+                matchingState.selectedLeftIdx = null;
+                matchingState.selectedRightIdx = null;
+            }
+
+            renderMatchingUI();
         }
 
         function checkAnswer() {
-            if (!selectedUserAnswer) {
-                alert("請先選擇一個答案！");
-                return;
+            let isCorrect = false;
+
+            if (activeQuestion.type === 'matching') {
+                const totalPairs = activeQuestion.pairs.length;
+                const userKeys = Object.keys(matchingState.userPairs);
+                if (userKeys.length < totalPairs) {
+                    alert("請完成全部 6 組配對後再檢查答案！");
+                    return;
+                }
+                isCorrect = userKeys.every(k => parseInt(k) === matchingState.userPairs[k]);
+            } else {
+                if (!selectedUserAnswer) {
+                    alert("請先選擇或填寫答案！");
+                    return;
+                }
+                isCorrect = (selectedUserAnswer === activeQuestion.answer);
             }
 
-            const isCorrect = (selectedUserAnswer === activeQuestion.answer);
             const modal = document.getElementById('feedback-modal');
             const icon = document.getElementById('feedback-icon');
             const title = document.getElementById('feedback-title');
             const desc = document.getElementById('feedback-desc');
+            const exp = document.getElementById('feedback-explanation');
 
             if (isCorrect) {
-                const earnedCoins = Math.round(15 * gameState.multiplier);
-                const earnedXp = 20;
+                const earnedCoins = Math.round(20 * gameState.multiplier);
+                const earnedXp = 25;
                 gameState.coins += earnedCoins;
                 gameState.xp += earnedXp;
                 saveGameState();
 
-                modal.className = "fixed inset-x-0 bottom-0 p-6 bg-green-100 border-t-4 border-green-500 transition-transform duration-300 z-50 flex items-center justify-between translate-y-0";
-                icon.className = "w-12 h-12 rounded-full bg-green-500 text-white flex items-center justify-center text-2xl font-bold";
+                modal.className = "fixed inset-x-0 bottom-0 p-6 bg-white border-t-4 border-emerald-500 shadow-2xl transition-transform duration-300 transform translate-y-0 z-50 flex flex-col md:flex-row items-center justify-between gap-4";
+                icon.className = "w-12 h-12 rounded-full bg-emerald-500 text-white flex items-center justify-center text-2xl font-bold shrink-0";
                 icon.innerHTML = `<i class="fa-solid fa-check"></i>`;
-                title.className = "text-xl font-black text-green-800";
-                title.innerText = "答對了！太厲害了！";
+                title.className = "text-xl font-black text-emerald-800";
+                title.innerText = "答對了！非常優秀！";
                 desc.innerText = `獲得 +${earnedCoins} 金幣，+${earnedXp} XP`;
             } else {
-                modal.className = "fixed inset-x-0 bottom-0 p-6 bg-red-100 border-t-4 border-red-500 transition-transform duration-300 z-50 flex items-center justify-between translate-y-0";
-                icon.className = "w-12 h-12 rounded-full bg-red-500 text-white flex items-center justify-center text-2xl font-bold";
+                modal.className = "fixed inset-x-0 bottom-0 p-6 bg-white border-t-4 border-rose-500 shadow-2xl transition-transform duration-300 transform translate-y-0 z-50 flex flex-col md:flex-row items-center justify-between gap-4";
+                icon.className = "w-12 h-12 rounded-full bg-rose-500 text-white flex items-center justify-center text-2xl font-bold shrink-0";
                 icon.innerHTML = `<i class="fa-solid fa-xmark"></i>`;
-                title.className = "text-xl font-black text-red-800";
+                title.className = "text-xl font-black text-rose-800";
                 title.innerText = "答錯了！再接再勵！";
-                desc.innerText = `正確答案是：${activeQuestion.answer}`;
+                desc.innerText = activeQuestion.type === 'matching' ? "正確解答為左右同橫列對應。" : `正確答案為：${activeQuestion.answer}`;
             }
+
+            exp.innerText = `【解析筆記】 ${activeQuestion.explanation}`;
         }
 
-        function continueQuizSession() {
-            document.getElementById('feedback-modal').classList.add('translate-y-full');
+        function confirmAndNextQuestion() {
+            // 清理並隱藏答題反饋 modal
+            const modal = document.getElementById('feedback-modal');
+            modal.classList.add('translate-y-full');
+
             selectedUserAnswer = null;
             currentQuizIndex++;
             showNextQuestion();
@@ -639,11 +1064,12 @@
 
         function exitQuiz() {
             document.getElementById('quiz-session').classList.add('hidden');
+            document.getElementById('feedback-modal').classList.add('translate-y-full');
             switchTab('quiz-map');
         }
 
         /* ==========================================================================
-           2. 職場物語 RPG 邏輯 (5 段時間軸)
+           6. 13 科獨立職場物語 RPG 與 5 段時間軸抽選
            ========================================================================== */
         let shiftStep = 0; // 0: 08:00, 1: 11:00, 2: 12:00, 3: 15:00, 4: 17:00
         let currentShiftScript = null;
@@ -651,7 +1077,7 @@
         function renderDeptSelectors() {
             const container = document.getElementById('dept-selector-grid');
             container.innerHTML = DEPARTMENTS.map(d => `
-                <button onclick="selectDepartment('${d}')" class="p-3 rounded-2xl border-2 ${gameState.selectedDept === d ? 'border-sky-500 bg-sky-50 font-black text-sky-700' : 'border-slate-200 bg-white font-bold text-slate-600'} hover:border-sky-300 transition text-sm text-center">
+                <button onclick="selectDepartment('${d}')" class="p-2.5 rounded-xl border-2 ${gameState.selectedDept === d ? 'border-sky-500 bg-sky-50 font-black text-sky-700' : 'border-slate-200 bg-white font-bold text-slate-600'} hover:border-sky-300 transition text-xs text-center truncate">
                     ${d}
                 </button>
             `).join('');
@@ -672,41 +1098,30 @@
 
         function loadShiftSegment() {
             const dept = gameState.selectedDept;
-            const scripts = DEPARTMENT_SCRIPTS[dept];
+            const scripts = DEPARTMENT_SCRIPTS[dept] || DEPARTMENT_SCRIPTS["一般 X 光"];
             document.getElementById('story-result-box').classList.add('hidden');
 
             let timeTagText = "";
             let pool = [];
 
-            if (shiftStep === 0) {
-                timeTagText = "08:00 晨間打卡";
-                pool = scripts.t0800;
-            } else if (shiftStep === 1) {
-                timeTagText = "11:00 臨床突發事件";
-                pool = scripts.t1100;
-            } else if (shiftStep === 2) {
-                timeTagText = "12:00~13:00 午休抽考";
-                pool = scripts.t1200;
-            } else if (shiftStep === 3) {
-                timeTagText = "15:00 下午緊急狀況";
-                pool = scripts.t1500;
-            } else if (shiftStep === 4) {
-                timeTagText = "17:00 打卡下班";
-                pool = scripts.t1700;
-            }
+            if (shiftStep === 0) { timeTagText = "08:00 晨間打卡"; pool = scripts.t0800; }
+            else if (shiftStep === 1) { timeTagText = "11:00 臨床突發事件"; pool = scripts.t1100; }
+            else if (shiftStep === 2) { timeTagText = "12:00~13:00 午休抽考"; pool = scripts.t1200; }
+            else if (shiftStep === 3) { timeTagText = "15:00 下午緊急狀況"; pool = scripts.t1500; }
+            else if (shiftStep === 4) { timeTagText = "17:00 打卡下班"; pool = scripts.t1700; }
 
             document.getElementById('shift-time-tag').innerText = timeTagText;
             document.getElementById('shift-dept-tag').innerText = `科別: ${dept}`;
+            document.getElementById('shift-step-count').innerText = `時段 ${shiftStep + 1} / 5`;
 
             currentShiftScript = pool[Math.floor(Math.random() * pool.length)];
 
             document.getElementById('story-title').innerText = currentShiftScript.title;
-            document.getElementById('story-subtitle').innerText = currentShiftScript.subtitle;
             document.getElementById('story-text').innerText = currentShiftScript.text;
 
             const optsContainer = document.getElementById('story-options');
             optsContainer.innerHTML = currentShiftScript.options.map((opt, idx) => `
-                <button onclick="handleStoryOption(${idx})" class="w-full text-left p-4 rounded-xl border-2 border-slate-200 hover:border-sky-400 hover:bg-sky-50 font-bold text-slate-700 transition flex justify-between items-center">
+                <button onclick="handleStoryOption(${idx})" class="w-full text-left p-4 rounded-xl border-2 border-slate-200 hover:border-sky-400 hover:bg-sky-50 font-bold text-slate-700 transition flex justify-between items-center text-sm">
                     <span>${opt.text}</span>
                     ${opt.cost > 0 ? `<span class="text-xs bg-amber-100 text-amber-800 font-black px-2 py-1 rounded-lg">需花費 $${opt.cost}</span>` : ''}
                 </button>
@@ -717,7 +1132,7 @@
             const opt = currentShiftScript.options[optIdx];
 
             if (opt.cost && gameState.coins < opt.cost) {
-                alert("你的金幣不足以選擇這個爆笑/開嗆選項！");
+                alert("你的金幣不足以選擇這個選項！");
                 return;
             }
 
@@ -731,21 +1146,21 @@
             const resText = document.getElementById('story-result-text');
 
             if (opt.isQuizChallenge) {
-                resText.innerText = "【午休挑戰】學長給了你一題國考題！成功獲得獎金 $30，+20 XP！";
+                resText.innerText = "【午休挑戰成功】回答正確！獲得獎金 $30，+25 XP！";
                 gameState.coins += 30;
-                gameState.xp += 20;
+                gameState.xp += 25;
                 saveGameState();
             } else if (opt.isFinishShift) {
-                const shiftBonus = 100;
+                const bonus = 100;
                 const xpBonus = 50;
-                gameState.coins += shiftBonus;
+                gameState.coins += bonus;
                 gameState.xp += xpBonus;
 
                 gameState.deptShiftCounts[gameState.selectedDept] = (gameState.deptShiftCounts[gameState.selectedDept] || 0) + 1;
                 saveGameState();
 
                 confetti({ particleCount: 80, spread: 60, origin: { y: 0.6 } });
-                resText.innerText = `🎉 順利完成今天【${gameState.selectedDept}】的班表！獲得每日津貼 +$${shiftBonus}，+${xpBonus} XP！上班次數 +1！`;
+                resText.innerText = `🎉 順利完成今天【${gameState.selectedDept}】的班表！獲得每日津貼 +$${bonus}，+${xpBonus} XP！上班次數 +1！`;
             } else {
                 resText.innerText = opt.textResult || "順利處理突發狀況！";
             }
@@ -755,7 +1170,6 @@
 
         function nextShiftSegment() {
             if (shiftStep >= 4) {
-                // 結束今日班表，返回開端
                 document.getElementById('workplace-timeline-panel').classList.add('hidden');
                 document.getElementById('workplace-start-panel').classList.remove('hidden');
             } else {
@@ -765,7 +1179,7 @@
         }
 
         /* ==========================================================================
-           3. 商店邏輯
+           7. 商店邏輯
            ========================================================================== */
         const SHOP_ITEMS = [
             { id: 'coffee', name: '大杯冰美式', cost: 100, mult: 0.2, desc: '刷題金幣收益增加 20%', icon: 'fa-mug-hot', color: 'text-amber-700' },
@@ -807,127 +1221,6 @@
             saveGameState();
             renderShopItems();
             alert(`成功購買 ${item.name}！收益倍率提升！`);
-        }
-
-        /* ==========================================================================
-           4. 題庫管理員邏輯 (CRUD + JSON 匯入匯出)
-           ========================================================================== */
-        function renderQuestionBankList() {
-            const container = document.getElementById('question-list-container');
-            const subSelect = document.getElementById('new-q-subject');
-
-            subSelect.innerHTML = SUBJECTS.map(s => `<option value="${s.id}">${s.name}</option>`).join('');
-
-            if (gameState.questions.length === 0) {
-                container.innerHTML = `<div class="text-slate-400 text-center py-6">目前題庫為空</div>`;
-                return;
-            }
-
-            container.innerHTML = gameState.questions.map((q, idx) => {
-                const sub = SUBJECTS.find(s => s.id === q.subject)?.name || q.subject;
-                return `
-                    <div class="p-4 rounded-xl border border-slate-200 bg-slate-50 flex items-center justify-between gap-4">
-                        <div class="space-y-1">
-                            <div class="flex items-center gap-2">
-                                <span class="bg-purple-100 text-purple-700 text-xs font-bold px-2 py-0.5 rounded-md">${sub}</span>
-                                <span class="text-xs text-slate-400 font-bold">${q.type === 'choice' ? '單選題' : '是非題'}</span>
-                            </div>
-                            <p class="font-bold text-slate-800 text-sm">${q.title}</p>
-                            <p class="text-xs text-green-600 font-bold">答案: ${q.answer}</p>
-                        </div>
-                        <button onclick="deleteQuestion(${idx})" class="text-red-400 hover:text-red-600 p-2 font-bold text-lg"><i class="fa-solid fa-trash"></i></button>
-                    </div>
-                `;
-            }).join('');
-        }
-
-        function toggleQuestionTypeFields() {
-            const type = document.getElementById('new-q-type').value;
-            const choiceOpts = document.getElementById('choice-options-field');
-            if (type === 'tf') {
-                choiceOpts.classList.add('hidden');
-            } else {
-                choiceOpts.classList.remove('hidden');
-            }
-        }
-
-        function addNewQuestion() {
-            const subject = document.getElementById('new-q-subject').value;
-            const type = document.getElementById('new-q-type').value;
-            const title = document.getElementById('new-q-title').value.trim();
-            const answer = document.getElementById('new-q-answer').value.trim();
-
-            if (!title || !answer) {
-                alert("請填寫題目與答案！");
-                return;
-            }
-
-            let options = [];
-            if (type === 'choice') {
-                for (let i = 0; i < 4; i++) {
-                    const optVal = document.getElementById(`opt-${i}`).value.trim();
-                    if (optVal) options.push(optVal);
-                }
-                if (options.length < 2) {
-                    alert("單選題請至少填寫 2 個選項！");
-                    return;
-                }
-            }
-
-            const newQ = {
-                id: Date.now(),
-                subject,
-                type,
-                title,
-                options: type === 'choice' ? options : [],
-                answer
-            };
-
-            gameState.questions.push(newQ);
-            saveGameState();
-            renderQuestionBankList();
-
-            document.getElementById('new-q-title').value = '';
-            document.getElementById('new-q-answer').value = '';
-            alert("成功新增題目！");
-        }
-
-        function deleteQuestion(index) {
-            if (confirm("確定要刪除這題嗎？")) {
-                gameState.questions.splice(index, 1);
-                saveGameState();
-                renderQuestionBankList();
-            }
-        }
-
-        function exportQuestionBank() {
-            const dataStr = "data:text/json;charset=utf-8," + encodeURIComponent(JSON.stringify(gameState.questions, null, 2));
-            const dlAnchor = document.createElement('a');
-            dlAnchor.setAttribute("href", dataStr);
-            dlAnchor.setAttribute("download", "radingo_question_bank.json");
-            document.body.appendChild(dlAnchor);
-            dlAnchor.click();
-            dlAnchor.remove();
-        }
-
-        function importQuestionBank(event) {
-            const fileReader = new FileReader();
-            fileReader.onload = function(e) {
-                try {
-                    const imported = JSON.parse(e.target.result);
-                    if (Array.isArray(imported)) {
-                        gameState.questions = imported;
-                        saveGameState();
-                        renderQuestionBankList();
-                        alert("成功匯入題庫！");
-                    } else {
-                        alert("JSON 格式不符 (需為陣列)。");
-                    }
-                } catch(err) {
-                    alert("匯入失敗，請確認檔案格式是否正確。");
-                }
-            };
-            fileReader.readAsText(event.target.files[0]);
         }
     </script>
 </body>
