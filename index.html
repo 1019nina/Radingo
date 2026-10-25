@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Radingo - 放射師國考與職場物語 (發言人介面升級版)</title>
+  <title>Radingo - 放射師國考與職場物語 (匯入合併修復版)</title>
   <script src="https://cdn.tailwindcss.com"></script>
   <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
@@ -244,7 +244,7 @@
   <div id="modal-editor" class="hidden fixed inset-0 bg-black/80 backdrop-blur-sm z-50 flex items-center justify-center p-4">
     <div class="bg-slate-900 border border-slate-800 rounded-2xl w-full max-w-md max-h-[85vh] flex flex-col overflow-hidden">
       <div class="p-4 border-b border-slate-800 flex justify-between items-center bg-slate-800/50">
-        <h3 class="font-black text-sm text-white">🛠️ 雙效資料庫與 VN 故事管理員</h3>
+        <h3 class="font-black text-sm text-white">🛠️ 雙效資料庫與 VN 故事管理員 (智慧合併)</h3>
         <button onclick="closeModal('modal-editor')" class="text-slate-400 hover:text-white"><i class="fa-solid fa-xmark text-lg"></i></button>
       </div>
 
@@ -259,7 +259,7 @@
         <!-- SUB-VIEW 1: QUIZ EDITOR -->
         <div id="ed-subview-quiz" class="space-y-4">
           <div class="bg-slate-800 p-3 rounded-xl space-y-2 border border-slate-700">
-            <span class="font-bold text-slate-300">📥 題庫 JSON 匯入/匯出</span>
+            <span class="font-bold text-slate-300">📥 題庫 JSON 匯入 (自動合併 Concat) / 匯出</span>
             <div class="grid grid-cols-2 gap-2">
               <button onclick="exportQuizJSON()" class="py-2 bg-slate-700 hover:bg-slate-600 rounded-lg font-bold">匯出題庫 JSON</button>
               <label class="py-2 bg-sky-600 hover:bg-sky-500 rounded-lg font-bold text-center cursor-pointer">
@@ -344,8 +344,8 @@
         <!-- SUB-VIEW 2: VN STORY EDITOR WITH RANK TIER & DEPT FILTERS -->
         <div id="ed-subview-story" class="hidden space-y-4">
           <div class="bg-slate-800 p-3 rounded-xl space-y-2 border border-slate-700">
-            <span class="font-bold text-sky-400">📖 職場 VN 故事 JSON 檔案管理</span>
-            <p class="text-[11px] text-slate-400">支援多步驟 `steps`、分支 `choice`（含 `resultSteps`）與 5 大職等過濾。</p>
+            <span class="font-bold text-sky-400">📖 職場 VN 故事 JSON 匯入 (自動合併 Concat) / 匯出</span>
+            <p class="text-[11px] text-slate-400">支援多步驟 `steps`、分支 `choice` 與 5 大職等過濾。</p>
             <div class="grid grid-cols-2 gap-2 pt-1">
               <button onclick="exportStoryJSON()" class="py-2 bg-slate-700 hover:bg-slate-600 rounded-lg font-bold">匯出故事庫 JSON</button>
               <label class="py-2 bg-sky-600 hover:bg-sky-500 rounded-lg font-bold text-center cursor-pointer">
@@ -436,7 +436,7 @@
         id: 'xr_tier_0', department: 'xray', rankTier: 0, title: '初入 X 光控制室的震驚',
         steps: [
           { speaker: "學姐", text: "走進 X 光控制室，學姐看著新聞搖頭抱怨：「現在的小年輕騎腳踏車摔斷手，送到醫院第一件事不是哭，是叫同伴拿手機拍照打卡發限動！」" },
-          { speaker: "{name}", text: "「真的假的！{pronoun}覺得現在的年輕人太誇張了吧...」" },
+          { speaker: "{name}", text: "<span>「真的假的！{pronoun}覺得現在的年輕人太誇張了吧...」</span>" },
           {
             type: "choice",
             text: "此時，一位滑板少年推進來骨折的手肘，旁支朋友舉起手機喊著要發限動標記醫院。",
@@ -549,32 +549,32 @@
     };
 
     function loadState() {
-      const q = localStorage.getItem('radingo_v19_q');
+      const q = localStorage.getItem('radingo_v20_q');
       state.questions = q ? JSON.parse(q) : JSON.parse(JSON.stringify(DEFAULT_QUESTIONS));
 
-      const stStore = localStorage.getItem('radingo_v19_stories');
+      const stStore = localStorage.getItem('radingo_v20_stories');
       state.stories = stStore ? JSON.parse(stStore) : JSON.parse(JSON.stringify(DEFAULT_STORY_DATABASE));
 
-      const st = localStorage.getItem('radingo_v19_st'); 
+      const st = localStorage.getItem('radingo_v20_st'); 
       if (st) {
         state.userStats = JSON.parse(st);
       } else {
         setTimeout(() => openModal('modal-profile'), 500);
       }
 
-      const su = localStorage.getItem('radingo_v19_su'); if (su) state.subjectUnits = JSON.parse(su);
-      const uw = localStorage.getItem('radingo_v19_uw'); if (uw) state.unitWorkCounts = JSON.parse(uw);
-      const fl = localStorage.getItem('radingo_v19_fl'); if (fl) state.storyFlags = JSON.parse(fl);
+      const su = localStorage.getItem('radingo_v20_su'); if (su) state.subjectUnits = JSON.parse(su);
+      const uw = localStorage.getItem('radingo_v20_uw'); if (uw) state.unitWorkCounts = JSON.parse(uw);
+      const fl = localStorage.getItem('radingo_v20_fl'); if (fl) state.storyFlags = JSON.parse(fl);
       updateStatsUI();
     }
 
     function saveState() {
-      localStorage.setItem('radingo_v19_q', JSON.stringify(state.questions));
-      localStorage.setItem('radingo_v19_stories', JSON.stringify(state.stories));
-      localStorage.setItem('radingo_v19_st', JSON.stringify(state.userStats));
-      localStorage.setItem('radingo_v19_su', JSON.stringify(state.subjectUnits));
-      localStorage.setItem('radingo_v19_uw', JSON.stringify(state.unitWorkCounts));
-      localStorage.setItem('radingo_v19_fl', JSON.stringify(state.storyFlags));
+      localStorage.setItem('radingo_v20_q', JSON.stringify(state.questions));
+      localStorage.setItem('radingo_v20_stories', JSON.stringify(state.stories));
+      localStorage.setItem('radingo_v20_st', JSON.stringify(state.userStats));
+      localStorage.setItem('radingo_v20_su', JSON.stringify(state.subjectUnits));
+      localStorage.setItem('radingo_v20_uw', JSON.stringify(state.unitWorkCounts));
+      localStorage.setItem('radingo_v20_fl', JSON.stringify(state.storyFlags));
       updateStatsUI();
     }
 
@@ -922,16 +922,14 @@
 
     /* 【發言人與頭像分類引擎】 */
     function getSpeakerCategory(speakerName, playerName) {
-      // 1. 若為玩家自己說話
       if (speakerName === playerName || speakerName.includes(playerName) || speakerName.includes("主角") || speakerName.includes("{name}")) {
         return {
-          title: playerName, // 綠色標籤直接顯示真實名字，絕對不出現「主角」
+          title: playerName,
           bg: 'from-emerald-600 to-teal-700',
           border: 'border-emerald-400',
           icon: state.userStats.gender === 'female' ? 'fa-user-graduate' : 'fa-user-nurse'
         };
       }
-      // 2. 若為旁白或系統
       if (speakerName === "旁白" || speakerName === "系統") {
         return {
           title: speakerName,
@@ -940,41 +938,37 @@
           icon: 'fa-bullhorn'
         };
       }
-      // 3. 若為病人分類
       const patientKeywords = ['病人', '少年', '阿伯', '阿姨', '醉漢', '家屬', '少婦', '伯伯', '患者'];
       const isPatient = patientKeywords.some(kw => speakerName.includes(kw));
       if (isPatient) {
         return {
-          title: speakerName, // 綠色標籤顯示 NPC 身分與職稱
+          title: speakerName,
           bg: 'from-rose-600 to-red-700',
           border: 'border-rose-400',
-          icon: 'fa-user-injured' // 病人專屬頭像 (🤒 / 受傷圖標)
+          icon: 'fa-user-injured'
         };
       }
-      // 4. 若為主管道具/院長
       if (speakerName.includes('主管') || speakerName.includes('主任') || speakerName.includes('院長')) {
         return {
           title: speakerName,
           bg: 'from-purple-600 to-indigo-700',
           border: 'border-purple-400',
-          icon: 'fa-user-tie' // 主管領帶圖標 (👔)
+          icon: 'fa-user-tie'
         };
       }
-      // 5. 若為工程師
       if (speakerName.includes('工程師') || speakerName.includes('維修')) {
         return {
           title: speakerName,
           bg: 'from-amber-600 to-yellow-700',
           border: 'border-amber-400',
-          icon: 'fa-screwdriver-wrench' // 工程師工具圖標 (🔧)
+          icon: 'fa-screwdriver-wrench'
         };
       }
-      // 6. 預設非病人 NPC (學姐、醫師、護理師、老鳥等)
       return {
-        title: speakerName, // 綠色標籤直接顯示 NPC 身分與職稱 (例如：「學姐」、「醫師」)
+        title: speakerName,
         bg: 'from-sky-600 to-blue-700',
         border: 'border-sky-400',
-        icon: 'fa-user-doctor' // 醫護/學姐圖標 (🧑‍⚕️)
+        icon: 'fa-user-doctor'
       };
     }
 
@@ -995,14 +989,11 @@
       const formattedSpeaker = formatVNText(speakerRaw);
       const playerName = state.userStats.name || "實習生A";
 
-      // 取得智慧分類結果（處理綠色標籤與頭像）
       const speakerInfo = getSpeakerCategory(formattedSpeaker, playerName);
 
-      // 【Bug 修正點】：綠色標籤（#vn-speaker-title）嚴格顯示真實名字或正確的 NPC 身分/職稱
       document.getElementById('vn-speaker-title').innerText = speakerInfo.title;
       document.getElementById('vn-speaker-name').innerText = speakerInfo.title;
 
-      // 【動態頭像與樣式切換】
       const avatarContainer = document.getElementById('vn-char-avatar');
       avatarContainer.className = `w-14 h-14 rounded-2xl bg-gradient-to-tr ${speakerInfo.bg} border-2 ${speakerInfo.border} flex items-center justify-center text-white text-2xl shadow-lg`;
       
@@ -1347,14 +1338,23 @@
       const dl = document.createElement('a'); dl.setAttribute("href", dataStr); dl.setAttribute("download", "radingo_questions.json"); dl.click();
     }
 
+    /* 【重大修正】：題庫匯入改為合併 (Concat) 而非整包覆蓋 */
     function importQuizJSON(e) {
       const file = e.target.files[0]; if (!file) return;
       const r = new FileReader();
       r.onload = function(evt) {
         try {
-          state.questions = JSON.parse(evt.target.result); saveState();
-          alert(`🎉 成功匯入 ${state.questions.length} 題題庫！`);
-          renderEditorQuestionList(); renderQuizMap();
+          const imported = JSON.parse(evt.target.result);
+          if (!Array.isArray(imported)) { alert('匯入失敗：題庫 JSON 格式必須為陣列！'); return; }
+          
+          // Concat 合併新舊題目
+          state.questions = state.questions.concat(imported);
+          saveState();
+
+          alert(`🎉 成功合併匯入 ${imported.length} 題！目前題庫總計 ${state.questions.length} 題。`);
+          renderEditorQuestionList(); 
+          renderQuizMap();
+          e.target.value = ''; // 清空檔案選擇器
         } catch (err) { alert('匯入失敗：JSON 格式錯誤！'); }
       };
       r.readAsText(file);
@@ -1365,17 +1365,22 @@
       const dl = document.createElement('a'); dl.setAttribute("href", dataStr); dl.setAttribute("download", "radingo_stories.json"); dl.click();
     }
 
+    /* 【重大修正】：故事匯入改為合併 (Concat) 而非整包覆蓋 */
     function importStoryJSON(e) {
       const file = e.target.files[0]; if (!file) return;
       const r = new FileReader();
       r.onload = function(evt) {
         try {
           const imported = JSON.parse(evt.target.result);
-          if (!Array.isArray(imported)) { alert('匯入失敗：JSON 格式必須為陣列！'); return; }
-          state.stories = imported;
+          if (!Array.isArray(imported)) { alert('匯入失敗：故事 JSON 格式必須為陣列！'); return; }
+          
+          // Concat 合併新舊劇本
+          state.stories = state.stories.concat(imported);
           saveState();
-          alert(`🎉 成功匯入 ${state.stories.length} 篇 VN 職場故事劇本！`);
+
+          alert(`🎉 成功合併匯入 ${imported.length} 篇 VN 職場故事劇本！目前故事庫總計 ${state.stories.length} 篇。`);
           renderEditorStoryList();
+          e.target.value = ''; // 清空檔案選擇器
         } catch (err) { alert('匯入失敗：JSON 格式錯誤！'); }
       };
       r.readAsText(file);
