@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Radingo - 放射師國考與職場物語 (匯入合併修復版)</title>
+  <title>Radingo - 放射師國考與職場物語 (立繪完美整合版)</title>
   <script src="https://cdn.tailwindcss.com"></script>
   <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
@@ -148,10 +148,15 @@
 
   </main>
 
-  <!-- VN STORY OVERLAY (智慧說話者與動態頭像系統) -->
+  <!-- VN STORY OVERLAY (支援主角立繪與智慧頭像系統) -->
   <div id="vn-modal" class="hidden fixed inset-0 bg-black/90 backdrop-blur-md z-50 flex flex-col justify-end p-4">
-    <div class="max-w-md w-full mx-auto space-y-3 vn-animate pb-6">
+    <div class="max-w-md w-full mx-auto space-y-3 vn-animate pb-6 relative">
       
+      <!-- 🎯 主角專屬半身立繪容器（完美貼齊對話框左上方，對話框上緣微微覆蓋立繪下緣） -->
+      <div id="player-portrait-container" class="absolute -top-36 left-4 z-25 pointer-events-none hidden transition-all duration-300">
+        <img id="player-portrait-img" src="" alt="玩家立繪" class="w-32 h-36 object-cover object-top rounded-2xl border-2 border-emerald-400 shadow-2xl bg-slate-900/80">
+      </div>
+
       <!-- Character Header with Dynamic Avatar & Green Tag -->
       <div class="flex items-end justify-between px-2">
         <div class="flex items-center space-x-3">
@@ -169,7 +174,7 @@
       </div>
 
       <!-- Dialogue Box -->
-      <div onclick="handleVNDialogueClick()" class="bg-slate-900/95 border-2 border-slate-700 rounded-2xl p-5 shadow-2xl space-y-4 relative overflow-hidden cursor-pointer hover:border-sky-500 transition-colors">
+      <div onclick="handleVNDialogueClick()" class="bg-slate-900/95 border-2 border-slate-700 rounded-2xl p-5 shadow-2xl space-y-4 relative overflow-hidden cursor-pointer hover:border-sky-500 transition-colors z-20">
         <div class="absolute -right-6 -bottom-6 text-slate-800 text-8xl pointer-events-none">
           <i class="fa-solid fa-quote-right"></i>
         </div>
@@ -924,14 +929,13 @@
     function getSpeakerCategory(speakerName, playerName) {
       if (speakerName === playerName || speakerName.includes(playerName) || speakerName.includes("主角") || speakerName.includes("{name}")) {
         return {
-          title: playerName,
-          bg: 'from-emerald-600 to-teal-700',
-          border: 'border-emerald-400',
-          icon: state.userStats.gender === 'female' ? 'fa-user-graduate' : 'fa-user-nurse'
+          isPlayer: true,
+          title: playerName
         };
       }
       if (speakerName === "旁白" || speakerName === "系統") {
         return {
+          isPlayer: false,
           title: speakerName,
           bg: 'from-slate-700 to-slate-800',
           border: 'border-slate-500',
@@ -942,6 +946,7 @@
       const isPatient = patientKeywords.some(kw => speakerName.includes(kw));
       if (isPatient) {
         return {
+          isPlayer: false,
           title: speakerName,
           bg: 'from-rose-600 to-red-700',
           border: 'border-rose-400',
@@ -950,6 +955,7 @@
       }
       if (speakerName.includes('主管') || speakerName.includes('主任') || speakerName.includes('院長')) {
         return {
+          isPlayer: false,
           title: speakerName,
           bg: 'from-purple-600 to-indigo-700',
           border: 'border-purple-400',
@@ -958,6 +964,7 @@
       }
       if (speakerName.includes('工程師') || speakerName.includes('維修')) {
         return {
+          isPlayer: false,
           title: speakerName,
           bg: 'from-amber-600 to-yellow-700',
           border: 'border-amber-400',
@@ -965,6 +972,7 @@
         };
       }
       return {
+        isPlayer: false,
         title: speakerName,
         bg: 'from-sky-600 to-blue-700',
         border: 'border-sky-400',
@@ -991,14 +999,24 @@
 
       const speakerInfo = getSpeakerCategory(formattedSpeaker, playerName);
 
+      const portraitContainer = document.getElementById('player-portrait-container');
+      const portraitImg = document.getElementById('player-portrait-img');
+      const standardAvatar = document.getElementById('vn-char-avatar');
+
+      // 🎯 核心立繪切換邏輯：若為玩家發言，隱藏綠色小頭貼，顯示大張半身立繪
+      if (speakerInfo.isPlayer) {
+        portraitContainer.classList.remove('hidden');
+        standardAvatar.classList.add('hidden');
+        portraitImg.src = state.userStats.gender === 'female' ? 'female_portrait.jpg' : 'male_portrait.jpg';
+      } else {
+        portraitContainer.classList.add('hidden');
+        standardAvatar.classList.remove('hidden');
+        standardAvatar.className = `w-14 h-14 rounded-2xl bg-gradient-to-tr ${speakerInfo.bg} border-2 ${speakerInfo.border} flex items-center justify-center text-white text-2xl shadow-lg`;
+        document.getElementById('vn-avatar-icon').className = `fa-solid ${speakerInfo.icon}`;
+      }
+
       document.getElementById('vn-speaker-title').innerText = speakerInfo.title;
       document.getElementById('vn-speaker-name').innerText = speakerInfo.title;
-
-      const avatarContainer = document.getElementById('vn-char-avatar');
-      avatarContainer.className = `w-14 h-14 rounded-2xl bg-gradient-to-tr ${speakerInfo.bg} border-2 ${speakerInfo.border} flex items-center justify-center text-white text-2xl shadow-lg`;
-      
-      const avatarIcon = document.getElementById('vn-avatar-icon');
-      avatarIcon.className = `fa-solid ${speakerInfo.icon}`;
 
       if (step.type === 'choice') {
         document.getElementById('vn-speaker-title').innerText = "抉擇時刻";
