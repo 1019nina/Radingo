@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Radingo - 放射師國考與職場物語 </title>
+  <title>Radingo - 放射師國考與職場物語 (無框放大立繪版)</title>
   <script src="https://cdn.tailwindcss.com"></script>
   <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
@@ -148,13 +148,15 @@
 
   </main>
 
-  <!-- VN STORY OVERLAY (支援主角立繪與智慧頭像系統) -->
+  <!-- VN STORY OVERLAY (無框放大立繪系統) -->
   <div id="vn-modal" class="hidden fixed inset-0 bg-black/90 backdrop-blur-md z-50 flex flex-col justify-end p-4">
     <div class="max-w-md w-full mx-auto space-y-3 vn-animate pb-6 relative">
       
-      <!-- 🎯 主角專屬半身立繪容器（完美貼齊對話框左上方，對話框上緣微微覆蓋立繪下緣） -->
-      <div id="player-portrait-container" class="absolute -top-36 left-4 z-25 pointer-events-none hidden transition-all duration-300">
-        <img id="player-portrait-img" src="" alt="玩家立繪" class="w-32 h-36 object-cover object-top rounded-2xl border-2 border-emerald-400 shadow-2xl bg-slate-900/80">
+      <!-- 🎯 主角專屬放大、無外框半身立繪容器（貼齊對話框左上方） -->
+      <div id="player-portrait-container" class="absolute -top-48 left-2 z-25 pointer-events-none hidden transition-all duration-300">
+        <img id="player-portrait-img" src="" alt="玩家立繪" 
+             onerror="this.onerror=null; this.src='data:image/svg+xml;charset=utf-8,%3Csvg xmlns=\'http://www.w3.org/2000/svg\' width=\'160\' height=\'192\' viewBox=\'0 0 160 192\'%3E%3Crect width=\'160\' height=\'192\' fill=\'none\'/%3E%3Ctext x=\'50%25\' y=\'50%25\' dominant-baseline=\'middle\' text-anchor=\'middle\' fill=\'%23ef4444\' font-size=\'12\' font-family=\'sans-serif\'%3E找不到圖片%3C/text%3E%3C/svg%3E';"
+             class="w-40 h-48 object-cover object-top drop-shadow-2xl">
       </div>
 
       <!-- Character Header with Dynamic Avatar & Green Tag -->
@@ -441,7 +443,7 @@
         id: 'xr_tier_0', department: 'xray', rankTier: 0, title: '初入 X 光控制室的震驚',
         steps: [
           { speaker: "學姐", text: "走進 X 光控制室，學姐看著新聞搖頭抱怨：「現在的小年輕騎腳踏車摔斷手，送到醫院第一件事不是哭，是叫同伴拿手機拍照打卡發限動！」" },
-          { speaker: "{name}", text: "<span>「真的假的！{pronoun}覺得現在的年輕人太誇張了吧...」</span>" },
+          { speaker: "{name}", text: "<span><span>「真的假的！{pronoun}覺得現在的年輕人太誇張了吧...」</span>" },
           {
             type: "choice",
             text: "此時，一位滑板少年推進來骨折的手肘，旁支朋友舉起手機喊著要發限動標記醫院。",
@@ -1003,7 +1005,7 @@
       const portraitImg = document.getElementById('player-portrait-img');
       const standardAvatar = document.getElementById('vn-char-avatar');
 
-      // 🎯 核心立繪切換邏輯：若為玩家發言，隱藏綠色小頭貼，顯示大張半身立繪
+      // 🎯 核心立繪切換邏輯：若為玩家發言，隱藏綠色小頭貼，顯示放大且無框的半身立繪
       if (speakerInfo.isPlayer) {
         portraitContainer.classList.remove('hidden');
         standardAvatar.classList.add('hidden');
@@ -1356,7 +1358,6 @@
       const dl = document.createElement('a'); dl.setAttribute("href", dataStr); dl.setAttribute("download", "radingo_questions.json"); dl.click();
     }
 
-    /* 【重大修正】：題庫匯入改為合併 (Concat) 而非整包覆蓋 */
     function importQuizJSON(e) {
       const file = e.target.files[0]; if (!file) return;
       const r = new FileReader();
@@ -1364,15 +1365,12 @@
         try {
           const imported = JSON.parse(evt.target.result);
           if (!Array.isArray(imported)) { alert('匯入失敗：題庫 JSON 格式必須為陣列！'); return; }
-          
-          // Concat 合併新舊題目
           state.questions = state.questions.concat(imported);
           saveState();
-
           alert(`🎉 成功合併匯入 ${imported.length} 題！目前題庫總計 ${state.questions.length} 題。`);
           renderEditorQuestionList(); 
           renderQuizMap();
-          e.target.value = ''; // 清空檔案選擇器
+          e.target.value = '';
         } catch (err) { alert('匯入失敗：JSON 格式錯誤！'); }
       };
       r.readAsText(file);
@@ -1383,7 +1381,6 @@
       const dl = document.createElement('a'); dl.setAttribute("href", dataStr); dl.setAttribute("download", "radingo_stories.json"); dl.click();
     }
 
-    /* 【重大修正】：故事匯入改為合併 (Concat) 而非整包覆蓋 */
     function importStoryJSON(e) {
       const file = e.target.files[0]; if (!file) return;
       const r = new FileReader();
@@ -1391,14 +1388,11 @@
         try {
           const imported = JSON.parse(evt.target.result);
           if (!Array.isArray(imported)) { alert('匯入失敗：故事 JSON 格式必須為陣列！'); return; }
-          
-          // Concat 合併新舊劇本
           state.stories = state.stories.concat(imported);
           saveState();
-
           alert(`🎉 成功合併匯入 ${imported.length} 篇 VN 職場故事劇本！目前故事庫總計 ${state.stories.length} 篇。`);
           renderEditorStoryList();
-          e.target.value = ''; // 清空檔案選擇器
+          e.target.value = '';
         } catch (err) { alert('匯入失敗：JSON 格式錯誤！'); }
       };
       r.readAsText(file);
