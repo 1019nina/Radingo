@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Radingo - 放射師國考與職場物語</title>
+  <title>Radingo - 放射師國考與職場物語 (桌面立繪上傳完美版)</title>
   <script src="https://cdn.tailwindcss.com"></script>
   <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
@@ -34,25 +34,7 @@
 </head>
 <body class="min-h-screen flex flex-col justify-between">
 
-  <!-- 1. 語言選擇初始遮罩畫面 -->
-  <div id="modal-lang-select" class="fixed inset-0 bg-slate-950 z-50 flex items-center justify-center p-4">
-    <div class="bg-slate-900 border border-slate-800 rounded-3xl w-full max-w-sm p-6 space-y-6 text-center shadow-2xl">
-      <div class="space-y-2">
-        <span class="text-3xl font-black text-emerald-400">Radingo</span>
-        <h2 id="lang-title" class="text-base font-bold text-white">請選擇您的遊戲語言 / Select Language</h2>
-      </div>
-      <div class="grid grid-cols-2 gap-3">
-        <button onclick="setLanguageAndProceed('zh')" class="py-4 bg-emerald-500 hover:bg-emerald-400 text-slate-950 font-black rounded-2xl text-sm btn-duo">
-          🇹🇼 繁體中文
-        </button>
-        <button onclick="setLanguageAndProceed('en')" class="py-4 bg-sky-500 hover:bg-sky-400 text-slate-950 font-black rounded-2xl text-sm btn-duo">
-          🇬🇧 English
-        </button>
-      </div>
-    </div>
-  </div>
-
-  <!-- TOP HEADER -->
+  <!-- TOP HEADER (金錢與身分設定按鈕) -->
   <header class="sticky top-0 z-40 bg-slate-900/90 backdrop-blur border-b border-slate-800 px-4 py-3">
     <div class="max-w-md mx-auto flex justify-between items-center">
       <div class="flex items-center space-x-2">
@@ -63,10 +45,6 @@
       </div>
 
       <div class="flex items-center space-x-3 font-extrabold text-sm">
-        <!-- 語言切換常駐按鈕 -->
-        <button onclick="toggleLanguage()" class="bg-slate-800 hover:bg-slate-700 text-amber-300 text-xs px-2.5 py-1 rounded-lg border border-slate-700 font-bold">
-          🌐 <span id="current-lang-badge">繁體中文</span>
-        </button>
         <div class="flex items-center text-amber-400" title="累積金錢">
           <i class="fa-solid fa-coins mr-1.5"></i>
           $<span id="stat-money">200</span>
@@ -79,13 +57,13 @@
   <div class="bg-slate-900 border-b border-slate-800 px-4 py-2 sticky top-[57px] z-30">
     <div class="max-w-md mx-auto flex rounded-xl bg-slate-800 p-1">
       <button id="tab-quiz" onclick="switchTab('quiz')" class="flex-1 py-2 rounded-lg font-black text-xs text-center bg-emerald-500 text-slate-950 shadow">
-        🎯 <span data-i18n="nav_quiz">國考刷題區</span>
+        🎯 國考刷題區
       </button>
       <button id="tab-career" onclick="switchTab('career')" class="flex-1 py-2 rounded-lg font-black text-xs text-center text-slate-400 hover:text-slate-200">
-        🏥 <span data-i18n="nav_career">職場物語 RPG</span>
+        🏥 職場物語 RPG
       </button>
       <button id="tab-shop" onclick="switchTab('shop')" class="flex-1 py-2 rounded-lg font-black text-xs text-center text-slate-400 hover:text-slate-200">
-        🛍️ <span data-i18n="nav_shop">裝備商店</span>
+        🛍️ 裝備商店
       </button>
     </div>
   </div>
@@ -97,10 +75,11 @@
     <div id="view-quiz" class="space-y-4">
       <div class="bg-gradient-to-r from-emerald-950 to-slate-900 border border-emerald-800/60 rounded-2xl p-4">
         <h2 class="text-base font-black text-white flex items-center gap-2">
-          <i class="fa-solid fa-route text-emerald-400"></i> <span data-i18n="quiz_map_title">單元地圖（無體力限制）</span>
+          <i class="fa-solid fa-route text-emerald-400"></i> 單元地圖（無體力限制）
         </h2>
-        <p class="text-xs text-slate-400 mt-1" data-i18n="quiz_map_desc">初始題庫包含各科國考精選題！</p>
+        <p class="text-xs text-slate-400 mt-1">初始題庫包含各科國考精選題！亦可至右下角「資料庫管理」新增或匯入 JSON！</p>
       </div>
+
       <div id="subject-node-container" class="space-y-4"></div>
     </div>
 
@@ -108,12 +87,15 @@
     <div id="quiz-overlay" class="hidden fixed inset-0 bg-slate-950 z-50 p-4 flex flex-col justify-between overflow-y-auto">
       <div class="max-w-md w-full mx-auto space-y-4 flex-1">
         <div class="flex items-center justify-between gap-3 pt-2">
-          <button onclick="exitQuizSession()" class="text-slate-400 hover:text-white text-xl p-1"><i class="fa-solid fa-xmark"></i></button>
+          <button onclick="exitQuizSession()" class="text-slate-400 hover:text-white text-xl p-1">
+            <i class="fa-solid fa-xmark"></i>
+          </button>
           <div class="flex-1 bg-slate-800 h-3 rounded-full overflow-hidden border border-slate-700">
             <div id="quiz-progress-bar" class="bg-emerald-500 h-full w-0 transition-all duration-300"></div>
           </div>
           <span id="quiz-step-counter" class="text-xs font-black text-slate-400">1/5</span>
         </div>
+
         <div class="bg-slate-900 border-2 border-slate-800 rounded-2xl p-4 space-y-3 shadow-xl">
           <span id="q-type-badge" class="bg-blue-900/60 text-blue-300 text-[10px] font-bold px-2 py-0.5 rounded border border-blue-700">選擇題</span>
           <h3 id="q-text" class="text-sm font-bold text-slate-100 leading-relaxed">題目敘述...</h3>
@@ -121,8 +103,10 @@
             <img id="q-img" src="" class="w-full object-cover">
           </div>
         </div>
+
         <div id="q-interactive-zone" class="space-y-2.5"></div>
       </div>
+
       <div class="max-w-md w-full mx-auto pt-3">
         <div id="feedback-panel" class="hidden p-3 rounded-xl border mb-3 space-y-2">
           <div class="flex items-center gap-2">
@@ -131,16 +115,22 @@
           </div>
           <p id="feedback-exp" class="text-xs opacity-90 leading-snug"></p>
         </div>
-        <button id="btn-submit-answer" onclick="handleAnswerAction()" class="w-full py-3.5 rounded-xl font-black text-sm btn-duo btn-green" data-i18n="btn_check">檢查答案</button>
+        <button id="btn-submit-answer" onclick="handleAnswerAction()" class="w-full py-3.5 rounded-xl font-black text-sm btn-duo btn-green">
+          檢查答案
+        </button>
       </div>
     </div>
 
     <!-- VIEW 2: CAREER STORY MAP -->
     <div id="view-career" class="hidden space-y-4">
       <div class="bg-slate-900 border border-slate-800 rounded-2xl p-4 text-center space-y-1">
-        <span class="text-xs text-emerald-400 font-extrabold bg-emerald-950 px-2.5 py-0.5 rounded-full border border-emerald-800" data-i18n="career_badge">🏥 5大職等 RPG 故事區</span>
-        <h2 class="text-base font-black text-white mt-1" data-i18n="career_title">選擇指定科別，系統自動依當前累積職等嚴格抽樣劇本！</h2>
+        <span class="text-xs text-emerald-400 font-extrabold bg-emerald-950 px-2.5 py-0.5 rounded-full border border-emerald-800">🏥 5大職等 RPG 故事區 (嚴格職等過濾)</span>
+        <h2 class="text-base font-black text-white mt-1">選擇指定科別，系統自動依當前累積職等嚴格抽樣劇本！</h2>
+        <p class="text-[11px] text-slate-400 mt-1">
+          晉升制度：0~19(見習生) ➔ 20~49(實習生) ➔ 50~99(PGY) ➔ 100~199(放射師) ➔ 200+(資深帶教老鳥)
+        </p>
       </div>
+
       <div id="career-units-list" class="space-y-3"></div>
     </div>
 
@@ -148,21 +138,26 @@
     <div id="view-shop" class="hidden space-y-4">
       <div class="bg-slate-900 border border-slate-800 rounded-2xl p-4">
         <h2 class="text-base font-black text-amber-400 flex items-center gap-2">
-          <i class="fa-solid fa-store"></i> <span data-i18n="shop_title">裝備升級商店</span>
+          <i class="fa-solid fa-store"></i> 裝備升級商店
         </h2>
-        <p class="text-xs text-slate-400 mt-1" data-i18n="shop_desc">購買專屬裝備與美式咖啡，提升刷題與職場金幣收益！</p>
+        <p class="text-xs text-slate-400 mt-1">購買專屬裝備與美式咖啡，提升刷題與職場金幣收益！</p>
       </div>
+
       <div id="shop-items-container" class="space-y-3"></div>
     </div>
 
   </main>
 
-  <!-- VN STORY OVERLAY -->
+  <!-- VN STORY OVERLAY (無框放大立繪系統) -->
   <div id="vn-modal" class="hidden fixed inset-0 bg-black/90 backdrop-blur-md z-50 flex flex-col justify-end p-4">
     <div class="max-w-md w-full mx-auto space-y-3 vn-animate pb-6 relative">
+      
+      <!-- 🎯 主角專屬放大、無外框半身立繪容器（貼齊對話框左上方） -->
       <div id="player-portrait-container" class="absolute -top-48 left-2 z-25 pointer-events-none hidden transition-all duration-300">
         <img id="player-portrait-img" src="" alt="玩家立繪" class="w-40 h-48 object-cover object-top drop-shadow-2xl">
       </div>
+
+      <!-- Character Header with Dynamic Avatar & Green Tag -->
       <div class="flex items-end justify-between px-2">
         <div class="flex items-center space-x-3">
           <div id="vn-char-avatar" class="w-14 h-14 rounded-2xl bg-gradient-to-tr from-sky-600 to-indigo-700 border-2 border-sky-400 flex items-center justify-center text-white text-2xl shadow-lg">
@@ -173,15 +168,26 @@
             <h3 id="vn-story-title" class="text-base font-black text-white mt-0.5">職場物語</h3>
           </div>
         </div>
-        <button onclick="closeVNStory()" class="text-slate-400 hover:text-white px-2 py-1 text-xs bg-slate-800 rounded-lg border border-slate-700" data-i18n="btn_exit">退出職場</button>
+        <button onclick="closeVNStory()" class="text-slate-400 hover:text-white px-2 py-1 text-xs bg-slate-800 rounded-lg border border-slate-700">
+          退出職場
+        </button>
       </div>
+
+      <!-- Dialogue Box -->
       <div onclick="handleVNDialogueClick()" class="bg-slate-900/95 border-2 border-slate-700 rounded-2xl p-5 shadow-2xl space-y-4 relative overflow-hidden cursor-pointer hover:border-sky-500 transition-colors z-20">
-        <div class="absolute -right-6 -bottom-6 text-slate-800 text-8xl pointer-events-none"><i class="fa-solid fa-quote-right"></i></div>
+        <div class="absolute -right-6 -bottom-6 text-slate-800 text-8xl pointer-events-none">
+          <i class="fa-solid fa-quote-right"></i>
+        </div>
+
         <div id="vn-content-area" class="space-y-2 relative z-10 min-h-[90px]">
           <div id="vn-speaker-name" class="text-xs font-bold text-sky-400">系統</div>
-          <p id="vn-dialogue-text" class="text-sm text-slate-100 font-medium leading-relaxed">劇本讀取中...</p>
+          <p id="vn-dialogue-text" class="text-sm text-slate-100 font-medium leading-relaxed">
+            劇本讀取中...
+          </p>
         </div>
-        <div class="text-[10px] text-slate-400 text-right animate-pulse" data-i18n="vn_click_tip">▼ 點擊對話框繼續</div>
+
+        <div class="text-[10px] text-slate-400 text-right animate-pulse">▼ 點擊對話框繼續</div>
+
         <div id="vn-choices-area" class="space-y-2 pt-2 relative z-10" onclick="event.stopPropagation()"></div>
       </div>
     </div>
@@ -190,83 +196,106 @@
   <!-- FIXED FOOTER -->
   <footer class="fixed bottom-0 left-0 right-0 bg-slate-900 border-t border-slate-800 py-2.5 px-4 z-40">
     <div class="max-w-md mx-auto flex justify-around text-center text-xs font-bold text-slate-400">
-      <button onclick="switchTab('quiz')" class="hover:text-emerald-400 flex flex-col items-center"><i class="fa-solid fa-gamepad text-base"></i><span class="text-[10px] mt-1" data-i18n="nav_quiz">國考刷題</span></button>
-      <button onclick="switchTab('career')" class="hover:text-emerald-400 flex flex-col items-center"><i class="fa-solid fa-hospital text-base"></i><span class="text-[10px] mt-1" data-i18n="nav_career">職場物語</span></button>
-      <button onclick="switchTab('shop')" class="hover:text-amber-400 flex flex-col items-center"><i class="fa-solid fa-bag-shopping text-base"></i><span class="text-[10px] mt-1" data-i18n="nav_shop">裝備商店</span></button>
-      <button onclick="openModal('modal-editor')" class="hover:text-sky-400 flex flex-col items-center"><i class="fa-solid fa-pen-to-square text-base"></i><span class="text-[10px] mt-1" data-i18n="nav_db">資料庫管理</span></button>
+      <button onclick="switchTab('quiz')" class="hover:text-emerald-400 flex flex-col items-center">
+        <i class="fa-solid fa-gamepad text-base"></i><span class="text-[10px] mt-1">國考刷題</span>
+      </button>
+      <button onclick="switchTab('career')" class="hover:text-emerald-400 flex flex-col items-center">
+        <i class="fa-solid fa-hospital text-base"></i><span class="text-[10px] mt-1">職場物語</span>
+      </button>
+      <button onclick="switchTab('shop')" class="hover:text-amber-400 flex flex-col items-center">
+        <i class="fa-solid fa-bag-shopping text-base"></i><span class="text-[10px] mt-1">裝備商店</span>
+      </button>
+      <button onclick="openModal('modal-editor')" class="hover:text-sky-400 flex flex-col items-center">
+        <i class="fa-solid fa-pen-to-square text-base"></i><span class="text-[10px] mt-1">資料庫管理</span>
+      </button>
     </div>
   </footer>
 
-  <!-- MODAL 1: CHARACTER PROFILE -->
+  <!-- MODAL 1: CHARACTER PROFILE (創角與身分設定系統) -->
   <div id="modal-profile" class="hidden fixed inset-0 bg-black/80 backdrop-blur-sm z-50 flex items-center justify-center p-4">
     <div class="bg-slate-900 border border-slate-800 rounded-2xl w-full max-w-sm p-5 space-y-4 shadow-2xl">
       <div class="flex justify-between items-center border-b border-slate-800 pb-3">
         <h3 class="font-black text-sm text-white flex items-center gap-2">
-          <i class="fa-solid fa-id-card text-emerald-400"></i> <span data-i18n="profile_title">創角與身分設定</span>
+          <i class="fa-solid fa-id-card text-emerald-400"></i> 創角與身分設定
         </h3>
         <button onclick="closeModal('modal-profile')" class="text-slate-400 hover:text-white"><i class="fa-solid fa-xmark text-lg"></i></button>
       </div>
+
       <div class="space-y-3 text-xs">
-        <p class="text-sky-400 text-[11px]" data-i18n="profile_note">ℹ️ 提示：此設定未來隨時可以點擊左上角按鈕再次更改！</p>
         <div>
-          <label class="text-slate-400 block mb-1 font-bold" data-i18n="label_name">角色名字</label>
+          <label class="text-slate-400 block mb-1 font-bold">角色名字</label>
           <input type="text" id="input-char-name" value="實習生A" class="w-full bg-slate-800 border border-slate-700 rounded-lg p-2.5 text-slate-100 font-bold">
         </div>
         <div>
-          <label class="text-slate-400 block mb-1 font-bold" data-i18n="label_gender">性別代詞設定</label>
+          <label class="text-slate-400 block mb-1 font-bold">性別代詞設定</label>
           <div class="grid grid-cols-2 gap-2">
-            <button type="button" id="btn-gender-male" onclick="setGenderSelection('male')" class="p-2.5 rounded-lg border font-bold text-center transition-all bg-sky-600 border-sky-500 text-white" data-i18n="gender_male">👨 男性 (你)</button>
-            <button type="button" id="btn-gender-female" onclick="setGenderSelection('female')" class="p-2.5 rounded-lg border font-bold text-center transition-all bg-slate-800 border-slate-700 text-slate-300" data-i18n="gender_female">👩 女性 (妳)</button>
+            <button type="button" id="btn-gender-male" onclick="setGenderSelection('male')" class="p-2.5 rounded-lg border font-bold text-center transition-all bg-sky-600 border-sky-500 text-white">
+              👨 男性 (你 / 學弟)
+            </button>
+            <button type="button" id="btn-gender-female" onclick="setGenderSelection('female')" class="p-2.5 rounded-lg border font-bold text-center transition-all bg-slate-800 border-slate-700 text-slate-300">
+              👩 女性 (妳 / 學妹)
+            </button>
           </div>
         </div>
+
+        <!-- 🎯 新增：桌面 PNG 圖片上傳按鈕區 -->
         <div class="border-t border-slate-800 pt-3 space-y-2">
-          <label class="text-emerald-400 block font-bold" data-i18n="label_avatar">📁 上傳立繪圖片 (可跳過不上傳)</label>
+          <label class="text-emerald-400 block font-bold">📁 上傳桌面 PNG 立繪圖片</label>
           <div class="grid grid-cols-2 gap-2">
             <div>
-              <span class="text-[10px] text-slate-400 block mb-1" data-i18n="avatar_male">男主角立繪</span>
-              <label class="block w-full py-2 bg-slate-800 hover:bg-slate-700 border border-slate-700 rounded-lg text-center font-bold text-sky-300 cursor-pointer text-[11px]" data-i18n="btn_upload">
-                選擇檔案 <input type="file" accept="image/*" onchange="uploadPortrait('male', event)" class="hidden">
+              <span class="text-[10px] text-slate-400 block mb-1">男主角立繪 (PNG)</span>
+              <label class="block w-full py-2 bg-slate-800 hover:bg-slate-700 border border-slate-700 rounded-lg text-center font-bold text-sky-300 cursor-pointer text-[11px]">
+                選擇檔案 <input type="file" accept="image/png, image/jpeg" onchange="uploadPortrait('male', event)" class="hidden">
               </label>
             </div>
             <div>
-              <span class="text-[10px] text-slate-400 block mb-1" data-i18n="avatar_female">女主角立繪</span>
-              <label class="block w-full py-2 bg-slate-800 hover:bg-slate-700 border border-slate-700 rounded-lg text-center font-bold text-pink-300 cursor-pointer text-[11px]" data-i18n="btn_upload">
-                選擇檔案 <input type="file" accept="image/*" onchange="uploadPortrait('female', event)" class="hidden">
+              <span class="text-[10px] text-slate-400 block mb-1">女主角立繪 (PNG)</span>
+              <label class="block w-full py-2 bg-slate-800 hover:bg-slate-700 border border-slate-700 rounded-lg text-center font-bold text-pink-300 cursor-pointer text-[11px]">
+                選擇檔案 <input type="file" accept="image/png, image/jpeg" onchange="uploadPortrait('female', event)" class="hidden">
               </label>
             </div>
           </div>
         </div>
       </div>
-      <button onclick="saveCharacterProfile()" class="w-full py-3 bg-emerald-500 hover:bg-emerald-400 text-slate-950 font-black rounded-xl text-xs" data-i18n="btn_save">儲存身分設定</button>
+
+      <button onclick="saveCharacterProfile()" class="w-full py-3 bg-emerald-500 hover:bg-emerald-400 text-slate-950 font-black rounded-xl text-xs btn-du0">
+        儲存身分設定
+      </button>
     </div>
   </div>
 
-  <!-- MODAL 2: DUAL EDITOR -->
+  <!-- MODAL 2: DUAL EDITOR (QUIZ & VN STORY DB) -->
   <div id="modal-editor" class="hidden fixed inset-0 bg-black/80 backdrop-blur-sm z-50 flex items-center justify-center p-4">
     <div class="bg-slate-900 border border-slate-800 rounded-2xl w-full max-w-md max-h-[85vh] flex flex-col overflow-hidden">
       <div class="p-4 border-b border-slate-800 flex justify-between items-center bg-slate-800/50">
-        <h3 class="font-black text-sm text-white" data-i18n="db_title">🛠️ 雲端題庫與故事管理員</h3>
+        <h3 class="font-black text-sm text-white">🛠️ 雙效資料庫與 VN 故事管理員 (智慧合併)</h3>
         <button onclick="closeModal('modal-editor')" class="text-slate-400 hover:text-white"><i class="fa-solid fa-xmark text-lg"></i></button>
       </div>
+
+      <!-- Editor Tabs -->
       <div class="flex border-b border-slate-800 bg-slate-800/30 p-1.5 gap-2 text-xs font-bold">
-        <button id="ed-tab-btn-quiz" onclick="switchEditorTab('quiz')" class="flex-1 py-2 bg-emerald-500 text-slate-950 rounded-lg" data-i18n="db_tab_quiz">🎯 國考題庫管理</button>
-        <button id="ed-tab-btn-story" onclick="switchEditorTab('story')" class="flex-1 py-2 bg-slate-800 text-slate-300 rounded-lg" data-i18n="db_tab_story">📖 職場 VN 故事</button>
+        <button id="ed-tab-btn-quiz" onclick="switchEditorTab('quiz')" class="flex-1 py-2 bg-emerald-500 text-slate-950 rounded-lg">🎯 國考題庫管理</button>
+        <button id="ed-tab-btn-story" onclick="switchEditorTab('story')" class="flex-1 py-2 bg-slate-800 text-slate-300 rounded-lg">📖 職場 VN 故事 JSON</button>
       </div>
+
       <div class="p-4 overflow-y-auto space-y-4 text-xs flex-1">
+
+        <!-- SUB-VIEW 1: QUIZ EDITOR -->
         <div id="ed-subview-quiz" class="space-y-4">
           <div class="bg-slate-800 p-3 rounded-xl space-y-2 border border-slate-700">
-            <span class="font-bold text-slate-300" data-i18n="json_manage">📥 題庫 JSON 匯入與匯出</span>
+            <span class="font-bold text-slate-300">📥 題庫 JSON 匯入 (自動合併 Concat) / 匯出</span>
             <div class="grid grid-cols-2 gap-2">
-              <button onclick="exportQuizJSON()" class="py-2 bg-slate-700 hover:bg-slate-600 rounded-lg font-bold" data-i18n="btn_export">匯出題庫 JSON</button>
-              <label class="py-2 bg-sky-600 hover:bg-sky-500 rounded-lg font-bold text-center cursor-pointer text-white" data-i18n="btn_import">
+              <button onclick="exportQuizJSON()" class="py-2 bg-slate-700 hover:bg-slate-600 rounded-lg font-bold">匯出題庫 JSON</button>
+              <label class="py-2 bg-sky-600 hover:bg-sky-500 rounded-lg font-bold text-center cursor-pointer">
                 匯入題庫 JSON <input type="file" onchange="importQuizJSON(event)" class="hidden" accept=".json">
               </label>
             </div>
           </div>
+
           <div class="bg-slate-800/60 p-3.5 rounded-xl border border-slate-700 space-y-3">
-            <span class="font-bold text-emerald-400 text-sm block" data-i18n="add_q_title">➕ 新增題目</span>
+            <span class="font-bold text-emerald-400 text-sm block">➕ 新增題目</span>
             <div>
-              <label class="text-slate-400 block mb-1" data-i18n="label_subject">對應國考科目</label>
+              <label class="text-slate-400 block mb-1">對應國考科目</label>
               <select id="ed-subject" class="w-full bg-slate-900 border border-slate-700 rounded-lg p-2 text-slate-200">
                 <option value="basic">1. 基礎醫學</option>
                 <option value="physics">2. 醫學物理與輻射安全</option>
@@ -277,166 +306,129 @@
               </select>
             </div>
             <div>
-              <label class="text-slate-400 block mb-1" data-i18n="label_qtext">題目文字敘述</label>
-              <textarea id="ed-text" rows="2" placeholder="輸入題目..." class="w-full bg-slate-900 border border-slate-700 rounded-lg p-2 text-slate-200"></textarea>
+              <label class="text-slate-400 block mb-1">選擇題型</label>
+              <select id="ed-type" onchange="toggleEditorTypeFields()" class="w-full bg-slate-900 border border-slate-700 rounded-lg p-2 text-slate-200">
+                <option value="choice">1. 標準 4 選 1 選擇題</option>
+                <option value="matching">2. 6組觀念配對連連看</option>
+                <option value="fill">3. 文章填空選擇題</option>
+                <option value="tf">4. 是非題 (True/False)</option>
+              </select>
             </div>
-            <div class="space-y-1.5">
-              <label class="text-slate-400 block" data-i18n="label_options">選項內容 (ABCD)</label>
+            <div>
+              <label class="text-slate-400 block mb-1">題目文字敘述</label>
+              <textarea id="ed-text" rows="2" placeholder="輸入題目敘述..." class="w-full bg-slate-900 border border-slate-700 rounded-lg p-2 text-slate-200"></textarea>
+            </div>
+            <div>
+              <label class="text-slate-400 block mb-1">圖片網址（可選）</label>
+              <input type="url" id="ed-img" placeholder="https://..." class="w-full bg-slate-900 border border-slate-700 rounded-lg p-2 text-slate-200">
+            </div>
+
+            <div id="group-options" class="space-y-1.5">
+              <label class="text-slate-400 block">選項內容 (ABCD)</label>
               <input type="text" id="ed-opt-0" placeholder="選項 A" class="w-full bg-slate-900 border border-slate-700 rounded-lg p-1.5">
               <input type="text" id="ed-opt-1" placeholder="選項 B" class="w-full bg-slate-900 border border-slate-700 rounded-lg p-1.5">
               <input type="text" id="ed-opt-2" placeholder="選項 C" class="w-full bg-slate-900 border border-slate-700 rounded-lg p-1.5">
               <input type="text" id="ed-opt-3" placeholder="選項 D" class="w-full bg-slate-900 border border-slate-700 rounded-lg p-1.5">
-              <label class="text-slate-400 block pt-1" data-i18n="label_correct">正確答案 (0=A, 1=B, 2=C, 3=D)</label>
+              <label class="text-slate-400 block pt-1">正確答案 (0=A, 1=B, 2=C, 3=D)</label>
               <input type="number" id="ed-correct-idx" min="0" max="3" value="0" class="w-full bg-slate-900 border border-slate-700 rounded-lg p-1.5">
             </div>
-            <div>
-              <label class="text-slate-400 block mb-1" data-i18n="label_exp">答案解析</label>
-              <input type="text" id="ed-exp" placeholder="解析..." class="w-full bg-slate-900 border border-slate-700 rounded-lg p-2">
+
+            <div id="group-matching" class="hidden space-y-2">
+              <label class="text-slate-400 block font-bold text-amber-400">輸入 6 組對應答案</label>
+              <div id="matching-inputs-container" class="space-y-1.5"></div>
             </div>
-            <button onclick="saveQuestionToDB()" class="w-full py-2.5 bg-emerald-500 hover:bg-emerald-400 text-slate-950 font-black rounded-xl" data-i18n="btn_add_q">儲存題目至題庫</button>
+
+            <div id="group-tf" class="hidden space-y-1.5">
+              <label class="text-slate-400 block">正確答案</label>
+              <select id="ed-tf-correct" class="w-full bg-slate-900 border border-slate-700 rounded-lg p-2 text-slate-200">
+                <option value="true">正確 (True / O)</option>
+                <option value="false">錯誤 (False / X)</option>
+              </select>
+            </div>
+
+            <div>
+              <label class="text-slate-400 block mb-1">答案解析</label>
+              <input type="text" id="ed-exp" placeholder="答案解析/記憶口訣..." class="w-full bg-slate-900 border border-slate-700 rounded-lg p-2">
+            </div>
+
+            <button onclick="saveQuestionToDB()" class="w-full py-2.5 bg-emerald-500 hover:bg-emerald-400 text-slate-950 font-black rounded-xl">
+              儲存題目至本地庫
+            </button>
           </div>
+
           <div class="bg-slate-800 p-3.5 rounded-xl border border-slate-700 space-y-2.5">
-            <div class="flex justify-between items-center"><span class="font-bold text-sky-400 text-sm" data-i18n="q_list">📋 已建立題庫清單</span><span id="ed-total-count" class="text-emerald-400 font-bold text-xs">0 題</span></div>
+            <div class="flex justify-between items-center">
+              <span class="font-bold text-sky-400 text-sm">📋 已建立題庫清單</span>
+              <span id="ed-total-count" class="text-emerald-400 font-bold text-xs">0 題</span>
+            </div>
             <div id="editor-question-list" class="space-y-2 max-h-52 overflow-y-auto pr-1"></div>
           </div>
         </div>
+
+        <!-- SUB-VIEW 2: VN STORY EDITOR WITH RANK TIER & DEPT FILTERS -->
         <div id="ed-subview-story" class="hidden space-y-4">
           <div class="bg-slate-800 p-3 rounded-xl space-y-2 border border-slate-700">
-            <span class="font-bold text-sky-400" data-i18n="story_manage">📖 職場故事 JSON 管理</span>
+            <span class="font-bold text-sky-400">📖 職場 VN 故事 JSON 匯入 (自動合併 Concat) / 匯出</span>
+            <p class="text-[11px] text-slate-400">支援多步驟 `steps`、分支 `choice` 與 5 大職等過濾。</p>
             <div class="grid grid-cols-2 gap-2 pt-1">
-              <button onclick="exportStoryJSON()" class="py-2 bg-slate-700 hover:bg-slate-600 rounded-lg font-bold" data-i18n="btn_export">匯出故事 JSON</button>
-              <label class="py-2 bg-sky-600 hover:bg-sky-500 rounded-lg font-bold text-center cursor-pointer text-white" data-i18n="btn_import">
-                匯入故事 JSON <input type="file" onchange="importStoryJSON(event)" class="hidden" accept=".json">
+              <button onclick="exportStoryJSON()" class="py-2 bg-slate-700 hover:bg-slate-600 rounded-lg font-bold">匯出故事庫 JSON</button>
+              <label class="py-2 bg-sky-600 hover:bg-sky-500 rounded-lg font-bold text-center cursor-pointer">
+                匯入故事庫 JSON <input type="file" onchange="importStoryJSON(event)" class="hidden" accept=".json">
               </label>
             </div>
           </div>
+
+          <div class="bg-slate-800 p-3.5 rounded-xl border border-slate-700 space-y-3">
+            <span class="font-bold text-emerald-400 text-sm block">🔍 職等與科別篩選檢視</span>
+            <div class="grid grid-cols-2 gap-2">
+              <div>
+                <label class="text-slate-400 block mb-1 text-[11px]">篩選科別 (Department)</label>
+                <select id="filter-story-dept" onchange="renderEditorStoryList()" class="w-full bg-slate-900 border border-slate-700 rounded-lg p-2 text-slate-200 text-xs">
+                  <option value="all">全部科別</option>
+                  <option value="xray">一般 X 光</option>
+                  <option value="er">急診 (CT/X-ray)</option>
+                  <option value="ct">CT 電腦斷層</option>
+                  <option value="mri">MRI 磁振造影</option>
+                  <option value="mammo">Mammo 乳房攝影</option>
+                  <option value="sono">Sono 超音波</option>
+                  <option value="cath">心導管室</option>
+                  <option value="dental">牙科攝影</option>
+                  <option value="angio">Angio 血管攝影</option>
+                  <option value="special">Special 特殊攝影</option>
+                  <option value="dexa">DEXA 骨質密度</option>
+                  <option value="nuc">核子醫學</option>
+                  <option value="rt">RT 放射線治療</option>
+                </select>
+              </div>
+              <div>
+                <label class="text-slate-400 block mb-1 text-[11px]">篩選職等 (Rank Tier)</label>
+                <select id="filter-story-tier" onchange="renderEditorStoryList()" class="w-full bg-slate-900 border border-slate-700 rounded-lg p-2 text-slate-200 text-xs">
+                  <option value="all">全部職等</option>
+                  <option value="0">0: 見習生 (0~19次)</option>
+                  <option value="1">1: 實習生 (20~49次)</option>
+                  <option value="2">2: PGY (50~99次)</option>
+                  <option value="3">3: 放射師 (100~199次)</option>
+                  <option value="4">4: 資深帶教老鳥 (200+次)</option>
+                </select>
+              </div>
+            </div>
+          </div>
+
           <div class="bg-slate-800 p-3.5 rounded-xl border border-slate-700 space-y-2.5">
-            <div class="flex justify-between items-center"><span class="font-bold text-sky-400 text-sm" data-i18n="story_list">📚 故事清單</span><span id="ed-story-total-count" class="text-emerald-400 font-bold text-xs">0 篇</span></div>
+            <div class="flex justify-between items-center">
+              <span class="font-bold text-sky-400 text-sm">📚 篩選結果故事清單</span>
+              <span id="ed-story-total-count" class="text-emerald-400 font-bold text-xs">0 篇</span>
+            </div>
             <div id="editor-story-list" class="space-y-2 max-h-60 overflow-y-auto pr-1"></div>
           </div>
         </div>
+
       </div>
     </div>
   </div>
 
+  <!-- SCRIPT -->
   <script>
-    /* 🌐 雙語字典系統 (I18N) */
-    const I18N = {
-      zh: {
-        nav_quiz: "國考刷題區",
-        nav_career: "職場物語 RPG",
-        nav_shop: "裝備商店",
-        nav_db: "資料庫管理",
-        quiz_map_title: "單元地圖（無體力限制）",
-        quiz_map_desc: "初始題庫包含各科國考精選題！",
-        career_badge: "🏥 5大職等 RPG 故事區",
-        career_title: "選擇指定科別，系統自動依當前累積職等嚴格抽樣劇本！",
-        shop_title: "裝備升級商店",
-        shop_desc: "購買專屬裝備與美式咖啡，提升刷題與職場金幣收益！",
-        btn_check: "檢查答案",
-        btn_exit: "退出職場",
-        vn_click_tip: "▼ 點擊對話框繼續",
-        profile_title: "創角與身分設定",
-        profile_note: "ℹ️ 提示：此設定未來隨時可以點擊左上角按鈕再次更改！",
-        label_name: "角色名字",
-        label_gender: "性別代詞設定",
-        gender_male: "👨 男性 (你 / 學弟)",
-        gender_female: "👩 女性 (妳 / 學妹)",
-        label_avatar: "📁 上傳立繪圖片 (可跳過不上傳)",
-        avatar_male: "男主角立繪",
-        avatar_female: "女主角立繪",
-        btn_upload: "選擇檔案",
-        btn_save: "儲存身分設定",
-        db_title: "🛠️ 雲端題庫與故事管理員",
-        db_tab_quiz: "🎯 國考題庫管理",
-        db_tab_story: "📖 職場 VN 故事",
-        json_manage: "📥 題庫 JSON 匯入與匯出",
-        btn_export: "匯出 JSON",
-        btn_import: "匯入 JSON",
-        add_q_title: "➕ 新增題目",
-        label_subject: "對應國考科目",
-        label_qtext: "題目文字敘述",
-        label_options: "選項內容 (ABCD)",
-        label_correct: "正確答案 (0=A, 1=B, 2=C, 3=D)",
-        label_exp: "答案解析",
-        btn_add_q: "儲存題目至題庫",
-        q_list: "📋 已建立題庫清單",
-        story_manage: "📖 職場故事 JSON 管理",
-        story_list: "📚 故事清單"
-      },
-      en: {
-        nav_quiz: "Exam Quiz",
-        nav_career: "Career RPG",
-        nav_shop: "Shop",
-        nav_db: "Database",
-        quiz_map_title: "Unit Map (No Stamina Limit)",
-        quiz_map_desc: "Includes national board exam questions!",
-        career_badge: "🏥 5-Tier RPG Stories",
-        career_title: "Choose a department and experience strict rank-based scenarios!",
-        shop_title: "Equipment Shop",
-        shop_desc: "Purchase equipment and coffee to boost your earnings!",
-        btn_check: "Check Answer",
-        btn_exit: "Exit Career",
-        vn_click_tip: "▼ Click dialogue box to continue",
-        profile_title: "Character Profile",
-        profile_note: "ℹ️ Note: You can change this anytime by clicking the top-left button!",
-        label_name: "Character Name",
-        label_gender: "Gender Pronoun",
-        gender_male: "👨 Male",
-        gender_female: "👩 Female",
-        label_avatar: "📁 Upload Portrait (Optional)",
-        avatar_male: "Male Portrait",
-        avatar_female: "Female Portrait",
-        btn_upload: "Choose File",
-        btn_save: "Save Profile",
-        db_title: "🛠️ Cloud Database Manager",
-        db_tab_quiz: "🎯 Quiz Manager",
-        db_tab_story: "📖 VN Story Manager",
-        json_manage: "📥 JSON Import & Export",
-        btn_export: "Export JSON",
-        btn_import: "Import JSON",
-        add_q_title: "➕ Add Question",
-        label_subject: "Exam Subject",
-        label_qtext: "Question Text",
-        label_options: "Options (ABCD)",
-        label_correct: "Correct Answer (0=A, 1=B, 2=C, 3=D)",
-        label_exp: "Explanation",
-        btn_add_q: "Save to Database",
-        q_list: "📋 Question List",
-        story_manage: "📖 VN Story JSON",
-        story_list: "📚 Story List"
-      }
-    };
-
-    let currentLang = 'zh';
-
-    function setLanguageAndProceed(lang) {
-      currentLang = lang;
-      document.getElementById('modal-lang-select').classList.add('hidden');
-      updateLanguageUI();
-      if (!state.userStats.initialized) {
-        openModal('modal-profile');
-      }
-    }
-
-    function toggleLanguage() {
-      currentLang = currentLang === 'zh' ? 'en' : 'zh';
-      updateLanguageUI();
-    }
-
-    function updateLanguageUI() {
-      document.getElementById('current-lang-badge').innerText = currentLang === 'zh' ? '繁體中文' : 'English';
-      document.querySelectorAll('[data-i18n]').forEach(el => {
-        const key = el.getAttribute('data-i18n');
-        if (I18N[currentLang][key]) {
-          el.innerText = I18N[currentLang][key];
-        }
-      });
-      renderQuizMap();
-      renderCareerUnits();
-      renderShop();
-    }
-
     const SUBJECTS = {
       basic: { name: '基礎醫學', icon: 'fa-brain', color: 'from-pink-600 to-rose-700' },
       physics: { name: '醫學物理與輻射安全', icon: 'fa-atom', color: 'from-blue-600 to-indigo-700' },
@@ -462,6 +454,7 @@
       { id: 'rt', name: 'RT 放射線治療', reqSubject: 'therapy', icon: 'fa-crosshairs' }
     ];
 
+    /* 預設多步驟 VN 劇本庫 (支援 {name}, {pronoun}, {junior} 智慧代詞) */
     const DEFAULT_STORY_DATABASE = [
       {
         id: 'xr_tier_0', department: 'xray', rankTier: 0, title: '初入 X 光控制室的震驚',
@@ -470,25 +463,40 @@
           { speaker: "{name}", text: "<span><span><span>「真的假的！{pronoun}覺得現在的年輕人太誇張了吧...」</span></span>" },
           {
             type: "choice",
-            text: "此時，一位滑板少年推進來骨折的手肘，朋友舉起手機喊著要發限動標記醫院。",
+            text: "此時，一位滑板少年推進來骨折的手肘，旁支朋友舉起手機喊著要發限動標記醫院。",
             choices: [
-              { txt: "「不行喔，醫療影像有資安法規，請遵守規定！」", resultSteps: [{ speaker: "滑板少年", text: "「切，開個玩笑嘛...」" }, { speaker: "{name}", text: "{pronoun}嚴肅地堅持規定。" }] },
-              { txt: "【花費 $20】「發限動可以，要不要順便幫你開美顏濾鏡？」", payCost: 20, setFlag: "RAGED_PATIENT", resultSteps: [{ speaker: "滑板少年", text: "「哇！這醫院服務太貼心了吧！」" }, { speaker: "{name}", text: "{pronoun}順利幫他拍完了 X 光片。" }] }
+              {
+                txt: "「不行喔，醫療影像有資安法規，請遵守規定！」",
+                resultSteps: [
+                  { speaker: "滑板少年", text: "「切，開個玩笑嘛，跩什麼跩...」" },
+                  { speaker: "{name}", text: "{pronoun}嚴肅地堅持規定，順利完成擺位。" }
+                ]
+              },
+              {
+                txt: "【花費 $20】「發限動可以，要不要順便幫你開美顏濾鏡？」",
+                payCost: 20,
+                setFlag: "RAGED_PATIENT",
+                resultSteps: [
+                  { speaker: "滑板少年", text: "「哇！這醫院服務太貼心了吧！發限動囉！」" },
+                  { speaker: "{name}", text: "{pronoun}順利幫他拍完了 X 光片。" }
+                ]
+              }
             ]
           },
-          { speaker: "學姐", text: "「好啦，準備迎接 12 點的午休抽考吧！」" },
-          { type: "quiz", text: "12:00 午休時間到了，隨機抽考診斷學：" },
-          { type: "flagCheck", flag: "RAGED_PATIENT", matchText: "下午那個滑板少年上網投訴{pronoun}態度輕浮！扣除獎金 $80！", normalText: "下午主管誇獎{pronoun}服務態度良好！獲得獎金 +$50！" },
+          { speaker: "學姐", text: "「好啦，上午門診告一段落，準備迎接 12 點的午休抽考吧！」" },
+          { type: "quiz", text: "12:00 午休時間到了，學姐端著咖啡走過來隨機抽考診斷學：" },
+          {
+            type: "flagCheck",
+            flag: "RAGED_PATIENT",
+            matchText: "下午那個滑板少年真的上網投訴{pronoun}態度輕浮！扣除獎金 $80！",
+            normalText: "下午主管經過控制室誇獎{pronoun}服務態度良好！獲得獎金 +$50！"
+          },
           { speaker: "旁白", text: "一整天的忙碌終於結束，{name}順利打卡下班！" }
         ]
       }
     ];
 
-    const DEFAULT_QUESTIONS = [
-      { id: 'q1', subject: 'basic', type: 'choice', question: '下列何者為人體中放射線感受性最高的細胞？', options: ['神經細胞', '肌肉細胞', '淋巴球與造血細胞', '骨細胞'], correct: 2, explanation: '根據柏格能-溫克定律，分裂越快、分化越差的細胞敏感度越高。' },
-      { id: 'q2', subject: 'physics', type: 'choice', question: '在加馬攝影機中，光電倍增管 (PMT) 的主要功能為：', options: ['將閃爍晶體產生的光子轉換並放大為電子訊號', '過濾散射射線', '產生高壓 X 光', '儲存數位影像'], correct: 0, explanation: 'PMT 將閃爍光子轉換成光電子並進行級聯放大。' }
-    ];
-
+    /* RANKS */
     function getRankTier(workCount) {
       if (workCount < 20) return 0;
       if (workCount < 50) return 1;
@@ -503,6 +511,13 @@
       return titles[tier];
     }
 
+    /* DEFAULT QUESTIONS */
+    const DEFAULT_QUESTIONS = [
+      { id: 'q1', subject: 'basic', type: 'choice', question: '下列何者為人體中放射線感受性最高的細胞？', options: ['神經細胞', '肌肉細胞', '淋巴球與造血細胞', '骨細胞'], correct: 2, explanation: '根據柏格能-溫克定律 (Law of Bergonie and Tribondeau)，分裂越快、分化越差的細胞敏感度越高。' },
+      { id: 'q2', subject: 'physics', type: 'choice', question: '在加馬攝影機中，光電倍增管 (PMT) 的主要功能為：', options: ['將閃爍晶體產生的光子轉換並放大為電子訊號', '過濾散射射線', '產生高壓 X 光', '儲存數位影像'], correct: 0, explanation: 'PMT 將閃爍光子轉換成光電子並進行級聯放大。' }
+    ];
+
+    /* STATE MANAGEMENT */
     let state = {
       questions: [],
       stories: [],
@@ -517,20 +532,11 @@
     };
 
     function loadState() {
-      // 支援 GitHub 雲端共用題庫自動載入
-      fetch('radingo_questions.json').then(res => res.json()).then(data => {
-        if (Array.isArray(data)) state.questions = data;
-      }).catch(() => {
-        const q = localStorage.getItem('radingo_v20_q');
-        state.questions = q ? JSON.parse(q) : JSON.parse(JSON.stringify(DEFAULT_QUESTIONS));
-      });
+      const q = localStorage.getItem('radingo_v20_q');
+      state.questions = q ? JSON.parse(q) : JSON.parse(JSON.stringify(DEFAULT_QUESTIONS));
 
-      fetch('radingo_stories.json').then(res => res.json()).then(data => {
-        if (Array.isArray(data)) state.stories = data;
-      }).catch(() => {
-        const stStore = localStorage.getItem('radingo_v20_stories');
-        state.stories = stStore ? JSON.parse(stStore) : JSON.parse(JSON.stringify(DEFAULT_STORY_DATABASE));
-      });
+      const stStore = localStorage.getItem('radingo_v20_stories');
+      state.stories = stStore ? JSON.parse(stStore) : JSON.parse(JSON.stringify(DEFAULT_STORY_DATABASE));
 
       const pr = localStorage.getItem('radingo_v20_portraits');
       if (pr) state.portraits = JSON.parse(pr);
@@ -538,6 +544,8 @@
       const st = localStorage.getItem('radingo_v20_st'); 
       if (st) {
         state.userStats = JSON.parse(st);
+      } else {
+        setTimeout(() => openModal('modal-profile'), 500);
       }
 
       const su = localStorage.getItem('radingo_v20_su'); if (su) state.subjectUnits = JSON.parse(su);
@@ -547,6 +555,8 @@
     }
 
     function saveState() {
+      localStorage.setItem('radingo_v20_q', JSON.stringify(state.questions));
+      localStorage.setItem('radingo_v20_stories', JSON.stringify(state.stories));
       localStorage.setItem('radingo_v20_portraits', JSON.stringify(state.portraits));
       localStorage.setItem('radingo_v20_st', JSON.stringify(state.userStats));
       localStorage.setItem('radingo_v20_su', JSON.stringify(state.subjectUnits));
@@ -561,6 +571,7 @@
       document.getElementById('header-char-label').innerText = `${state.userStats.name} (${genderStr})`;
     }
 
+    /* 🎯 處理桌面 PNG 圖片上傳 */
     function uploadPortrait(gender, event) {
       const file = event.target.files[0];
       if (!file) return;
@@ -568,11 +579,12 @@
       reader.onload = function(e) {
         state.portraits[gender] = e.target.result;
         saveState();
-        alert('✅ 立繪上傳成功！');
+        alert(`✅ ${gender === 'male' ? '男主角' : '女主角'} PNG 立繪上傳成功！`);
       };
       reader.readAsDataURL(file);
     }
 
+    /* CHARACTER PROFILE SETUP */
     let tempGender = 'male';
     function setGenderSelection(g) {
       tempGender = g;
@@ -589,60 +601,72 @@
 
     function saveCharacterProfile() {
       const nameInput = document.getElementById('input-char-name').value.trim();
-      if (!nameInput) { alert('請輸入有效名字！'); return; }
+      if (!nameInput) { alert('請輸入有效的角色名字！'); return; }
       state.userStats.name = nameInput;
       state.userStats.gender = tempGender;
       state.userStats.initialized = true;
       saveState();
       closeModal('modal-profile');
-      alert(`🎉 歡迎開始遊戲，${state.userStats.name}！`);
+      alert(`🎉 身分設定成功！歡迎開始職場物語，${state.userStats.name}！`);
     }
 
     function switchTab(tab) {
       ['quiz', 'career', 'shop'].forEach(t => document.getElementById(`view-${t}`).classList.add('hidden'));
       document.getElementById(`view-${tab}`).classList.remove('hidden');
+
       if (tab === 'quiz') renderQuizMap();
       if (tab === 'career') renderCareerUnits();
       if (tab === 'shop') renderShop();
     }
 
+    /* EDITOR TABS TOGGLE */
     function switchEditorTab(tab) {
       const btnQuiz = document.getElementById('ed-tab-btn-quiz');
       const btnStory = document.getElementById('ed-tab-btn-story');
       const subQuiz = document.getElementById('ed-subview-quiz');
       const subStory = document.getElementById('ed-subview-story');
+
       if (tab === 'quiz') {
         btnQuiz.className = "flex-1 py-2 bg-emerald-500 text-slate-950 rounded-lg font-bold";
         btnStory.className = "flex-1 py-2 bg-slate-800 text-slate-300 rounded-lg font-bold";
-        subQuiz.classList.remove('hidden'); subStory.classList.add('hidden');
+        subQuiz.classList.remove('hidden');
+        subStory.classList.add('hidden');
         renderEditorQuestionList();
       } else {
         btnStory.className = "flex-1 py-2 bg-sky-500 text-slate-950 rounded-lg font-bold";
         btnQuiz.className = "flex-1 py-2 bg-slate-800 text-slate-300 rounded-lg font-bold";
-        subStory.classList.remove('hidden'); subQuiz.classList.add('hidden');
+        subStory.classList.remove('hidden');
+        subQuiz.classList.add('hidden');
         renderEditorStoryList();
       }
     }
 
+    /* QUIZ ENGINE */
     function renderQuizMap() {
       const container = document.getElementById('subject-node-container');
       container.innerHTML = '';
+
       Object.keys(SUBJECTS).forEach(key => {
         const sub = SUBJECTS[key];
         const unitsDone = state.subjectUnits[key] || 0;
         const qCount = state.questions.filter(q => q.subject === key).length;
+
         const card = document.createElement('div');
         card.className = "bg-slate-900 border-2 border-slate-800 rounded-2xl p-4 space-y-3";
         card.innerHTML = `
           <div class="flex items-center justify-between">
             <div class="flex items-center space-x-3">
-              <div class="w-10 h-10 rounded-xl bg-gradient-to-tr ${sub.color} flex items-center justify-center text-white text-lg"><i class="fa-solid ${sub.icon}"></i></div>
+              <div class="w-10 h-10 rounded-xl bg-gradient-to-tr ${sub.color} flex items-center justify-center text-white text-lg">
+                <i class="fa-solid ${sub.icon}"></i>
+              </div>
               <div>
                 <h3 class="font-extrabold text-sm text-slate-100">${sub.name}</h3>
                 <span class="text-[11px] text-slate-400">已完成 <b class="text-emerald-400">${unitsDone}</b> 單元 (題庫: ${qCount} 題)</span>
               </div>
             </div>
-            <button onclick="startUnitSession('${key}')" class="px-3.5 py-1.5 bg-emerald-500 hover:bg-emerald-400 text-slate-950 font-black text-xs rounded-xl btn-duo">開始刷單元</button>
+            <button onclick="startUnitSession('${key}')" class="px-3.5 py-1.5 bg-emerald-500 hover:bg-emerald-400 text-slate-950 font-black text-xs rounded-xl btn-duo">
+              開始刷單元
+            </button>
           </div>
         `;
         container.appendChild(card);
@@ -651,74 +675,203 @@
 
     function startUnitSession(subKey) {
       const subQuestions = state.questions.filter(q => q.subject === subKey);
-      if (subQuestions.length === 0) { alert('此科目目前尚無題目！'); return; }
+      if (subQuestions.length === 0) {
+        alert('⚠️ 這個科目目前沒有題目！請至右下角「資料庫管理」新增題目或匯入 JSON！');
+        return;
+      }
+
       const shuffled = shuffle([...subQuestions]).slice(0, 5);
-      state.activeQuiz = { subject: subKey, questions: shuffled, idx: 0, selectedOpt: null, isSubmitted: false };
+      state.activeQuiz = { subject: subKey, questions: shuffled, idx: 0, selectedOpt: null, userTFAnswer: null, isSubmitted: false };
       document.getElementById('quiz-overlay').classList.remove('hidden');
       loadQuizQuestion();
     }
 
-    function exitQuizSession() { document.getElementById('quiz-overlay').classList.add('hidden'); renderQuizMap(); }
+    function exitQuizSession() {
+      document.getElementById('quiz-overlay').classList.add('hidden');
+      renderQuizMap();
+    }
 
     function loadQuizQuestion() {
       const q = state.activeQuiz.questions[state.activeQuiz.idx];
       const total = state.activeQuiz.questions.length;
-      state.activeQuiz.selectedOpt = null; state.activeQuiz.isSubmitted = false;
+
+      state.activeQuiz.selectedOpt = null;
+      state.activeQuiz.userTFAnswer = null;
+      state.activeQuiz.isSubmitted = false;
+
       document.getElementById('quiz-step-counter').innerText = `${state.activeQuiz.idx + 1}/${total}`;
       document.getElementById('quiz-progress-bar').style.width = `${(state.activeQuiz.idx / total) * 100}%`;
       document.getElementById('q-text').innerText = q.question;
-      const zone = document.getElementById('q-interactive-zone'); zone.innerHTML = '';
-      q.options.forEach((optStr, i) => {
-        const btn = document.createElement('button');
-        btn.className = "card-option w-full p-3.5 rounded-xl text-left font-bold text-xs flex justify-between items-center";
-        btn.onclick = () => {
-          if (state.activeQuiz.isSubmitted) return;
-          document.querySelectorAll('.card-option').forEach(c => c.classList.remove('selected'));
-          btn.classList.add('selected'); state.activeQuiz.selectedOpt = i;
-        };
-        btn.innerHTML = `<span>${optStr}</span>`; zone.appendChild(btn);
-      });
-      document.getElementById('feedback-panel').classList.add('hidden');
-      document.getElementById('btn-submit-answer').innerText = "檢查答案";
-      document.getElementById('btn-submit-answer').onclick = handleAnswerAction;
+
+      const typeBadge = document.getElementById('q-type-badge');
+      const typeMap = { choice: '選擇題', matching: '觀念配對題', fill: '填空選擇題', tf: '是非題 (True/False)' };
+      typeBadge.innerText = typeMap[q.type] || '選擇題';
+
+      const imgBox = document.getElementById('q-img-container');
+      const imgEl = document.getElementById('q-img');
+      if (q.imgUrl) { imgEl.src = q.imgUrl; imgBox.classList.remove('hidden'); } else { imgBox.classList.add('hidden'); }
+
+      const zone = document.getElementById('q-interactive-zone');
+      zone.innerHTML = '';
+
+      if (q.type === 'choice' || q.type === 'fill') {
+        q.options.forEach((optStr, i) => {
+          const btn = document.createElement('button');
+          btn.className = "card-option w-full p-3.5 rounded-xl text-left font-bold text-xs flex justify-between items-center";
+          btn.onclick = () => {
+            if (state.activeQuiz.isSubmitted) return;
+            document.querySelectorAll('.card-option').forEach(c => c.classList.remove('selected'));
+            btn.classList.add('selected');
+            state.activeQuiz.selectedOpt = i;
+          };
+          btn.innerHTML = `<span>${optStr}</span>`; zone.appendChild(btn);
+        });
+      } else if (q.type === 'tf') {
+        ['true', 'false'].forEach(val => {
+          const btn = document.createElement('button');
+          btn.className = "card-option w-full p-4 rounded-xl text-center font-black text-sm";
+          btn.onclick = () => {
+            if (state.activeQuiz.isSubmitted) return;
+            document.querySelectorAll('.card-option').forEach(c => c.classList.remove('selected'));
+            btn.classList.add('selected');
+            state.activeQuiz.userTFAnswer = (val === 'true');
+          };
+          btn.innerText = val === 'true' ? '⭕ 正確 (True)' : '❌ 錯誤 (False)';
+          zone.appendChild(btn);
+        });
+      } else if (q.type === 'matching') {
+        state.matchingState = { selectedLeft: null, matchedCount: 0 };
+        const grid = document.createElement('div'); grid.className = "grid grid-cols-2 gap-2";
+        const leftCol = document.createElement('div'); leftCol.className = "space-y-2";
+        const rightCol = document.createElement('div'); rightCol.className = "space-y-2";
+
+        const leftItems = shuffle(q.pairs.map((p, idx) => ({ txt: p.left, id: idx })));
+        const rightItems = shuffle(q.pairs.map((p, idx) => ({ txt: p.right, id: idx })));
+
+        leftItems.forEach(item => {
+          const lBtn = document.createElement('div'); lBtn.className = "matching-card p-2.5 rounded-xl text-xs font-bold text-center";
+          lBtn.innerText = item.txt; lBtn.onclick = () => selectMatchingLeft(item.id, lBtn); leftCol.appendChild(lBtn);
+        });
+
+        rightItems.forEach(item => {
+          const rBtn = document.createElement('div'); rBtn.className = "matching-card p-2.5 rounded-xl text-xs font-bold text-center";
+          rBtn.innerText = item.txt; rBtn.onclick = () => selectMatchingRight(item.id, rBtn, q.pairs.length); rightCol.appendChild(rBtn);
+        });
+
+        grid.appendChild(leftCol); grid.appendChild(rightCol); zone.appendChild(grid);
+      }
+
+      const panel = document.getElementById('feedback-panel');
+      panel.classList.add('hidden'); panel.className = "hidden p-3 rounded-xl border mb-3 space-y-2";
+      
+      const submitBtn = document.getElementById('btn-submit-answer');
+      submitBtn.innerText = "檢查答案";
+      submitBtn.onclick = handleAnswerAction;
+    }
+
+    function selectMatchingLeft(id, element) {
+      if (state.activeQuiz.isSubmitted) return;
+      document.querySelectorAll('#q-interactive-zone .matching-card').forEach(c => c.classList.remove('selected'));
+      element.classList.add('selected'); state.matchingState.selectedLeft = id;
+    }
+
+    function selectMatchingRight(id, element, totalPairs) {
+      if (state.activeQuiz.isSubmitted) return;
+      if (state.matchingState.selectedLeft === null) { alert('請先點選左欄項目！'); return; }
+      if (state.matchingState.selectedLeft === id) {
+        element.classList.add('matched');
+        document.querySelector('#q-interactive-zone .matching-card.selected').classList.add('matched');
+        state.matchingState.matchedCount++; state.matchingState.selectedLeft = null;
+        if (state.matchingState.matchedCount === totalPairs) state.activeQuiz.selectedOpt = 0;
+      } else {
+        alert('配對不正確喔！再試試看！');
+        document.querySelectorAll('#q-interactive-zone .matching-card').forEach(c => c.classList.remove('selected'));
+        state.matchingState.selectedLeft = null;
+      }
     }
 
     function handleAnswerAction() {
       if (!state.activeQuiz.isSubmitted) {
-        if (state.activeQuiz.selectedOpt === null) { alert('請選擇答案！'); return; }
-        const q = state.activeQuiz.questions[state.activeQuiz.idx];
-        const isCorrect = state.activeQuiz.selectedOpt === q.correct;
-        state.activeQuiz.isSubmitted = true;
-        const panel = document.getElementById('feedback-panel'); panel.classList.remove('hidden');
-        const earn = isCorrect ? Math.round(80 * state.userStats.bonusMultiplier) : 0;
-        if (isCorrect) { state.userStats.money += earn; saveState(); }
-        panel.className = isCorrect ? "p-3 rounded-xl border bg-emerald-950/90 border-emerald-800 text-emerald-300 mb-3 space-y-1" : "p-3 rounded-xl border bg-rose-950/90 border-rose-800 text-rose-300 mb-3 space-y-1";
-        document.getElementById('feedback-icon').innerHTML = isCorrect ? '✅' : '❌';
-        document.getElementById('feedback-title').innerText = isCorrect ? `答對了！(+$${earn})` : '答錯了！';
-        document.getElementById('feedback-exp').innerText = q.explanation || '';
-        document.getElementById('btn-submit-answer').innerText = "下一題 ➔";
+        submitCurrentAnswer();
       } else {
-        state.activeQuiz.idx++;
-        if (state.activeQuiz.idx < state.activeQuiz.questions.length) { loadQuizQuestion(); }
-        else {
-          state.subjectUnits[state.activeQuiz.subject]++;
-          saveState(); confetti({ particleCount: 80 }); alert('🎉 單元完成！'); exitQuizSession();
-        }
+        advanceToNextQuestion();
       }
     }
 
+    function submitCurrentAnswer() {
+      const q = state.activeQuiz.questions[state.activeQuiz.idx];
+      let isCorrect = false;
+
+      if (q.type === 'choice' || q.type === 'fill') {
+        if (state.activeQuiz.selectedOpt === null) { alert('請先選擇一個答案！'); return; }
+        isCorrect = state.activeQuiz.selectedOpt === q.correct;
+      } else if (q.type === 'tf') {
+        if (state.activeQuiz.userTFAnswer === null) { alert('請選擇 O 或 X！'); return; }
+        isCorrect = state.activeQuiz.userTFAnswer === q.tfCorrect;
+      } else if (q.type === 'matching') {
+        if (state.matchingState.matchedCount < q.pairs.length) { alert('請先完成所有項目配對！'); return; }
+        isCorrect = true;
+      }
+
+      state.activeQuiz.isSubmitted = true;
+      const panel = document.getElementById('feedback-panel'); panel.classList.remove('hidden');
+
+      if (isCorrect) {
+        const earnMoney = Math.round(80 * state.userStats.bonusMultiplier);
+        state.userStats.money += earnMoney; saveState();
+        panel.className = "p-3 rounded-xl border bg-emerald-950/90 border-emerald-800 text-emerald-300 mb-3 space-y-1";
+        document.getElementById('feedback-icon').innerHTML = '✅';
+        document.getElementById('feedback-title').innerText = `答對了！(+$${earnMoney} 獎金)`;
+      } else {
+        panel.className = "p-3 rounded-xl border bg-rose-950/90 border-rose-800 text-rose-300 mb-3 space-y-1";
+        document.getElementById('feedback-icon').innerHTML = '❌';
+        document.getElementById('feedback-title').innerText = '答錯了！再接再勵！';
+      }
+
+      document.getElementById('feedback-exp').innerText = q.explanation || '多刷幾次就記住了！';
+      const submitBtn = document.getElementById('btn-submit-answer');
+      submitBtn.innerText = "確定 / 下一題 ➔";
+    }
+
+    function advanceToNextQuestion() {
+      state.activeQuiz.idx++;
+      if (state.activeQuiz.idx < state.activeQuiz.questions.length) {
+        loadQuizQuestion();
+      } else {
+        state.subjectUnits[state.activeQuiz.subject] = (state.subjectUnits[state.activeQuiz.subject] || 0) + 1;
+        saveState();
+        confetti({ particleCount: 80, spread: 60 });
+        alert('🎉 成功完成一個單元闖關！單元進度 +1！');
+        exitQuizSession();
+      }
+    }
+
+    /* CAREER STORY ENGINE (嚴格職等過濾與智慧發言人/頭像系統) */
     function renderCareerUnits() {
-      const container = document.getElementById('career-units-list'); container.innerHTML = '';
+      const container = document.getElementById('career-units-list');
+      container.innerHTML = '';
+
       WORK_UNITS.forEach(u => {
         const workCount = state.unitWorkCounts[u.id] || 0;
+        let tier = getRankTier(workCount);
+        let rankTitle = getRankTitle(workCount);
+
         const card = document.createElement('div');
-        card.className = "bg-slate-900 border border-slate-800 rounded-2xl p-4 flex justify-between items-center";
+        card.className = `bg-slate-900 border border-slate-800 rounded-2xl p-4 flex justify-between items-center`;
+        
         card.innerHTML = `
           <div class="flex items-center space-x-3">
-            <div class="w-10 h-10 rounded-xl bg-slate-800 flex items-center justify-center text-sky-400 text-lg"><i class="fa-solid ${u.icon}"></i></div>
-            <div><h4 class="font-extrabold text-sm text-slate-100">${u.name}</h4><span class="text-[10px] text-emerald-400 font-bold">階級: ${getRankTitle(workCount)}</span></div>
+            <div class="w-10 h-10 rounded-xl bg-slate-800 flex items-center justify-center text-sky-400 text-lg">
+              <i class="fa-solid ${u.icon}"></i>
+            </div>
+            <div>
+              <h4 class="font-extrabold text-sm text-slate-100">${u.name}</h4>
+              <span class="text-[10px] text-emerald-400 font-bold">目前階級: ${rankTitle} (上班 ${workCount} 次)</span>
+            </div>
           </div>
-          <button onclick="startDepartmentStory('${u.id}')" class="px-3.5 py-1.5 bg-sky-500 text-slate-950 font-black text-xs rounded-xl btn-duo">開始上班</button>
+          <button onclick="startDepartmentStory('${u.id}')" class="px-3.5 py-1.5 bg-sky-500 hover:bg-sky-400 text-slate-950 font-black text-xs rounded-xl btn-duo">
+            開始上班
+          </button>
         `;
         container.appendChild(card);
       });
@@ -726,9 +879,29 @@
 
     function startDepartmentStory(unitId) {
       const unit = WORK_UNITS.find(u => u.id === unitId);
-      const pool = state.stories.filter(s => s.department === unitId);
-      const randomStory = pool.length > 0 ? pool[0] : DEFAULT_STORY_DATABASE[0];
-      state.vnActive = { unitId: unitId, unitName: unit.name, storyTitle: randomStory.title, execQueue: JSON.parse(JSON.stringify(randomStory.steps)), queueIndex: 0, earnedPay: 0, tempFlags: {} };
+      const workCount = state.unitWorkCounts[unitId] || 0;
+      const currentTier = getRankTier(workCount);
+
+      let pool = state.stories.filter(s => s.department === unitId && s.rankTier === currentTier);
+      
+      if (pool.length === 0) {
+        alert(`⚠️ 【職等過濾提示】目前科別「${unit.name}」在您的當前職等（Tier ${currentTier}: ${getRankTitle(workCount)}）尚無專屬劇本！請至右下角「資料庫管理 ➔ 職場 VN 故事 JSON」匯入或新增符合此職等的故事。`);
+        return;
+      }
+
+      const randomStory = pool[Math.floor(Math.random() * pool.length)];
+
+      state.vnActive = {
+        unitId: unitId,
+        unitName: unit.name,
+        reqSubject: unit.reqSubject,
+        storyTitle: randomStory.title || unit.name,
+        execQueue: JSON.parse(JSON.stringify(randomStory.steps || [])),
+        queueIndex: 0,
+        earnedPay: 0,
+        tempFlags: {}
+      };
+
       document.getElementById('vn-modal').classList.remove('hidden');
       renderVNCurrentStep();
     }
@@ -736,111 +909,328 @@
     function formatVNText(text) {
       if (!text) return "";
       const p = state.userStats;
-      return text.replace(/\{name\}/g, p.name).replace(/\{pronoun\}/g, p.gender === 'female' ? '妳' : '你');
+      const name = p.name || "實習生A";
+      const pronoun = p.gender === 'female' ? '妳' : '你';
+      const junior = p.gender === 'female' ? '學妹' : '學弟';
+
+      return text
+        .replace(/\{name\}/g, name)
+        .replace(/\{pronoun\}/g, pronoun)
+        .replace(/\{junior\}/g, junior);
+    }
+
+    /* 【發言人與頭像分類引擎】 */
+    function getSpeakerCategory(speakerName, playerName) {
+      if (speakerName === playerName || speakerName.includes(playerName) || speakerName.includes("主角") || speakerName.includes("{name}")) {
+        return {
+          isPlayer: true,
+          title: playerName
+        };
+      }
+      if (speakerName === "旁白" || speakerName === "系統") {
+        return {
+          isPlayer: false,
+          title: speakerName,
+          bg: 'from-slate-700 to-slate-800',
+          border: 'border-slate-500',
+          icon: 'fa-bullhorn'
+        };
+      }
+      const patientKeywords = ['病人', '少年', '阿伯', '阿姨', '醉漢', '家屬', '少婦', '伯伯', '患者'];
+      const isPatient = patientKeywords.some(kw => speakerName.includes(kw));
+      if (isPatient) {
+        return {
+          isPlayer: false,
+          title: speakerName,
+          bg: 'from-rose-600 to-red-700',
+          border: 'border-rose-400',
+          icon: 'fa-user-injured'
+        };
+      }
+      if (speakerName.includes('主管') || speakerName.includes('主任') || speakerName.includes('院長')) {
+        return {
+          isPlayer: false,
+          title: speakerName,
+          bg: 'from-purple-600 to-indigo-700',
+          border: 'border-purple-400',
+          icon: 'fa-user-tie'
+        };
+      }
+      if (speakerName.includes('工程師') || speakerName.includes('維修')) {
+        return {
+          isPlayer: false,
+          title: speakerName,
+          bg: 'from-amber-600 to-yellow-700',
+          border: 'border-amber-400',
+          icon: 'fa-screwdriver-wrench'
+        };
+      }
+      return {
+        isPlayer: false,
+        title: speakerName,
+        bg: 'from-sky-600 to-blue-700',
+        border: 'border-sky-400',
+        icon: 'fa-user-doctor'
+      };
     }
 
     function renderVNCurrentStep() {
       const active = state.vnActive;
-      const choicesEl = document.getElementById('vn-choices-area'); choicesEl.innerHTML = '';
-      if (!active || active.queueIndex >= active.execQueue.length) { finishShiftAndSettle(); return; }
+      const choicesEl = document.getElementById('vn-choices-area');
+      choicesEl.innerHTML = '';
+
+      if (!active || active.queueIndex >= active.execQueue.length) {
+        finishShiftAndSettle();
+        return;
+      }
+
       const step = active.execQueue[active.queueIndex];
       document.getElementById('vn-story-title').innerText = active.storyTitle;
+
+      let speakerRaw = step.speaker || "旁白";
+      const formattedSpeaker = formatVNText(speakerRaw);
       const playerName = state.userStats.name || "實習生A";
-      const isPlayer = (step.speaker === playerName || step.speaker === "{name}");
-      
+
+      const speakerInfo = getSpeakerCategory(formattedSpeaker, playerName);
+
       const portraitContainer = document.getElementById('player-portrait-container');
       const portraitImg = document.getElementById('player-portrait-img');
       const standardAvatar = document.getElementById('vn-char-avatar');
 
-      if (isPlayer) {
-        portraitContainer.classList.remove('hidden'); standardAvatar.classList.add('hidden');
-        portraitImg.src = state.portraits[state.userStats.gender || 'male'] || '';
+      // 🎯 核心立繪切換：若為玩家說話，顯示使用者上傳的 PNG 立繪
+      if (speakerInfo.isPlayer) {
+        portraitContainer.classList.remove('hidden');
+        standardAvatar.classList.add('hidden');
+        const genderKey = state.userStats.gender || 'male';
+        portraitImg.src = state.portraits[genderKey] || '';
       } else {
-        portraitContainer.classList.add('hidden'); standardAvatar.classList.remove('hidden');
+        portraitContainer.classList.add('hidden');
+        standardAvatar.classList.remove('hidden');
+        standardAvatar.className = `w-14 h-14 rounded-2xl bg-gradient-to-tr ${speakerInfo.bg} border-2 ${speakerInfo.border} flex items-center justify-center text-white text-2xl shadow-lg`;
+        document.getElementById('vn-avatar-icon').className = `fa-solid ${speakerInfo.icon}`;
       }
 
-      document.getElementById('vn-speaker-title').innerText = step.speaker || "旁白";
-      document.getElementById('vn-speaker-name').innerText = step.speaker || "旁白";
+      document.getElementById('vn-speaker-title').innerText = speakerInfo.title;
+      document.getElementById('vn-speaker-name').innerText = speakerInfo.title;
 
       if (step.type === 'choice') {
-        document.getElementById('vn-dialogue-text').innerText = formatVNText(step.text);
+        document.getElementById('vn-speaker-title').innerText = "抉擇時刻";
+        document.getElementById('vn-speaker-name').innerText = "請選擇";
+        document.getElementById('vn-dialogue-text').innerText = formatVNText(step.text || "請做出您的職場抉擇：");
+        
         step.choices.forEach(c => {
           const btn = document.createElement('button');
-          btn.className = "w-full p-2.5 bg-slate-800 hover:bg-slate-700 rounded-xl text-left text-xs text-slate-200 font-bold";
+          if (c.payCost) {
+            btn.className = "w-full p-2.5 bg-amber-600/90 hover:bg-amber-500 rounded-xl text-left text-xs text-slate-950 font-black border border-amber-400";
+          } else {
+            btn.className = "w-full p-2.5 bg-slate-800 hover:bg-slate-700 rounded-xl text-left text-xs text-slate-200 border border-slate-700 font-bold";
+          }
           btn.innerText = formatVNText(c.txt);
           btn.onclick = (e) => {
             e.stopPropagation();
             if (c.payCost) {
-              if (state.userStats.money < c.payCost) { alert('金錢不足！'); return; }
-              state.userStats.money -= c.payCost; saveState();
+              if (state.userStats.money < c.payCost) { alert('金錢不足！無法選擇此項！'); return; }
+              state.userStats.money -= c.payCost;
+              saveState();
             }
-            if (c.resultSteps) active.execQueue.splice(active.queueIndex + 1, 0, ...c.resultSteps);
-            active.queueIndex++; renderVNCurrentStep();
+            if (c.setFlag) {
+              active.tempFlags[c.setFlag] = true;
+              state.storyFlags[c.setFlag] = true;
+              saveState();
+            }
+            if (c.resultSteps && c.resultSteps.length > 0) {
+              active.execQueue.splice(active.queueIndex + 1, 0, ...c.resultSteps);
+            }
+            active.queueIndex++;
+            renderVNCurrentStep();
           };
           choicesEl.appendChild(btn);
         });
+
       } else if (step.type === 'quiz') {
-        document.getElementById('vn-dialogue-text').innerText = formatVNText(step.text);
-        const btn = document.createElement('button');
-        btn.className = "w-full p-2.5 bg-emerald-500 text-slate-950 font-black rounded-xl text-xs";
-        btn.innerText = "完成抽考 ➔";
-        btn.onclick = (e) => { e.stopPropagation(); active.queueIndex++; renderVNCurrentStep(); };
-        choicesEl.appendChild(btn);
+        document.getElementById('vn-speaker-title').innerText = "午休抽考";
+        document.getElementById('vn-speaker-name').innerText = "國考考題";
+        document.getElementById('vn-dialogue-text').innerText = formatVNText(step.text || "午休國考題時間！");
+        triggerVNQuizModal(step);
+
+      } else if (step.type === 'flagCheck') {
+        const hasF = state.storyFlags[step.flag] || active.tempFlags[step.flag];
+        document.getElementById('vn-speaker-title').innerText = "因果結算";
+        document.getElementById('vn-speaker-name').innerText = "事件結算";
+        if (hasF) {
+          document.getElementById('vn-dialogue-text').innerHTML = `<span class="text-rose-400 font-bold">${formatVNText(step.matchText)}</span>`;
+          active.earnedPay -= 80;
+        } else {
+          document.getElementById('vn-dialogue-text').innerHTML = `<span class="text-emerald-400 font-bold">${formatVNText(step.normalText)}</span>`;
+          active.earnedPay += 50;
+        }
+
       } else {
         document.getElementById('vn-dialogue-text').innerText = formatVNText(step.text || "");
       }
     }
 
     function handleVNDialogueClick() {
-      if (!state.vnActive) return;
-      const step = state.vnActive.execQueue[state.vnActive.queueIndex];
+      const active = state.vnActive;
+      if (!active) return;
+      const step = active.execQueue[active.queueIndex];
       if (step && (step.type === 'choice' || step.type === 'quiz')) return;
-      state.vnActive.queueIndex++; renderVNCurrentStep();
+
+      active.queueIndex++;
+      renderVNCurrentStep();
+    }
+
+    function triggerVNQuizModal(stepObj) {
+      const active = state.vnActive;
+      const choicesEl = document.getElementById('vn-choices-area');
+      choicesEl.innerHTML = '';
+
+      const subjectQuestions = state.questions.filter(q => q.subject === active.reqSubject);
+      if (subjectQuestions.length === 0) {
+        document.getElementById('vn-dialogue-text').innerHTML = `<span class="text-amber-400 font-bold">當前科目題庫為 0 題！這次自動算你過關。</span>`;
+        const btn = document.createElement('button');
+        btn.className = "w-full p-2.5 bg-emerald-500 text-slate-950 font-black rounded-xl text-xs";
+        btn.innerText = "繼續下午班 ➔";
+        btn.onclick = (e) => { e.stopPropagation(); active.queueIndex++; renderVNCurrentStep(); };
+        choicesEl.appendChild(btn);
+        return;
+      }
+
+      const q = subjectQuestions[Math.floor(Math.random() * subjectQuestions.length)];
+      document.getElementById('vn-dialogue-text').innerHTML = `<span class="text-amber-400 font-bold">⚡【國考題隨機考】</span><br><b>${q.question}</b>`;
+
+      if (q.type === 'choice' || q.type === 'fill') {
+        q.options.forEach((opt, i) => {
+          const btn = document.createElement('button');
+          btn.className = "w-full p-2 bg-slate-800 hover:bg-slate-700 rounded-xl text-left text-xs text-slate-200 border border-slate-700 font-semibold";
+          btn.innerText = opt;
+          btn.onclick = (e) => {
+            e.stopPropagation();
+            if (i === q.correct) {
+              alert('✅ 答對了！獎金 +$100！'); active.earnedPay += 100;
+            } else {
+              alert('❌ 答錯了！扣款 $30！'); active.earnedPay -= 30;
+            }
+            active.queueIndex++; renderVNCurrentStep();
+          };
+          choicesEl.appendChild(btn);
+        });
+      } else if (q.type === 'tf') {
+        ['true', 'false'].forEach(val => {
+          const btn = document.createElement('button');
+          btn.className = "w-full p-2 bg-slate-800 hover:bg-slate-700 rounded-xl text-center text-xs text-slate-200 border border-slate-700 font-semibold";
+          btn.innerText = (val === 'true') ? '⭕ 正確' : '❌ 錯誤';
+          btn.onclick = (e) => {
+            e.stopPropagation();
+            if ((val === 'true') === q.tfCorrect) {
+              alert('✅ 答對了！獎金 +$100！'); active.earnedPay += 100;
+            } else {
+              alert('❌ 答錯了！扣款 $30！'); active.earnedPay -= 30;
+            }
+            active.queueIndex++; renderVNCurrentStep();
+          };
+          choicesEl.appendChild(btn);
+        });
+      } else {
+        const btn = document.createElement('button');
+        btn.className = "w-full p-2 bg-emerald-500 text-slate-950 font-black rounded-xl text-xs";
+        btn.innerText = "完成挑戰 ➔";
+        btn.onclick = (e) => { e.stopPropagation(); active.queueIndex++; renderVNCurrentStep(); };
+        choicesEl.appendChild(btn);
+      }
     }
 
     function finishShiftAndSettle() {
       const active = state.vnActive;
-      let finalPay = 100 + (active.earnedPay || 0);
-      alert(`🎉 下班！獲得津貼 $${finalPay}！`);
-      state.unitWorkCounts[active.unitId] = (state.unitWorkCounts[active.unitId] || 0) + 1;
-      state.userStats.money += finalPay; saveState();
-      closeVNStory(); renderCareerUnits();
+      let finalPay = 100 + active.earnedPay;
+
+      alert(`🎉 今日順利完成 ${active.unitName} 打卡下班！獲得津貼 $${finalPay}！`);
+
+      const unitId = active.unitId;
+      state.unitWorkCounts[unitId] = (state.unitWorkCounts[unitId] || 0) + 1;
+      state.userStats.money += finalPay;
+      saveState();
+
+      closeVNStory();
+      renderCareerUnits();
     }
 
     function closeVNStory() { document.getElementById('vn-modal').classList.add('hidden'); }
 
+    /* SHOP SYSTEM */
     function renderShop() {
       const container = document.getElementById('shop-items-container');
       container.innerHTML = `
         <div class="bg-slate-900 border border-slate-800 p-4 rounded-2xl flex justify-between items-center">
           <div>
-            <h4 class="font-extrabold text-sm text-slate-100">☕ 專注大杯冰美式 (金幣加倍)</h4>
+            <h4 class="font-extrabold text-sm text-slate-100">☕ 專注大杯冰美式 (刷題與打卡收入 +50%)</h4>
             <p class="text-xs text-slate-400">目前倍率：${state.userStats.bonusMultiplier}x</p>
           </div>
-          <button onclick="buyUpgrade()" class="px-3.5 py-2 bg-amber-500 text-slate-950 font-black text-xs rounded-xl">$500 升級</button>
+          <button onclick="buyUpgrade('multiplier')" class="px-3.5 py-2 bg-amber-500 text-slate-950 font-black text-xs rounded-xl">
+            $500 升級
+          </button>
         </div>
       `;
     }
 
-    function buyUpgrade() {
-      if (state.userStats.money < 500) { alert('金錢不足！'); return; }
-      state.userStats.money -= 500;
-      state.userStats.bonusMultiplier += 0.5;
-      saveState(); alert('🎉 升級成功！'); renderShop();
+    function buyUpgrade(type) {
+      if (type === 'multiplier') {
+        if (state.userStats.money < 500) { alert('金錢不足！請多去刷題或上班！'); return; }
+        state.userStats.money -= 500;
+        state.userStats.bonusMultiplier += 0.5;
+        saveState();
+        alert('🎉 升級成功！金幣收益倍率增加！');
+        renderShop();
+      }
     }
 
-    /* 🛠️ 修復刪除 Bug 與題庫管理 */
+    /* EDITOR */
+    function renderMatchingInputs() {
+      const container = document.getElementById('matching-inputs-container');
+      if (!container) return;
+      container.innerHTML = '';
+      for (let i = 0; i < 6; i++) {
+        const row = document.createElement('div');
+        row.className = "grid grid-cols-2 gap-2";
+        row.innerHTML = `
+          <input type="text" id="m-left-${i}" placeholder="組${i+1} 左欄" class="bg-slate-900 border border-slate-700 rounded-lg p-1.5 text-xs">
+          <input type="text" id="m-right-${i}" placeholder="組${i+1} 右欄對應" class="bg-slate-900 border border-slate-700 rounded-lg p-1.5 text-xs">
+        `;
+        container.appendChild(row);
+      }
+    }
+
+    function toggleEditorTypeFields() {
+      const type = document.getElementById('ed-type').value;
+      document.getElementById('group-options').classList.add('hidden');
+      document.getElementById('group-matching').classList.add('hidden');
+      document.getElementById('group-tf').classList.add('hidden');
+
+      if (type === 'choice' || type === 'fill') document.getElementById('group-options').classList.remove('hidden');
+      if (type === 'matching') {
+        document.getElementById('group-matching').classList.remove('hidden');
+        renderMatchingInputs();
+      }
+      if (type === 'tf') document.getElementById('group-tf').classList.remove('hidden');
+    }
+
     function renderEditorQuestionList() {
       const listContainer = document.getElementById('editor-question-list');
       document.getElementById('ed-total-count').innerText = `${state.questions.length} 題`;
       if (!listContainer) return;
       listContainer.innerHTML = '';
-      state.questions.forEach((q, idx) => {
+      state.questions.forEach((q) => {
         const item = document.createElement('div');
         item.className = "bg-slate-900 border border-slate-800 p-2.5 rounded-lg flex justify-between items-center text-xs";
+        const subName = SUBJECTS[q.subject] ? SUBJECTS[q.subject].name : q.subject;
         item.innerHTML = `
-          <div class="truncate pr-2 flex-1"><p class="text-slate-200 font-semibold truncate">${q.question}</p></div>
-          <button onclick="deleteQuestion(${idx})" class="px-2 py-1 bg-rose-950 text-rose-400 rounded font-bold text-[10px]">刪除</button>
+          <div class="truncate pr-2 space-y-0.5 flex-1">
+            <div class="flex items-center gap-1.5">
+              <span class="bg-slate-800 text-emerald-400 px-1.5 py-0.5 rounded text-[10px] font-bold">${subName}</span>
+            </div>
+            <p class="text-slate-200 font-semibold truncate">${q.question}</p>
+          </div>
+          <button onclick="deleteQuestion('${q.id}')" class="px-2 py-1 bg-rose-950 text-rose-400 rounded font-bold text-[10px]">刪除</button>
         `;
         listContainer.appendChild(item);
       });
@@ -851,29 +1241,60 @@
       document.getElementById('ed-story-total-count').innerText = `${state.stories.length} 篇`;
       if (!listContainer) return;
       listContainer.innerHTML = '';
-      state.stories.forEach((st, idx) => {
+      state.stories.forEach((st) => {
         const item = document.createElement('div');
         item.className = "bg-slate-900 border border-slate-800 p-2.5 rounded-lg flex justify-between items-center text-xs";
         item.innerHTML = `
-          <div class="truncate pr-2 flex-1"><p class="text-slate-200 font-semibold truncate">${st.title}</p></div>
-          <button onclick="deleteStory(${idx})" class="px-2 py-1 bg-rose-950 text-rose-400 rounded font-bold text-[10px]">刪除</button>
+          <div class="truncate pr-2 space-y-0.5 flex-1">
+            <p class="text-slate-200 font-semibold truncate">${st.title}</p>
+          </div>
+          <button onclick="deleteStory('${st.id}')" class="px-2 py-1 bg-rose-950 text-rose-400 rounded font-bold text-[10px]">刪除</button>
         `;
         listContainer.appendChild(item);
       });
     }
 
-    function deleteQuestion(index) {
-      if (confirm('確定刪除此題？')) {
-        state.questions.splice(index, 1);
-        renderEditorQuestionList(); renderQuizMap();
+    function deleteQuestion(id) {
+      if (confirm('確定要刪除這道題目嗎？')) {
+        state.questions = state.questions.filter(q => q.id !== id);
+        saveState(); renderEditorQuestionList(); renderQuizMap();
       }
     }
 
-    function deleteStory(index) {
-      if (confirm('確定刪除此故事？')) {
-        state.stories.splice(index, 1);
-        renderEditorStoryList();
+    function deleteStory(id) {
+      if (confirm('確定要刪除這篇職場故事劇本嗎？')) {
+        state.stories = state.stories.filter(s => s.id !== id);
+        saveState(); renderEditorStoryList();
       }
+    }
+
+    function saveQuestionToDB() {
+      const sub = document.getElementById('ed-subject').value;
+      const type = document.getElementById('ed-type').value;
+      const qText = document.getElementById('ed-text').value.trim();
+      const imgUrl = document.getElementById('ed-img').value.trim();
+      const exp = document.getElementById('ed-exp').value.trim();
+
+      if (!qText) { alert('請填寫題目敘述！'); return; }
+
+      let qObj = { id: 'q_' + Date.now(), subject: sub, type: type, question: qText, imgUrl: imgUrl, explanation: exp };
+
+      if (type === 'choice' || type === 'fill') {
+        qObj.options = [
+          document.getElementById('ed-opt-0').value.trim(),
+          document.getElementById('ed-opt-1').value.trim(),
+          document.getElementById('ed-opt-2').value.trim(),
+          document.getElementById('ed-opt-3').value.trim()
+        ].filter(o => o !== '');
+        qObj.correct = parseInt(document.getElementById('ed-correct-idx').value) || 0;
+      } else if (type === 'tf') {
+        qObj.tfCorrect = document.getElementById('ed-tf-correct').value === 'true';
+      }
+
+      state.questions.unshift(qObj); saveState();
+      alert('✅ 題目成功儲存至本地庫！');
+      document.getElementById('ed-text').value = '';
+      renderEditorQuestionList(); renderQuizMap();
     }
 
     function exportQuizJSON() {
@@ -888,7 +1309,8 @@
         try {
           const imported = JSON.parse(evt.target.result);
           state.questions = state.questions.concat(imported);
-          alert(`🎉 成功匯入 ${imported.length} 題！`);
+          saveState();
+          alert(`🎉 成功合併匯入 ${imported.length} 題！`);
           renderEditorQuestionList(); renderQuizMap();
         } catch (err) { alert('格式錯誤！'); }
       };
@@ -907,7 +1329,8 @@
         try {
           const imported = JSON.parse(evt.target.result);
           state.stories = state.stories.concat(imported);
-          alert(`🎉 成功匯入 ${imported.length} 篇故事！`);
+          saveState();
+          alert(`🎉 成功合併匯入 ${imported.length} 篇故事！`);
           renderEditorStoryList();
         } catch (err) { alert('格式錯誤！'); }
       };
@@ -916,12 +1339,17 @@
 
     function openModal(id) { 
       document.getElementById(id).classList.remove('hidden'); 
-      if (id === 'modal-editor') switchEditorTab('quiz');
+      if (id === 'modal-editor') {
+        switchEditorTab('quiz');
+      } else if (id === 'modal-profile') {
+        document.getElementById('input-char-name').value = state.userStats.name || '實習生A';
+        setGenderSelection(state.userStats.gender || 'male');
+      }
     }
     function closeModal(id) { document.getElementById(id).classList.add('hidden'); }
     function shuffle(arr) { return arr.sort(() => Math.random() - 0.5); }
 
-    window.onload = function() { loadState(); };
+    window.onload = function() { loadState(); renderQuizMap(); renderMatchingInputs(); };
   </script>
 </body>
 </html>
