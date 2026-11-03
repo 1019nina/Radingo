@@ -52,7 +52,7 @@
     </div>
   </div>
 
-  <!-- TOP HEADER (金錢與身分設定按鈕 + 語言切換) -->
+  <!-- TOP HEADER -->
   <header class="sticky top-0 z-40 bg-slate-900/90 backdrop-blur border-b border-slate-800 px-4 py-3">
     <div class="max-w-md mx-auto flex justify-between items-center">
       <div class="flex items-center space-x-2">
@@ -266,7 +266,7 @@
     </div>
   </div>
 
-  <!-- MODAL 2: DUAL EDITOR (新增題目時可選擇語系 tag) -->
+  <!-- MODAL 2: DUAL EDITOR -->
   <div id="modal-editor" class="hidden fixed inset-0 bg-black/80 backdrop-blur-sm z-50 flex items-center justify-center p-4">
     <div class="bg-slate-900 border border-slate-800 rounded-2xl w-full max-w-md max-h-[85vh] flex flex-col overflow-hidden">
       <div class="p-4 border-b border-slate-800 flex justify-between items-center bg-slate-800/50">
@@ -280,6 +280,7 @@
       </div>
 
       <div class="p-4 overflow-y-auto space-y-4 text-xs flex-1">
+        <!-- 題庫管理頁 -->
         <div id="ed-subview-quiz" class="space-y-4">
           <div class="bg-slate-800 p-3 rounded-xl space-y-2 border border-slate-700">
             <span class="font-bold text-slate-300" data-i18n="json_title">📥 題庫 JSON 匯入與匯出</span>
@@ -337,9 +338,10 @@
           </div>
         </div>
 
+        <!-- 故事管理頁 (中英文分開匯入匯出 - 需求 4) -->
         <div id="ed-subview-story" class="hidden space-y-4">
           <div class="bg-slate-800 p-3 rounded-xl space-y-2 border border-slate-700">
-            <span class="font-bold text-sky-400" data-i18n="story_json_title">📖 職場 VN 故事 JSON</span>
+            <span class="font-bold text-sky-400" data-i18n="story_json_title">📖 職場 VN 故事 JSON (支援語系獨立)</span>
             <div class="grid grid-cols-2 gap-2 pt-1">
               <button onclick="exportStoryJSON()" class="py-2 bg-slate-700 hover:bg-slate-600 rounded-lg font-bold" data-i18n="btn_export_story">匯出故事 JSON</button>
               <label class="py-2 bg-sky-600 hover:bg-sky-500 rounded-lg font-bold text-center cursor-pointer text-white">
@@ -347,6 +349,43 @@
               </label>
             </div>
           </div>
+
+          <div class="bg-slate-800 p-3.5 rounded-xl border border-slate-700 space-y-3">
+            <span class="font-bold text-emerald-400 text-sm block">職等與科別篩選檢視</span>
+            <div class="grid grid-cols-2 gap-2">
+              <div>
+                <label class="text-slate-400 block mb-1 text-[11px]">篩選科別 (Department)</label>
+                <select id="filter-story-dept" onchange="renderEditorStoryList()" class="w-full bg-slate-900 border border-slate-700 rounded-lg p-2 text-slate-200 text-xs">
+                  <option value="all">全部科別</option>
+                  <option value="xray">一般 X 光</option>
+                  <option value="er">急診 (CT/X-ray)</option>
+                  <option value="ct">CT 電腦斷層</option>
+                  <option value="mri">MRI 磁振造影</option>
+                  <option value="mammo">Mammo 乳房攝影</option>
+                  <option value="sono">Sono 超音波</option>
+                  <option value="cath">心導管室</option>
+                  <option value="dental">牙科攝影</option>
+                  <option value="angio">Angio 血管攝影</option>
+                  <option value="special">Special 特殊攝影</option>
+                  <option value="dexa">DEXA 骨質密度</option>
+                  <option value="nuc">核子醫學</option>
+                  <option value="rt">RT 放射線治療</option>
+                </select>
+              </div>
+              <div>
+                <label class="text-slate-400 block mb-1 text-[11px]">篩選職等 (Rank Tier)</label>
+                <select id="filter-story-tier" onchange="renderEditorStoryList()" class="w-full bg-slate-900 border border-slate-700 rounded-lg p-2 text-slate-200 text-xs">
+                  <option value="all">全部職等</option>
+                  <option value="0">0: 見習生(0~19次)</option>
+                  <option value="1">1: 實習生(20~49次)</option>
+                  <option value="2">2: PGY(50~99次)</option>
+                  <option value="3">3: 放射師(100~199次)</option>
+                  <option value="4">4: 資深帶教老鳥(200+次)</option>
+                </select>
+              </div>
+            </div>
+          </div>
+
           <div class="bg-slate-800 p-3.5 rounded-xl border border-slate-700 space-y-2.5">
             <div class="flex justify-between items-center"><span class="font-bold text-sky-400 text-sm">📚 故事清單</span><span id="ed-story-total-count" class="text-emerald-400 font-bold text-xs">0 篇</span></div>
             <div id="editor-story-list" class="space-y-2 max-h-60 overflow-y-auto pr-1"></div>
@@ -357,6 +396,7 @@
   </div>
 
   <script>
+    /* 雙語字典與翻譯字典 (需求 3) */
     const I18N = {
       zh: {
         nav_quiz: "國考刷題區",
@@ -366,9 +406,17 @@
         quiz_title: "單元地圖（無體力限制）",
         quiz_desc: "初始題庫包含各科國考精選題！亦可至右下角新增或匯入中文題庫。",
         btn_check: "檢查答案",
-        career_badge: "🏥 5大職等 RPG 故事區",
+        start_quiz: "開始刷題",
+        completed_units: "已完成",
+        avail_questions: "可用題庫",
+        questions_unit: "題",
+        units_unit: "單元",
+        career_badge: "🏥 5大職等 RPG 故事區 (嚴格職等過濾)",
         career_title: "選擇指定科別，系統自動依當前累積職等嚴格抽樣劇本！",
         career_desc: "晉升制度：0~19(見習生) ➔ 20~49(實習生) ➔ 50~99(PGY) ➔ 100~199(放射師) ➔ 200+(資深帶教老鳥)",
+        start_work: "開始上班",
+        current_rank: "目前階級",
+        shifts_count: "上班次數",
         shop_title: "裝備升級商店 (5大限時 Buff 道具)",
         shop_desc: "購買專屬裝備與咖啡，大幅提升刷題與職場收益！",
         btn_exit_vn: "退出職場",
@@ -412,17 +460,25 @@
         nav_shop: "Equipment Shop",
         nav_db: "Database Admin",
         quiz_title: "Subject Map (Unlimited)",
-        quiz_desc: "Contains selected radiography national exam questions! Import or add English JSON via bottom right.",
+        quiz_desc: "Selected radiography exam questions! Import or add English JSON via bottom right.",
         btn_check: "Check Answer",
-        career_badge: "🏥 5-Rank RPG Stories",
-        career_title: "Select department, scenario adapts to your cumulative rank tier!",
+        start_quiz: "Start Practice",
+        completed_units: "Completed",
+        avail_questions: "Available",
+        questions_unit: "Q",
+        units_unit: "Units",
+        career_badge: "🏥 5-Rank RPG Stories (Rank-Filtered)",
+        career_title: "Select department, scenario adapts strictly to your cumulative rank tier!",
         career_desc: "Ranks: 0~19 (Novice) ➔ 20~49 (Intern) ➔ 50~99 (PGY) ➔ 100~199 (Radiographer) ➔ 200+ (Senior)",
+        start_work: "Start Shift",
+        current_rank: "Current Rank",
+        shifts_count: "Shifts",
         shop_title: "Equipment Shop (5 Timed Buff Items)",
         shop_desc: "Purchase gear and coffee to boost exam and career rewards!",
         btn_exit_vn: "Exit Shift",
         vn_click_tip: "▼ Click dialogue to continue",
         profile_title: "Character Setup",
-        profile_note: "ℹ️ Note: You can change this anytime by clicking the top-left button!",
+        profile_note: "ℹ️ Note: You can change this anytime by clicking top-left button!",
         label_char_name: "Character Name",
         label_gender: "Gender / Pronoun",
         gender_male: "👨 Male",
@@ -485,34 +541,55 @@
       renderShop();
     }
 
+    /* 科目名稱字典 (需求 3, 5) */
     const SUBJECTS = {
-      basic: { name: '基礎醫學', icon: 'fa-brain', color: 'from-pink-600 to-rose-700' },
-      physics: { name: '醫學物理與輻射安全', icon: 'fa-atom', color: 'from-blue-600 to-indigo-700' },
-      equip: { name: '放射線器材學', icon: 'fa-microchip', color: 'from-amber-600 to-orange-700' },
-      diag: { name: '放射線診斷原理與技術學', icon: 'fa-x-ray', color: 'from-emerald-600 to-teal-700' },
-      therapy: { name: '放射線治療原理與技術學', icon: 'fa-crosshairs', color: 'from-purple-600 to-violet-700' },
-      nuc: { name: '核子醫學診療原理與技術學', icon: 'fa-radiation', color: 'from-cyan-600 to-sky-700' }
+      basic: { name: { zh: '基礎醫學', en: 'Basic Medical Science' }, icon: 'fa-brain', color: 'from-pink-600 to-rose-700' },
+      physics: { name: { zh: '醫學物理與輻射安全', en: 'Medical Physics & Radiation Safety' }, icon: 'fa-atom', color: 'from-blue-600 to-indigo-700' },
+      equip: { name: { zh: '放射線器材學', en: 'Radiographic Equipment' }, icon: 'fa-microchip', color: 'from-amber-600 to-orange-700' },
+      diag: { name: { zh: '放射線診斷原理與技術學', en: 'Diagnostic Radiography & Technique' }, icon: 'fa-x-ray', color: 'from-emerald-600 to-teal-700' },
+      therapy: { name: { zh: '放射線治療原理與技術學', en: 'Radiation Therapy & Technique' }, icon: 'fa-crosshairs', color: 'from-purple-600 to-violet-700' },
+      nuc: { name: { zh: '核子醫學診療原理與技術學', en: 'Nuclear Medicine & Technique' }, icon: 'fa-radiation', color: 'from-cyan-600 to-sky-700' }
     };
 
+    /* 13 大職場科別字典 (需求 3, 6) */
     const WORK_UNITS = [
-      { id: 'xray', name: '一般 X 光', reqSubject: 'diag', icon: 'fa-x-ray' },
-      { id: 'er', name: '急診 (CT/X-ray)', reqSubject: 'diag', icon: 'fa-truck-medical' },
-      { id: 'ct', name: 'CT 電腦斷層', reqSubject: 'equip', icon: 'fa-circle-notch' },
-      { id: 'mri', name: 'MRI 磁振造影', reqSubject: 'equip', icon: 'fa-magnet' },
-      { id: 'mammo', name: 'Mammo 乳房攝影', reqSubject: 'basic', icon: 'fa-female' },
-      { id: 'sono', name: 'Sono 超音波', reqSubject: 'diag', icon: 'fa-wave-square' },
-      { id: 'cath', name: '心導管室', reqSubject: 'basic', icon: 'fa-heart-pulse' },
-      { id: 'dental', name: '牙科攝影', reqSubject: 'basic', icon: 'fa-tooth' },
-      { id: 'angio', name: 'Angio 血管攝影', reqSubject: 'basic', icon: 'fa-disease' },
-      { id: 'special', name: 'Special 特殊攝影', reqSubject: 'basic', icon: 'fa-flask-vial' },
-      { id: 'dexa', name: 'DEXA 骨質密度', reqSubject: 'basic', icon: 'fa-bone' },
-      { id: 'nuc', name: '核子醫學', reqSubject: 'nuc', icon: 'fa-atom' },
-      { id: 'rt', name: 'RT 放射線治療', reqSubject: 'therapy', icon: 'fa-crosshairs' }
+      { id: 'xray', name: { zh: '一般 X 光', en: 'General X-Ray' }, reqSubject: 'diag', icon: 'fa-x-ray' },
+      { id: 'er', name: { zh: '急診 (CT/X-ray)', en: 'ER (CT/X-Ray)' }, reqSubject: 'diag', icon: 'fa-truck-medical' },
+      { id: 'ct', name: { zh: 'CT 電腦斷層', en: 'CT Scan' }, reqSubject: 'equip', icon: 'fa-circle-notch' },
+      { id: 'mri', name: { zh: 'MRI 磁振造影', en: 'MRI' }, reqSubject: 'equip', icon: 'fa-magnet' },
+      { id: 'mammo', name: { zh: 'Mammo 乳房攝影', en: 'Mammography' }, reqSubject: 'basic', icon: 'fa-female' },
+      { id: 'sono', name: { zh: 'Sono 超音波', en: 'Ultrasound' }, reqSubject: 'diag', icon: 'fa-wave-square' },
+      { id: 'cath', name: { zh: '心導管室', en: 'Cath Lab' }, reqSubject: 'basic', icon: 'fa-heart-pulse' },
+      { id: 'dental', name: { zh: '牙科攝影', en: 'Dental Imaging' }, reqSubject: 'basic', icon: 'fa-tooth' },
+      { id: 'angio', name: { zh: 'Angio 血管攝影', en: 'Angiography' }, reqSubject: 'basic', icon: 'fa-disease' },
+      { id: 'special', name: { zh: 'Special 特殊攝影', en: 'Special Procedures' }, reqSubject: 'basic', icon: 'fa-flask-vial' },
+      { id: 'dexa', name: { zh: 'DEXA 骨質密度', en: 'DEXA Scan' }, reqSubject: 'basic', icon: 'fa-bone' },
+      { id: 'nuc', name: { zh: '核子醫學', en: 'Nuclear Medicine' }, reqSubject: 'nuc', icon: 'fa-atom' },
+      { id: 'rt', name: { zh: 'RT 放射線治療', en: 'Radiation Therapy' }, reqSubject: 'therapy', icon: 'fa-crosshairs' }
     ];
 
+    /* 5 大職等計算邏輯 (需求 6) */
+    function getRankTier(workCount) {
+      if (workCount < 20) return 0;
+      if (workCount < 50) return 1;
+      if (workCount < 100) return 2;
+      if (workCount < 200) return 3;
+      return 4;
+    }
+
+    function getRankTitle(workCount) {
+      const tier = getRankTier(workCount);
+      const titles = {
+        zh: ['見習生(0~19次)', '實習生(20~49次)', 'PGY(50~99次)', '放射師(100~199次)', '資深帶教老鳥(200+次)'],
+        en: ['Novice (0~19)', 'Intern (20~49)', 'PGY (50~99)', 'Radiographer (100~199)', 'Senior (200+)']
+      };
+      return titles[currentLang][tier];
+    }
+
+    /* 預設劇本庫 (已修正對話 <span> Bug 與代詞代入 - 需求 1, 2, 4, 6) */
     const DEFAULT_STORY_DATABASE = [
       {
-        id: 'xr_tier_0', department: 'xray', rankTier: 0, title: '初入 X 光控制室的震驚',
+        id: 'xr_tier_0', lang: 'zh', department: 'xray', rankTier: 0, title: '初入 X 光控制室的震驚',
         steps: [
           { speaker: "學姐", text: "走進 X 光控制室，學姐看著新聞搖頭抱怨：「現在的小年輕騎腳踏車摔斷手，送到醫院第一件事不是哭，是叫同伴拿手機拍照打卡發限動！」" },
           { speaker: "{name}", text: "「真的假的！{pronoun}覺得現在的年輕人太誇張了吧...」" },
@@ -526,23 +603,26 @@
           },
           { speaker: "學姐", text: "「好啦，準備迎接 12 點的午休抽考吧！」" },
           { type: "quiz", text: "12:00 午休時間到了，隨機抽考診斷學：" },
-          { type: "flagCheck", flag: "RAGED_PATIENT", matchText: "滑板少年上網投訴{pronoun}態度輕浮！扣除獎金 $80！", normalText: "主管誇獎{pronoun}服務態度良好！獲得獎金 +$50！" },
+          { type: "flagCheck", flag: "RAGED_PATIENT", matchText: "滑板少年上網投訴{name}態度輕浮！扣除獎金 $80！", normalText: "主管誇獎{name}服務態度良好！獲得獎金 +$50！" },
           { speaker: "旁白", text: "一整天的忙碌終於結束，{name}順利打卡下班！" }
         ]
       }
     ];
 
+    /* 預設國考題庫 (需求 5) */
     const DEFAULT_QUESTIONS = [
       { id: 'q1', lang: 'zh', subject: 'basic', type: 'choice', question: '下列何者為人體中放射線感受性最高的細胞？', options: ['神經細胞', '肌肉細胞', '淋巴球與造血細胞', '骨細胞'], correct: 2, explanation: '根據柏格能-溫克定律，分裂越快、分化越差的細胞敏感度越高。' },
-      { id: 'q2', lang: 'zh', subject: 'physics', type: 'choice', question: '在加馬攝影機中，光電倍增管 (PMT) 的主要功能為：', options: ['將閃爍晶體產生的光子轉換並放大為電子訊號', '過濾散射射線', '產生高壓 X 光', '儲存數位影像'], correct: 0, explanation: 'PMT 將閃爍光子轉換成光電子並進行級聯放大。' }
+      { id: 'q2', lang: 'zh', subject: 'physics', type: 'choice', question: '在加馬攝影機中，光電倍增管 (PMT) 的主要功能為：', options: ['將閃爍晶體產生的光子轉換並放大為電子訊號', '過濾散射射線', '產生高壓 X 光', '儲存數位影像'], correct: 0, explanation: 'PMT 將閃爍光子轉換成光電子並進行級聯放大。' },
+      { id: 'q3', lang: 'en', subject: 'basic', type: 'choice', question: 'Which of the following cells has the highest radiosensitivity in the human body?', options: ['Nerve cells', 'Muscle cells', 'Lymphocytes & Hematopoietic cells', 'Bone cells'], correct: 2, explanation: 'According to the Law of Bergonie and Tribondeau, rapidly dividing and less differentiated cells are more sensitive.' }
     ];
 
+    /* 5 大限時 Buff 商店 (需求 3, 4) */
     const SHOP_ITEMS = [
-      { id: 'coffee', name: '☕ 專注大杯冰美式', cost: 300, durationMs: 600000, desc: '刷題與打卡金幣收益加倍 (2.0x)，持續 10 分鐘！' },
-      { id: 'capsule', name: '⚡ 雙倍咖啡因膠囊', cost: 250, durationMs: 600000, desc: '國考刷題答對獎勵額外加碼 +$50，持續 10 分鐘！' },
-      { id: 'lead_coat', name: '🛡️ 放射防護鉛衣', cost: 400, durationMs: 600000, desc: '職場物語失誤扣款時自動抵擋 1 次懲罰，持續 10 分鐘！' },
-      { id: 'blessing', name: '🍀 老鳥的祝福', cost: 500, durationMs: 600000, desc: '職場物語打卡獲得額外加成獎金，持續 10 分鐘！' },
-      { id: 'pass', name: '⏰ 加班通行證', cost: 350, durationMs: 600000, desc: '每次完成職場打卡固定津貼額外 +$50，持續 10 分鐘！' }
+      { id: 'coffee', name: { zh: '☕ 專注大杯冰美式', en: '☕ Large Iced Americano' }, cost: 300, durationMs: 600000, desc: { zh: '刷題與打卡金幣收益加倍 (2.0x)，持續 10 分鐘！', en: 'Double coin rewards for 10 minutes!' } },
+      { id: 'capsule', name: { zh: '⚡ 雙倍咖啡因膠囊', en: '⚡ Double Caffeine Capsule' }, cost: 250, durationMs: 600000, desc: { zh: '國考刷題答對獎勵額外加碼 +$50，持續 10 分鐘！', en: 'Extra +$50 for each correct quiz for 10 min!' } },
+      { id: 'lead_coat', name: { zh: '🛡️ 放射防護鉛衣', en: '🛡️ Protective Lead Apron' }, cost: 400, durationMs: 600000, desc: { zh: '職場物語失誤扣款時自動抵擋 1 次懲罰，持續 10 分鐘！', en: 'Blocks 1 penalty in Career RPG for 10 min!' } },
+      { id: 'blessing', name: { zh: '🍀 老鳥的祝福', en: '🍀 Senior\'s Blessing' }, cost: 500, durationMs: 600000, desc: { zh: '職場物語打卡獲得額外加成獎金，持續 10 分鐘！', en: 'Bonus shift allowance in Career RPG for 10 min!' } },
+      { id: 'pass', name: '⏰ 加班通行證', cost: 350, durationMs: 600000, desc: { zh: '每次完成職場打卡固定津貼額外 +$50，持續 10 分鐘！', en: 'Extra +$50 stipend upon completing shift for 10 min!' } }
     ];
 
     let state = {
@@ -567,8 +647,12 @@
         state.questions = q ? JSON.parse(q) : JSON.parse(JSON.stringify(DEFAULT_QUESTIONS));
       });
 
-      const stStore = localStorage.getItem('radingo_v20_stories');
-      state.stories = stStore ? JSON.parse(stStore) : JSON.parse(JSON.stringify(DEFAULT_STORY_DATABASE));
+      fetch('radingo_stories.json').then(res => res.json()).then(data => {
+        if (Array.isArray(data) && data.length > 0) state.stories = data;
+      }).catch(() => {
+        const stStore = localStorage.getItem('radingo_v20_stories');
+        state.stories = stStore ? JSON.parse(stStore) : JSON.parse(JSON.stringify(DEFAULT_STORY_DATABASE));
+      });
 
       const pr = localStorage.getItem('radingo_v20_portraits');
       if (pr) state.portraits = JSON.parse(pr);
@@ -609,12 +693,12 @@
     }
 
     function buyBuff(buffId, cost, durationMs) {
-      if (state.userStats.money < cost) { alert('金錢不足！'); return; }
+      if (state.userStats.money < cost) { alert(currentLang === 'zh' ? '金錢不足！' : 'Not enough coins!'); return; }
       state.userStats.money -= cost;
       const currentExpire = state.buffs[buffId] || Date.now();
       state.buffs[buffId] = Math.max(currentExpire, Date.now()) + durationMs;
       saveState();
-      alert('🎉 道具購買成功！已生效 10 分鐘！');
+      alert(currentLang === 'zh' ? '🎉 道具購買成功！已生效 10 分鐘！' : '🎉 Item purchased! Active for 10 minutes!');
       renderShop();
     }
 
@@ -625,7 +709,7 @@
       reader.onload = function(e) {
         state.portraits[gender] = e.target.result;
         saveState();
-        alert(`✅ 立繪上傳成功！`);
+        alert(`✅ ${currentLang === 'zh' ? '立繪上傳成功！' : 'Portrait uploaded successfully!'}`);
       };
       reader.readAsDataURL(file);
     }
@@ -646,13 +730,13 @@
 
     function saveCharacterProfile() {
       const nameInput = document.getElementById('input-char-name').value.trim();
-      if (!nameInput) { alert('請輸入有效名字！'); return; }
+      if (!nameInput) { alert(currentLang === 'zh' ? '請輸入有效名字！' : 'Please enter a valid name!'); return; }
       state.userStats.name = nameInput;
       state.userStats.gender = tempGender;
       state.userStats.initialized = true;
       saveState();
       closeModal('modal-profile');
-      alert(`🎉 設定成功，歡迎 ${state.userStats.name}！`);
+      alert(`🎉 ${currentLang === 'zh' ? '設定成功，歡迎' : 'Profile saved, welcome'} ${state.userStats.name}！`);
     }
 
     function switchTab(tab) {
@@ -681,6 +765,7 @@
       }
     }
 
+    /* 🎯 國考刷題區：依據 [科目 + 當前語言] 歸類過濾 (需求 3, 5) */
     function renderQuizMap() {
       const container = document.getElementById('subject-node-container');
       container.innerHTML = '';
@@ -697,11 +782,11 @@
             <div class="flex items-center space-x-3">
               <div class="w-10 h-10 rounded-xl bg-gradient-to-tr ${sub.color} flex items-center justify-center text-white text-lg"><i class="fa-solid ${sub.icon}"></i></div>
               <div>
-                <h3 class="font-extrabold text-sm text-slate-100">${sub.name}</h3>
-                <span class="text-[11px] text-slate-400">已完成 <b class="text-emerald-400">${unitsDone}</b> 單元 (可用題庫: ${qCount} 題)</span>
+                <h3 class="font-extrabold text-sm text-slate-100">${sub.name[currentLang] || sub.name['zh']}</h3>
+                <span class="text-[11px] text-slate-400">${I18N[currentLang]['completed_units']} <b class="text-emerald-400">${unitsDone}</b> ${I18N[currentLang]['units_unit']} (${I18N[currentLang]['avail_questions']}: ${qCount} ${I18N[currentLang]['questions_unit']})</span>
               </div>
             </div>
-            <button onclick="startUnitSession('${key}')" class="px-3.5 py-1.5 bg-emerald-500 hover:bg-emerald-400 text-slate-950 font-black text-xs rounded-xl btn-duo">開始刷題</button>
+            <button onclick="startUnitSession('${key}')" class="px-3.5 py-1.5 bg-emerald-500 hover:bg-emerald-400 text-slate-950 font-black text-xs rounded-xl btn-duo">${I18N[currentLang]['start_quiz']}</button>
           </div>
         `;
         container.appendChild(card);
@@ -710,7 +795,7 @@
 
     function startUnitSession(subKey) {
       const subQuestions = state.questions.filter(q => q.subject === subKey && (q.lang || 'zh') === currentLang);
-      if (subQuestions.length === 0) { alert('此科目在當前語言下尚無題目！請至資料庫新增。'); return; }
+      if (subQuestions.length === 0) { alert(currentLang === 'zh' ? '此科目在當前語言下尚無題目！請至資料庫新增。' : 'No questions for this subject in current language!'); return; }
       const shuffled = shuffle([...subQuestions]).slice(0, 5);
       state.activeQuiz = { subject: subKey, questions: shuffled, idx: 0, selectedOpt: null, isSubmitted: false };
       document.getElementById('quiz-overlay').classList.remove('hidden');
@@ -744,7 +829,7 @@
 
     function handleAnswerAction() {
       if (!state.activeQuiz.isSubmitted) {
-        if (state.activeQuiz.selectedOpt === null) { alert('請選擇答案！'); return; }
+        if (state.activeQuiz.selectedOpt === null) { alert(currentLang === 'zh' ? '請選擇答案！' : 'Please select an answer!'); return; }
         const q = state.activeQuiz.questions[state.activeQuiz.idx];
         const isCorrect = state.activeQuiz.selectedOpt === q.correct;
         state.activeQuiz.isSubmitted = true;
@@ -755,30 +840,36 @@
         if (isCorrect) { state.userStats.money += earn; saveState(); }
         panel.className = isCorrect ? "p-3 rounded-xl border bg-emerald-950/90 border-emerald-800 text-emerald-300 mb-3 space-y-1" : "p-3 rounded-xl border bg-rose-950/90 border-rose-800 text-rose-300 mb-3 space-y-1";
         document.getElementById('feedback-icon').innerHTML = isCorrect ? '✅' : '❌';
-        document.getElementById('feedback-title').innerText = isCorrect ? `答對了！(+$${earn})` : '答錯了！';
+        document.getElementById('feedback-title').innerText = isCorrect ? `${currentLang === 'zh' ? '答對了！' : 'Correct!'} (+$${earn})` : (currentLang === 'zh' ? '答錯了！' : 'Incorrect!');
         document.getElementById('feedback-exp').innerText = q.explanation || '';
-        document.getElementById('btn-submit-answer').innerText = "下一題 ➔";
+        document.getElementById('btn-submit-answer').innerText = currentLang === 'zh' ? "下一題 ➔" : "Next Question ➔";
       } else {
         state.activeQuiz.idx++;
         if (state.activeQuiz.idx < state.activeQuiz.questions.length) { loadQuizQuestion(); }
         else {
           state.subjectUnits[state.activeQuiz.subject]++;
-          saveState(); confetti({ particleCount: 80 }); alert('🎉 單元完成！'); exitQuizSession();
+          saveState(); confetti({ particleCount: 80 }); alert(currentLang === 'zh' ? '🎉 單元完成！' : '🎉 Unit Completed!'); exitQuizSession();
         }
       }
     }
 
+    /* 🏥 職場 RPG：依據 [科別 + 5大職等 Rank Tier + 當前語言] 歸類過濾 (需求 3, 4, 6) */
     function renderCareerUnits() {
       const container = document.getElementById('career-units-list'); container.innerHTML = '';
       WORK_UNITS.forEach(u => {
+        const workCount = state.unitWorkCounts[u.id] || 0;
+        const rankTitle = getRankTitle(workCount);
         const card = document.createElement('div');
         card.className = "bg-slate-900 border border-slate-800 rounded-2xl p-4 flex justify-between items-center";
         card.innerHTML = `
           <div class="flex items-center space-x-3">
             <div class="w-10 h-10 rounded-xl bg-slate-800 flex items-center justify-center text-sky-400 text-lg"><i class="fa-solid ${u.icon}"></i></div>
-            <div><h4 class="font-extrabold text-sm text-slate-100">${u.name}</h4></div>
+            <div>
+              <h4 class="font-extrabold text-sm text-slate-100">${u.name[currentLang] || u.name['zh']}</h4>
+              <span class="text-[10px] text-emerald-400 font-bold">${I18N[currentLang]['current_rank']}: ${rankTitle} (${I18N[currentLang]['shifts_count']}: ${workCount})</span>
+            </div>
           </div>
-          <button onclick="startDepartmentStory('${u.id}')" class="px-3.5 py-1.5 bg-sky-500 text-slate-950 font-black text-xs rounded-xl btn-duo">開始上班</button>
+          <button onclick="startDepartmentStory('${u.id}')" class="px-3.5 py-1.5 bg-sky-500 text-slate-950 font-black text-xs rounded-xl btn-duo">${I18N[currentLang]['start_work']}</button>
         `;
         container.appendChild(card);
       });
@@ -786,11 +877,37 @@
 
     function startDepartmentStory(unitId) {
       const unit = WORK_UNITS.find(u => u.id === unitId);
-      const pool = state.stories.filter(s => s.department === unitId);
-      const randomStory = pool.length > 0 ? pool[0] : DEFAULT_STORY_DATABASE[0];
-      state.vnActive = { unitName: unit.name, storyTitle: randomStory.title, execQueue: JSON.parse(JSON.stringify(randomStory.steps)), queueIndex: 0, earnedPay: 0, tempFlags: {} };
+      const workCount = state.unitWorkCounts[unitId] || 0;
+      const currentTier = getRankTier(workCount);
+      
+      // 嚴格過濾：科別 (department) + 職等 (rankTier) + 語系 (lang)
+      let pool = state.stories.filter(s => s.department === unitId && s.rankTier === currentTier && (s.lang || 'zh') === currentLang);
+      
+      if (pool.length === 0) {
+        alert(currentLang === 'zh' ? 
+          `ℹ️【職等過濾提示】目前科別「${unit.name['zh']}」在您的當前職等 (Tier ${currentTier}: ${getRankTitle(workCount)}) 尚無專屬劇本！請至資料庫管理新增劇本。` : 
+          `ℹ️ No scenario available for ${unit.name['en']} at Tier ${currentTier} in current language.`);
+        return;
+      }
+      
+      const randomStory = pool[Math.floor(Math.random() * pool.length)];
+      state.vnActive = { unitId: unitId, unitName: unit.name[currentLang] || unit.name['zh'], storyTitle: randomStory.title, execQueue: JSON.parse(JSON.stringify(randomStory.steps)), queueIndex: 0, earnedPay: 0, tempFlags: {} };
       document.getElementById('vn-modal').classList.remove('hidden');
       renderVNCurrentStep();
+    }
+
+    /* 文本代換引擎：精準清洗 <span> HTML 標籤並動態代入取名與代詞 (需求 1, 2) */
+    function formatVNText(rawText) {
+      if (!rawText) return "";
+      // 1. 清洗殘留的 HTML 標籤 (例如 <span>) - 解決 Bug 1
+      let clean = rawText.replace(/<\/?[^>]+(>|$)/g, "");
+      // 2. 動態代入玩家取的名字與代詞 - 解決 Bug 2
+      const playerName = state.userStats.name || "實習生A";
+      const pronoun = state.userStats.gender === 'female' ? '妳' : '你';
+      const junior = state.userStats.gender === 'female' ? '學妹' : '學弟';
+      return clean.replace(/\{name\}/g, playerName)
+                  .replace(/\{pronoun\}/g, pronoun)
+                  .replace(/\{junior\}/g, junior);
     }
 
     function renderVNCurrentStep() {
@@ -800,7 +917,8 @@
       const step = active.execQueue[active.queueIndex];
       document.getElementById('vn-story-title').innerText = active.storyTitle;
       const playerName = state.userStats.name || "實習生A";
-      const isPlayer = (step.speaker === playerName || step.speaker === "{name}");
+      const formattedSpeaker = formatVNText(step.speaker || "旁白");
+      const isPlayer = (step.speaker === playerName || step.speaker === "{name}" || step.speaker === "主角");
       
       const portraitContainer = document.getElementById('player-portrait-container');
       const portraitImg = document.getElementById('player-portrait-img');
@@ -813,14 +931,47 @@
         portraitContainer.classList.add('hidden'); standardAvatar.classList.remove('hidden');
       }
 
-      document.getElementById('vn-speaker-title').innerText = step.speaker || "旁白";
-      document.getElementById('vn-speaker-name').innerText = step.speaker || "旁白";
-      document.getElementById('vn-dialogue-text').innerText = step.text ? step.text.replace(/\{name\}/g, playerName).replace(/\{pronoun\}/g, state.userStats.gender === 'female' ? '妳' : '你') : "";
+      document.getElementById('vn-speaker-title').innerText = isPlayer ? playerName : formattedSpeaker;
+      document.getElementById('vn-speaker-name').innerText = isPlayer ? playerName : formattedSpeaker;
+      document.getElementById('vn-dialogue-text').innerText = formatVNText(step.text);
+
+      if (step.type === 'choice') {
+        document.getElementById('vn-speaker-title').innerText = currentLang === 'zh' ? "抉擇時刻" : "Choice";
+        document.getElementById('vn-speaker-name').innerText = currentLang === 'zh' ? "請選擇" : "Select Option";
+        document.getElementById('vn-dialogue-text').innerText = formatVNText(step.text || (currentLang === 'zh' ? "請做出您的職場抉擇：" : "Make your choice:"));
+        step.choices.forEach(c => {
+          const btn = document.createElement('button');
+          btn.className = c.payCost ? "w-full p-2.5 bg-amber-600/90 hover:bg-amber-500 rounded-xl text-left text-xs text-slate-950 font-black border border-amber-400" : "w-full p-2.5 bg-slate-800 hover:bg-slate-700 rounded-xl text-left text-xs text-slate-200 border border-slate-700 font-bold";
+          btn.innerText = formatVNText(c.txt);
+          btn.onclick = (e) => {
+            e.stopPropagation();
+            if (c.payCost) {
+              if (state.userStats.money < c.payCost) { alert(currentLang === 'zh' ? '金錢不足！' : 'Not enough coins!'); return; }
+              state.userStats.money -= c.payCost;
+              saveState();
+            }
+            if (c.setFlag) {
+              active.tempFlags[c.setFlag] = true;
+              state.storyFlags[c.setFlag] = true;
+              saveState();
+            }
+            if (c.resultSteps && c.resultSteps.length > 0) {
+              active.execQueue.splice(active.queueIndex + 1, 0, ...c.resultSteps);
+            }
+            active.queueIndex++;
+            renderVNCurrentStep();
+          };
+          choicesEl.appendChild(btn);
+        });
+      }
     }
 
     function handleVNDialogueClick() {
       if (!state.vnActive) return;
-      state.vnActive.queueIndex++; renderVNCurrentStep();
+      const step = state.vnActive.execQueue[state.vnActive.queueIndex];
+      if (step && step.type === 'choice') return;
+      state.vnActive.queueIndex++;
+      renderVNCurrentStep();
     }
 
     function finishShiftAndSettle() {
@@ -828,13 +979,19 @@
       if (isBuffActive('pass')) finalPay += 50;
       if (isBuffActive('blessing')) finalPay += 50;
       if (isBuffActive('coffee')) finalPay *= 2;
-      alert(`🎉 下班！獲得津貼 $${finalPay}！`);
-      state.userStats.money += finalPay; saveState();
+      
+      const unitId = state.vnActive.unitId;
+      state.unitWorkCounts[unitId] = (state.unitWorkCounts[unitId] || 0) + 1;
+      state.userStats.money += finalPay;
+      saveState();
+
+      alert(`🎉 ${currentLang === 'zh' ? `下班！完成 ${state.vnActive.unitName} 打卡，獲得津貼 $${finalPay}！` : `Shift completed! Earned stipend $${finalPay}!`}`);
       closeVNStory(); renderCareerUnits();
     }
 
     function closeVNStory() { document.getElementById('vn-modal').classList.add('hidden'); }
 
+    /* 裝備商店 (需求 3, 4) */
     function renderShop() {
       const container = document.getElementById('shop-items-container'); container.innerHTML = '';
       SHOP_ITEMS.forEach(item => {
@@ -843,8 +1000,8 @@
         card.className = "bg-slate-900 border border-slate-800 p-4 rounded-2xl flex justify-between items-center";
         card.innerHTML = `
           <div>
-            <h4 class="font-extrabold text-sm text-slate-100">${item.name}</h4>
-            <p class="text-[11px] text-slate-400 mt-0.5">${item.desc}</p>
+            <h4 class="font-extrabold text-sm text-slate-100">${item.name[currentLang] || item.name['zh']}</h4>
+            <p class="text-[11px] text-slate-400 mt-0.5">${item.desc[currentLang] || item.desc['zh']}</p>
             <span class="text-[10px] ${active ? 'text-emerald-400 font-bold' : 'text-slate-500'} block mt-1">${active ? I18N[currentLang]['active_status'] : I18N[currentLang]['expired_status']}</span>
           </div>
           <button onclick="buyBuff('${item.id}', ${item.cost}, ${item.durationMs})" class="px-3.5 py-2 bg-amber-500 hover:bg-amber-400 text-slate-950 font-black text-xs rounded-xl btn-duo flex-shrink-0 ml-3">
@@ -873,15 +1030,27 @@
 
     function renderEditorStoryList() {
       const listContainer = document.getElementById('editor-story-list');
-      document.getElementById('ed-story-total-count').innerText = `${state.stories.length} 篇`;
       if (!listContainer) return;
       listContainer.innerHTML = '';
-      state.stories.forEach((st, idx) => {
+
+      const deptFilter = document.getElementById('filter-story-dept') ? document.getElementById('filter-story-dept').value : 'all';
+      const tierFilter = document.getElementById('filter-story-tier') ? document.getElementById('filter-story-tier').value : 'all';
+
+      const filtered = state.stories.filter(s => {
+        if (deptFilter !== 'all' && s.department !== deptFilter) return false;
+        if (tierFilter !== 'all' && s.rankTier !== parseInt(tierFilter)) return false;
+        return true;
+      });
+
+      document.getElementById('ed-story-total-count').innerText = `${filtered.length} 篇`;
+
+      filtered.forEach((st, idx) => {
+        const realIdx = state.stories.indexOf(st);
         const item = document.createElement('div');
         item.className = "bg-slate-900 border border-slate-800 p-2.5 rounded-lg flex justify-between items-center text-xs";
         item.innerHTML = `
-          <div class="truncate pr-2 flex-1"><p class="text-slate-200 font-semibold truncate">${st.title}</p></div>
-          <button onclick="deleteStoryByIndex(${idx})" class="px-2 py-1 bg-rose-950 text-rose-400 rounded font-bold text-[10px]">刪除</button>
+          <div class="truncate pr-2 flex-1"><span class="text-sky-400 font-bold">[${st.lang || 'zh'}] [Tier ${st.rankTier}]</span> <span class="text-slate-200 font-semibold truncate">${st.title}</span></div>
+          <button onclick="deleteStoryByIndex(${realIdx})" class="px-2 py-1 bg-rose-950 text-rose-400 rounded font-bold text-[10px]">刪除</button>
         `;
         listContainer.appendChild(item);
       });
