@@ -114,7 +114,7 @@
           <div class="flex-1 bg-slate-800 h-3 rounded-full overflow-hidden border border-slate-700">
             <div id="quiz-progress-bar" class="bg-emerald-500 h-full w-0 transition-all duration-300"></div>
           </div>
-          <span id="quiz-step-counter" class="text-xs font-black text-slate-400">1/5</span>
+          <span id="quiz-step-counter" class="text-xs font-black text-slate-400">1/15</span>
         </div>
 
         <div class="bg-slate-900 border-2 border-slate-800 rounded-2xl p-4 space-y-3 shadow-xl">
@@ -796,7 +796,7 @@
     function startUnitSession(subKey) {
       const subQuestions = state.questions.filter(q => q.subject === subKey && (q.lang || 'zh') === currentLang);
       if (subQuestions.length === 0) { alert(currentLang === 'zh' ? '此科目在當前語言下尚無題目！請至資料庫新增。' : 'No questions for this subject in current language!'); return; }
-      const shuffled = shuffle([...subQuestions]).slice(0, 5);
+      const shuffled = shuffle([...subQuestions]).slice(0, 15);
       state.activeQuiz = { subject: subKey, questions: shuffled, idx: 0, selectedOpt: null, isSubmitted: false };
       document.getElementById('quiz-overlay').classList.remove('hidden');
       loadQuizQuestion();
