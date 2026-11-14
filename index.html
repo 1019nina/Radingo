@@ -134,6 +134,7 @@
             <span id="feedback-icon" class="text-xl"></span>
             <span id="feedback-title" class="font-extrabold text-sm"></span>
           </div>
+          <p id="feedback-correct-ans" class="hidden text-xs font-bold text-amber-300"></p>
           <p id="feedback-exp" class="text-xs opacity-90 leading-snug"></p>
         </div>
         <button id="btn-submit-answer" onclick="handleAnswerAction()" class="w-full py-3.5 rounded-xl font-black text-sm btn-duo btn-green" data-i18n="btn_check">
@@ -195,8 +196,8 @@
           <div id="vn-speaker-name" class="text-xs font-bold text-sky-400">系統</div>
           <p id="vn-dialogue-text" class="text-sm text-slate-100 font-medium leading-relaxed">劇本讀取中...</p>
         </div>
-        <div class="text-[10px] text-slate-400 text-right animate-pulse" data-i18n="vn_click_tip">▼ 點擊對話框繼續</div>
-        <div id="vn-choices-area" class="space-y-2 pt-2 relative z-10" onclick="event.stopPropagation()"></div>
+        <div id="vn-click-indicator" class="text-[10px] text-slate-400 text-right animate-pulse" data-i18n="vn_click_tip">▼ 點擊對話框繼續</div>
+        <div id="vn-choices-area" class="space-y-2 pt-2 relative z-10 max-h-60 overflow-y-auto" onclick="event.stopPropagation()"></div>
       </div>
     </div>
   </div>
@@ -338,7 +339,7 @@
           </div>
         </div>
 
-        <!-- 故事管理頁 (中英文分開匯入匯出 - 需求 4) -->
+        <!-- 故事管理頁 -->
         <div id="ed-subview-story" class="hidden space-y-4">
           <div class="bg-slate-800 p-3 rounded-xl space-y-2 border border-slate-700">
             <span class="font-bold text-sky-400" data-i18n="story_json_title">📖 職場 VN 故事 JSON (支援語系獨立)</span>
@@ -396,7 +397,7 @@
   </div>
 
   <script>
-    /* 雙語字典與翻譯字典 (需求 3) */
+    /* 雙語字典與翻譯字典 */
     const I18N = {
       zh: {
         nav_quiz: "國考刷題區",
@@ -404,13 +405,11 @@
         nav_shop: "裝備商店",
         nav_db: "資料庫管理",
         quiz_title: "單元地圖（無體力限制）",
-        quiz_desc: "初始題庫包含各科國考精選題！亦可至右下角新增或匯入中文題庫。",
+        quiz_desc: "初始題庫包含各科國考精選題！亦可至右下角「資料庫管理」新增或匯入 JSON！",
         btn_check: "檢查答案",
         start_quiz: "開始刷題",
-        completed_units: "已完成",
         avail_questions: "可用題庫",
         questions_unit: "題",
-        units_unit: "單元",
         career_badge: "🏥 5大職等 RPG 故事區 (嚴格職等過濾)",
         career_title: "選擇指定科別，系統自動依當前累積職等嚴格抽樣劇本！",
         career_desc: "晉升制度：0~19(見習生) ➔ 20~49(實習生) ➔ 50~99(PGY) ➔ 100~199(放射師) ➔ 200+(資深帶教老鳥)",
@@ -463,10 +462,8 @@
         quiz_desc: "Selected radiography exam questions! Import or add English JSON via bottom right.",
         btn_check: "Check Answer",
         start_quiz: "Start Practice",
-        completed_units: "Completed",
         avail_questions: "Available",
         questions_unit: "Q",
-        units_unit: "Units",
         career_badge: "🏥 5-Rank RPG Stories (Rank-Filtered)",
         career_title: "Select department, scenario adapts strictly to your cumulative rank tier!",
         career_desc: "Ranks: 0~19 (Novice) ➔ 20~49 (Intern) ➔ 50~99 (PGY) ➔ 100~199 (Radiographer) ➔ 200+ (Senior)",
@@ -541,7 +538,7 @@
       renderShop();
     }
 
-    /* 科目名稱字典 (需求 3, 5) */
+    /* 科目名稱字典 */
     const SUBJECTS = {
       basic: { name: { zh: '基礎醫學', en: 'Basic Medical Science' }, icon: 'fa-brain', color: 'from-pink-600 to-rose-700' },
       physics: { name: { zh: '醫學物理與輻射安全', en: 'Medical Physics & Radiation Safety' }, icon: 'fa-atom', color: 'from-blue-600 to-indigo-700' },
@@ -551,7 +548,7 @@
       nuc: { name: { zh: '核子醫學診療原理與技術學', en: 'Nuclear Medicine & Technique' }, icon: 'fa-radiation', color: 'from-cyan-600 to-sky-700' }
     };
 
-    /* 13 大職場科別字典 (需求 3, 6) */
+    /* 13 大職場科別字典 */
     const WORK_UNITS = [
       { id: 'xray', name: { zh: '一般 X 光', en: 'General X-Ray' }, reqSubject: 'diag', icon: 'fa-x-ray' },
       { id: 'er', name: { zh: '急診 (CT/X-ray)', en: 'ER (CT/X-Ray)' }, reqSubject: 'diag', icon: 'fa-truck-medical' },
@@ -568,7 +565,7 @@
       { id: 'rt', name: { zh: 'RT 放射線治療', en: 'Radiation Therapy' }, reqSubject: 'therapy', icon: 'fa-crosshairs' }
     ];
 
-    /* 5 大職等計算邏輯 (需求 6) */
+    /* 5 大職等計算邏輯 */
     function getRankTier(workCount) {
       if (workCount < 20) return 0;
       if (workCount < 50) return 1;
@@ -586,7 +583,7 @@
       return titles[currentLang][tier];
     }
 
-    /* 預設劇本庫 (已修正對話 <span> Bug 與代詞代入 - 需求 1, 2, 4, 6) */
+    /* 預設劇本庫 */
     const DEFAULT_STORY_DATABASE = [
       {
         id: 'xr_tier_0', lang: 'zh', department: 'xray', rankTier: 0, title: '初入 X 光控制室的震驚',
@@ -609,20 +606,20 @@
       }
     ];
 
-    /* 預設國考題庫 (需求 5) */
+    /* 預設國考題庫 */
     const DEFAULT_QUESTIONS = [
       { id: 'q1', lang: 'zh', subject: 'basic', type: 'choice', question: '下列何者為人體中放射線感受性最高的細胞？', options: ['神經細胞', '肌肉細胞', '淋巴球與造血細胞', '骨細胞'], correct: 2, explanation: '根據柏格能-溫克定律，分裂越快、分化越差的細胞敏感度越高。' },
       { id: 'q2', lang: 'zh', subject: 'physics', type: 'choice', question: '在加馬攝影機中，光電倍增管 (PMT) 的主要功能為：', options: ['將閃爍晶體產生的光子轉換並放大為電子訊號', '過濾散射射線', '產生高壓 X 光', '儲存數位影像'], correct: 0, explanation: 'PMT 將閃爍光子轉換成光電子並進行級聯放大。' },
       { id: 'q3', lang: 'en', subject: 'basic', type: 'choice', question: 'Which of the following cells has the highest radiosensitivity in the human body?', options: ['Nerve cells', 'Muscle cells', 'Lymphocytes & Hematopoietic cells', 'Bone cells'], correct: 2, explanation: 'According to the Law of Bergonie and Tribondeau, rapidly dividing and less differentiated cells are more sensitive.' }
     ];
 
-    /* 5 大限時 Buff 商店 (需求 3, 4) */
+    /* 5 大限時 Buff 商店 */
     const SHOP_ITEMS = [
       { id: 'coffee', name: { zh: '☕ 專注大杯冰美式', en: '☕ Large Iced Americano' }, cost: 300, durationMs: 600000, desc: { zh: '刷題與打卡金幣收益加倍 (2.0x)，持續 10 分鐘！', en: 'Double coin rewards for 10 minutes!' } },
       { id: 'capsule', name: { zh: '⚡ 雙倍咖啡因膠囊', en: '⚡ Double Caffeine Capsule' }, cost: 250, durationMs: 600000, desc: { zh: '國考刷題答對獎勵額外加碼 +$50，持續 10 分鐘！', en: 'Extra +$50 for each correct quiz for 10 min!' } },
       { id: 'lead_coat', name: { zh: '🛡️ 放射防護鉛衣', en: '🛡️ Protective Lead Apron' }, cost: 400, durationMs: 600000, desc: { zh: '職場物語失誤扣款時自動抵擋 1 次懲罰，持續 10 分鐘！', en: 'Blocks 1 penalty in Career RPG for 10 min!' } },
       { id: 'blessing', name: { zh: '🍀 老鳥的祝福', en: '🍀 Senior\'s Blessing' }, cost: 500, durationMs: 600000, desc: { zh: '職場物語打卡獲得額外加成獎金，持續 10 分鐘！', en: 'Bonus shift allowance in Career RPG for 10 min!' } },
-      { id: 'pass', name: '⏰ 加班通行證', cost: 350, durationMs: 600000, desc: { zh: '每次完成職場打卡固定津貼額外 +$50，持續 10 分鐘！', en: 'Extra +$50 stipend upon completing shift for 10 min!' } }
+      { id: 'pass', name: { zh: '⏰ 加班通行證', en: '⏰ Overtime Pass' }, cost: 350, durationMs: 600000, desc: { zh: '每次完成職場打卡固定津貼額外 +$50，持續 10 分鐘！', en: 'Extra +$50 stipend upon completing shift for 10 min!' } }
     ];
 
     let state = {
@@ -765,7 +762,7 @@
       }
     }
 
-    /* 🎯 國考刷題區：依據 [科目 + 當前語言] 歸類過濾 (需求 3, 5) */
+    /* 🎯 國考刷題區：去掉完成幾單元，只保留可用題庫文字提示 */
     function renderQuizMap() {
       const container = document.getElementById('subject-node-container');
       container.innerHTML = '';
@@ -773,7 +770,6 @@
 
       Object.keys(SUBJECTS).forEach(key => {
         const sub = SUBJECTS[key];
-        const unitsDone = state.subjectUnits[key] || 0;
         const qCount = filteredQuestions.filter(q => q.subject === key).length;
         const card = document.createElement('div');
         card.className = "bg-slate-900 border-2 border-slate-800 rounded-2xl p-4 space-y-3";
@@ -783,7 +779,7 @@
               <div class="w-10 h-10 rounded-xl bg-gradient-to-tr ${sub.color} flex items-center justify-center text-white text-lg"><i class="fa-solid ${sub.icon}"></i></div>
               <div>
                 <h3 class="font-extrabold text-sm text-slate-100">${sub.name[currentLang] || sub.name['zh']}</h3>
-                <span class="text-[11px] text-slate-400">${I18N[currentLang]['completed_units']} <b class="text-emerald-400">${unitsDone}</b> ${I18N[currentLang]['units_unit']} (${I18N[currentLang]['avail_questions']}: ${qCount} ${I18N[currentLang]['questions_unit']})</span>
+                <span class="text-[11px] text-slate-400">${I18N[currentLang]['avail_questions']}: <b class="text-emerald-400">${qCount}</b> ${I18N[currentLang]['questions_unit']}</span>
               </div>
             </div>
             <button onclick="startUnitSession('${key}')" class="px-3.5 py-1.5 bg-emerald-500 hover:bg-emerald-400 text-slate-950 font-black text-xs rounded-xl btn-duo">${I18N[currentLang]['start_quiz']}</button>
@@ -823,6 +819,7 @@
         btn.innerHTML = `<span>${optStr}</span>`; zone.appendChild(btn);
       });
       document.getElementById('feedback-panel').classList.add('hidden');
+      document.getElementById('feedback-correct-ans').classList.add('hidden');
       document.getElementById('btn-submit-answer').innerText = I18N[currentLang]['btn_check'];
       document.getElementById('btn-submit-answer').onclick = handleAnswerAction;
     }
@@ -833,7 +830,15 @@
         const q = state.activeQuiz.questions[state.activeQuiz.idx];
         const isCorrect = state.activeQuiz.selectedOpt === q.correct;
         state.activeQuiz.isSubmitted = true;
+
+        const optionBtns = document.querySelectorAll('.card-option');
+        if (optionBtns[q.correct]) optionBtns[q.correct].classList.add('correct');
+        if (!isCorrect && optionBtns[state.activeQuiz.selectedOpt]) {
+          optionBtns[state.activeQuiz.selectedOpt].classList.add('wrong');
+        }
+
         const panel = document.getElementById('feedback-panel'); panel.classList.remove('hidden');
+        const correctAnsEl = document.getElementById('feedback-correct-ans');
         let earn = isCorrect ? 80 : 0;
         if (isCorrect && isBuffActive('capsule')) earn += 50;
         if (isBuffActive('coffee')) earn *= 2;
@@ -841,6 +846,15 @@
         panel.className = isCorrect ? "p-3 rounded-xl border bg-emerald-950/90 border-emerald-800 text-emerald-300 mb-3 space-y-1" : "p-3 rounded-xl border bg-rose-950/90 border-rose-800 text-rose-300 mb-3 space-y-1";
         document.getElementById('feedback-icon').innerHTML = isCorrect ? '✅' : '❌';
         document.getElementById('feedback-title').innerText = isCorrect ? `${currentLang === 'zh' ? '答對了！' : 'Correct!'} (+$${earn})` : (currentLang === 'zh' ? '答錯了！' : 'Incorrect!');
+        
+        if (!isCorrect) {
+          const correctText = q.options[q.correct] || '';
+          correctAnsEl.innerText = currentLang === 'zh' ? `正確答案：${correctText}` : `Correct Answer: ${correctText}`;
+          correctAnsEl.classList.remove('hidden');
+        } else {
+          correctAnsEl.classList.add('hidden');
+        }
+
         document.getElementById('feedback-exp').innerText = q.explanation || '';
         document.getElementById('btn-submit-answer').innerText = currentLang === 'zh' ? "下一題 ➔" : "Next Question ➔";
       } else {
@@ -853,7 +867,7 @@
       }
     }
 
-    /* 🏥 職場 RPG：依據 [科別 + 5大職等 Rank Tier + 當前語言] 歸類過濾 (需求 3, 4, 6) */
+    /* 🏥 職場 RPG：依據 [科別 + 5大職等 Rank Tier + 當前語言] 歸類過濾 */
     function renderCareerUnits() {
       const container = document.getElementById('career-units-list'); container.innerHTML = '';
       WORK_UNITS.forEach(u => {
@@ -880,7 +894,6 @@
       const workCount = state.unitWorkCounts[unitId] || 0;
       const currentTier = getRankTier(workCount);
       
-      // 嚴格過濾：科別 (department) + 職等 (rankTier) + 語系 (lang)
       let pool = state.stories.filter(s => s.department === unitId && s.rankTier === currentTier && (s.lang || 'zh') === currentLang);
       
       if (pool.length === 0) {
@@ -891,17 +904,24 @@
       }
       
       const randomStory = pool[Math.floor(Math.random() * pool.length)];
-      state.vnActive = { unitId: unitId, unitName: unit.name[currentLang] || unit.name['zh'], storyTitle: randomStory.title, execQueue: JSON.parse(JSON.stringify(randomStory.steps)), queueIndex: 0, earnedPay: 0, tempFlags: {} };
+      state.vnActive = {
+        unitId: unitId,
+        reqSubject: unit.reqSubject,
+        unitName: unit.name[currentLang] || unit.name['zh'],
+        storyTitle: randomStory.title,
+        execQueue: JSON.parse(JSON.stringify(randomStory.steps)),
+        queueIndex: 0,
+        earnedPay: 0,
+        tempFlags: {}
+      };
       document.getElementById('vn-modal').classList.remove('hidden');
       renderVNCurrentStep();
     }
 
-    /* 文本代換引擎：精準清洗 <span> HTML 標籤並動態代入取名與代詞 (需求 1, 2) */
+    /* 文本代換引擎 */
     function formatVNText(rawText) {
       if (!rawText) return "";
-      // 1. 清洗殘留的 HTML 標籤 (例如 <span>) - 解決 Bug 1
       let clean = rawText.replace(/<\/?[^>]+(>|$)/g, "");
-      // 2. 動態代入玩家取的名字與代詞 - 解決 Bug 2
       const playerName = state.userStats.name || "實習生A";
       const pronoun = state.userStats.gender === 'female' ? '妳' : '你';
       const junior = state.userStats.gender === 'female' ? '學妹' : '學弟';
@@ -913,6 +933,9 @@
     function renderVNCurrentStep() {
       const active = state.vnActive;
       const choicesEl = document.getElementById('vn-choices-area'); choicesEl.innerHTML = '';
+      const clickTipEl = document.getElementById('vn-click-indicator');
+      if (clickTipEl) clickTipEl.classList.remove('hidden');
+
       if (!active || active.queueIndex >= active.execQueue.length) { finishShiftAndSettle(); return; }
       const step = active.execQueue[active.queueIndex];
       document.getElementById('vn-story-title').innerText = active.storyTitle;
@@ -935,7 +958,9 @@
       document.getElementById('vn-speaker-name').innerText = isPlayer ? playerName : formattedSpeaker;
       document.getElementById('vn-dialogue-text').innerText = formatVNText(step.text);
 
+      // 處理選擇題分支
       if (step.type === 'choice') {
+        if (clickTipEl) clickTipEl.classList.add('hidden');
         document.getElementById('vn-speaker-title').innerText = currentLang === 'zh' ? "抉擇時刻" : "Choice";
         document.getElementById('vn-speaker-name').innerText = currentLang === 'zh' ? "請選擇" : "Select Option";
         document.getElementById('vn-dialogue-text').innerText = formatVNText(step.text || (currentLang === 'zh' ? "請做出您的職場抉擇：" : "Make your choice:"));
@@ -964,18 +989,106 @@
           choicesEl.appendChild(btn);
         });
       }
+
+      // 處理職場抽考 (type: "quiz") - 依據對應科別從對應科目題庫抽題
+      if (step.type === 'quiz') {
+        if (clickTipEl) clickTipEl.classList.add('hidden');
+        const targetSub = step.subject || active.reqSubject || 'basic';
+        let qPool = state.questions.filter(q => q.subject === targetSub && (q.lang || 'zh') === currentLang);
+        if (qPool.length === 0) {
+          qPool = state.questions.filter(q => (q.lang || 'zh') === currentLang);
+        }
+
+        if (qPool.length === 0) {
+          document.getElementById('vn-dialogue-text').innerText = formatVNText(step.text) + (currentLang === 'zh' ? "\n（目前題庫無可用考題，自動跳過抽考）" : "\n(No quiz questions available, skipping)");
+          const skipBtn = document.createElement('button');
+          skipBtn.className = "w-full p-2.5 bg-emerald-600 hover:bg-emerald-500 rounded-xl text-center text-xs text-slate-950 font-black";
+          skipBtn.innerText = currentLang === 'zh' ? "繼續劇情 ➔" : "Continue ➔";
+          skipBtn.onclick = (e) => { e.stopPropagation(); active.queueIndex++; renderVNCurrentStep(); };
+          choicesEl.appendChild(skipBtn);
+          return;
+        }
+
+        const quizObj = qPool[Math.floor(Math.random() * qPool.length)];
+        const subName = SUBJECTS[targetSub] ? (SUBJECTS[targetSub].name[currentLang] || SUBJECTS[targetSub].name['zh']) : targetSub;
+
+        document.getElementById('vn-speaker-title').innerText = currentLang === 'zh' ? `📝 臨床抽考 (${subName})` : `📝 Clinical Quiz (${subName})`;
+        document.getElementById('vn-speaker-name').innerText = currentLang === 'zh' ? "學長姐考驗" : "Senior's Quiz";
+        const prefixText = step.text ? formatVNText(step.text) + "\n\n" : "";
+        document.getElementById('vn-dialogue-text').innerText = prefixText + quizObj.question;
+
+        quizObj.options.forEach((optStr, idx) => {
+          const btn = document.createElement('button');
+          btn.className = "w-full p-2.5 bg-slate-800 hover:bg-sky-900/60 hover:border-sky-500 rounded-xl text-left text-xs text-slate-200 border border-slate-700 font-bold transition-colors";
+          btn.innerText = optStr;
+          btn.onclick = (e) => {
+            e.stopPropagation();
+            const isCorrect = idx === quizObj.correct;
+            const correctText = quizObj.options[quizObj.correct] || '';
+            let resultStep;
+
+            if (isCorrect) {
+              active.earnedPay = (active.earnedPay || 0) + 50;
+              resultStep = {
+                speaker: "學姐",
+                text: currentLang === 'zh'
+                  ? `「答對了！基本功很紮實嘛，這班表現不錯，額外加發獎金 +$50！」`
+                  : `"Correct! Solid fundamentals! Extra bonus +$50!"`
+              };
+            } else {
+              if (isBuffActive('lead_coat')) {
+                resultStep = {
+                  speaker: "系統",
+                  text: currentLang === 'zh'
+                    ? `答錯了！正確答案是「${correctText}」。\n🛡️【放射防護鉛衣生效】成功抵擋了本次失誤扣款！`
+                    : `Wrong! Correct answer: "${correctText}".\n🛡️ Protective Lead Apron blocked the penalty!`
+                };
+              } else {
+                active.earnedPay = (active.earnedPay || 0) - 30;
+                resultStep = {
+                  speaker: "學姐",
+                  text: currentLang === 'zh'
+                    ? `「答錯囉！正確答案是『${correctText}』，回去再把課本翻熟一點！（扣除獎金 $30）」`
+                    : `"Wrong! The correct answer is '${correctText}'. Review your notes! (-$30)"`
+                };
+              }
+            }
+
+            active.execQueue.splice(active.queueIndex + 1, 0, resultStep);
+            active.queueIndex++;
+            renderVNCurrentStep();
+          };
+          choicesEl.appendChild(btn);
+        });
+      }
+
+      // 處理 Flag 結算檢核 (type: "flagCheck")
+      if (step.type === 'flagCheck') {
+        const hasFlag = !!(active.tempFlags[step.flag] || state.storyFlags[step.flag]);
+        if (hasFlag) {
+          if (isBuffActive('lead_coat')) {
+            document.getElementById('vn-dialogue-text').innerText = formatVNText(step.matchText) + (currentLang === 'zh' ? "\n🛡️【放射防護鉛衣生效】成功抵擋了扣款懲罰！" : "\n🛡️ Lead Apron blocked the penalty!");
+          } else {
+            active.earnedPay = (active.earnedPay || 0) - 80;
+            document.getElementById('vn-dialogue-text').innerText = formatVNText(step.matchText);
+          }
+        } else {
+          active.earnedPay = (active.earnedPay || 0) + 50;
+          document.getElementById('vn-dialogue-text').innerText = formatVNText(step.normalText);
+        }
+      }
     }
 
     function handleVNDialogueClick() {
       if (!state.vnActive) return;
       const step = state.vnActive.execQueue[state.vnActive.queueIndex];
-      if (step && step.type === 'choice') return;
+      if (step && (step.type === 'choice' || step.type === 'quiz')) return;
       state.vnActive.queueIndex++;
       renderVNCurrentStep();
     }
 
     function finishShiftAndSettle() {
-      let finalPay = 100 + (state.vnActive.earnedPay || 0);
+      let finalPay = Math.max(0, 100 + (state.vnActive.earnedPay || 0));
       if (isBuffActive('pass')) finalPay += 50;
       if (isBuffActive('blessing')) finalPay += 50;
       if (isBuffActive('coffee')) finalPay *= 2;
@@ -991,7 +1104,7 @@
 
     function closeVNStory() { document.getElementById('vn-modal').classList.add('hidden'); }
 
-    /* 裝備商店 (需求 3, 4) */
+    /* 裝備商店 */
     function renderShop() {
       const container = document.getElementById('shop-items-container'); container.innerHTML = '';
       SHOP_ITEMS.forEach(item => {
